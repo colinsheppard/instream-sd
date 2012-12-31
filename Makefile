@@ -47,7 +47,7 @@ OBJECTS=GraphDataObject.o \
 \
 	UTMTroutObserverSwarm.o \
 	UTMTroutModelSwarm.o \
-	UTMHabitatSpace.o \
+	HabitatSpace.o \
 	UTMInputData.o \
 	UTMCell.o \
 	FishCell.o \
@@ -121,4 +121,4 @@ TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
 UTMTroutObserverSwarm.o  : UTMTroutObserverSwarm.[hm]
 UTMTroutModelSwarm.o : UTMTroutModelSwarm.[hm]
-UTMHabitatSpace.o : UTMHabitatSpace.[hm]
+HabitatSpace.o : HabitatSpace.[hm]

@@ -1,0 +1,21 @@
+@begin
+#
+# Make sure there are no trailing spaces
+# following text input!
+#
+rasterResolution  40
+rasterResolutionX  100
+rasterResolutionY  100
+rasterZoomFactor  1
+
+rasterOutputFrequency   1
+modelNumber       1
+
+displayFrequency                 1
+takeRasterPictures              NO
+
+rasterColorVariable          depth
+maxShadeVelocity 	        150
+maxShadeDepth 	                250
+
+@end

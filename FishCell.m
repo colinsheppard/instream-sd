@@ -7,7 +7,7 @@
 // See file LICENSE for details and terms of copying
 // 
 
-#import "UTMHabitatSpace.h"
+#import "HabitatSpace.h"
 #import "UTMTroutModelSwarm.h"
 #import "UTMTrout.h"
 #import "UTMRedd.h"

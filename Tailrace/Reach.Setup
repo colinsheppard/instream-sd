@@ -1,0 +1,21 @@
+Reach.Setup file for inSTREAM5-SD-2D. 
+Provide one block of setup information for each reach:
+Reach name, parameter file name, junction numbers, and input file names.
+
+
+REACHBEGIN
+reachName                         TailRace
+cellGeomFile                      Tailrace-Geom.Data
+flowFile                          FlamingGorgePHHourlyFlow.Data
+temperatureFile                   GreendaleTemperature.Data
+turbidityFile                     GreenRiverTurbidity.Data
+cellHabVarsFile                   TailraceCells.Data
+driftFoodFile			  FG-HrlyDrift_15E-12.Data
+reachLength                       1000
+cellHydraulicFile				Tailrace-Geom.Data
+
+habDownstreamJunctionNumber       2
+habUpstreamJunctionNumber         1
+
+REACHEND
+

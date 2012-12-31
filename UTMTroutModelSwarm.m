@@ -58,7 +58,7 @@ id <Symbol> Feed, Hide;
 
   troutModelSwarm->isFirstStep = TRUE;
 
-  troutModelSwarm->utmHabSetupFile = (char *) nil;
+  troutModelSwarm->habSetupFile = (char *) nil;
   troutModelSwarm->fishOutputFile = (char *) nil;
   troutModelSwarm->speciesDepthUseOutStreamMap = nil; 
   troutModelSwarm->speciesVelocityUseOutStreamMap = nil;
@@ -98,13 +98,13 @@ id <Symbol> Feed, Hide;
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
 
-  utmHabitatSpace = [UTMHabitatSpace createBegin: modelZone];
+  habitatSpace = [HabitatSpace createBegin: modelZone];
   
   //
-  // utmHabitatSpace createEnd is done in buildObjects
+  // habitatSpace createEnd is done in buildObjects
   //
-  [utmHabitatSpace setModelSwarm: self];
-  [ObjectLoader load: utmHabitatSpace fromFileNamed: habParamFile];
+  [habitatSpace setModelSwarm: self];
+  [ObjectLoader load: habitatSpace fromFileNamed: habParamFile];
 
   return self;
 
@@ -218,42 +218,42 @@ id <Symbol> Feed, Hide;
   //
   // Create the space in which the fish will live
   //
-  [utmHabitatSpace buildObjects];
-  [utmHabitatSpace setTimeManager:timeManager];
-  [utmHabitatSpace setTimeStepSize: (time_t) 3600];
-  [utmHabitatSpace setStartTime: runStartTime 
+  [habitatSpace buildObjects];
+  [habitatSpace setTimeManager:timeManager];
+  [habitatSpace setTimeStepSize: (time_t) 3600];
+  [habitatSpace setStartTime: runStartTime 
                      andEndTime: runEndTime];
 
-  [utmHabitatSpace setRandGen: randGen];
-  [utmHabitatSpace setFishParamsMap: fishParamsMap];
-  [utmHabitatSpace setUTMRasterResolution:  utmRasterResolution
+  [habitatSpace setRandGen: randGen];
+  [habitatSpace setFishParamsMap: fishParamsMap];
+  [habitatSpace setUTMRasterResolution:  utmRasterResolution
                   setUTMRasterResolutionX:  utmRasterResolutionX
                   setUTMRasterResolutionY:  utmRasterResolutionY
                    setRasterColorVariable:  utmRasterColorVariable
                          setShadeColorMax:  shadeColorMax];
-  [utmHabitatSpace readUTMHabSetupFile: utmHabSetupFile];
-  [utmHabitatSpace buildUTMCells]; 
+  [habitatSpace readHabSetupFile: habSetupFile];
+  [habitatSpace buildUTMCells]; 
 
   dataStartTime = runStartTime;
   dataEndTime = runEndTime;
 
-  [utmHabitatSpace setDataStartTime: dataStartTime
+  [habitatSpace setDataStartTime: dataStartTime
                      andDataEndTime: dataEndTime + 86400];
 
-  [utmHabitatSpace createTimeSeriesInputManagers];
+  [habitatSpace createTimeSeriesInputManagers];
 
-  [utmHabitatSpace setSizeX: [utmHabitatSpace getSpaceDimX]  
-                          Y: [utmHabitatSpace getSpaceDimY]];
+  [habitatSpace setSizeX: [habitatSpace getSpaceDimX]  
+                          Y: [habitatSpace getSpaceDimY]];
 
   
-  [utmHabitatSpace setNumberOfSpecies: numberOfSpecies];
+  [habitatSpace setNumberOfSpecies: numberOfSpecies];
 
-  utmHabitatSpace = [utmHabitatSpace createEnd];
+  habitatSpace = [habitatSpace createEnd];
 
-  [utmHabitatSpace createDemonicIntrusionSymbol];
+  [habitatSpace createDemonicIntrusionSymbol];
 
-  [utmHabitatSpace shouldFishMoveAt: modelTime];
-  [utmHabitatSpace updateHabitat: modelTime];
+  [habitatSpace shouldFishMoveAt: modelTime];
+  [habitatSpace updateHabitat: modelTime];
 
   //
   // The Symbols needed by the model
@@ -757,7 +757,7 @@ id <Symbol> Feed, Hide;
    id <ListIndex> initPopLstNdx = nil;
    InitialFishRecord* initialFishRecord = (InitialFishRecord *) nil;
 
-   id <List> utmCellList = [utmHabitatSpace getUTMCellList];
+   id <List> utmCellList = [habitatSpace getUTMCellList];
 
    //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
    //fflush(0);
@@ -1022,7 +1022,7 @@ id <Symbol> Feed, Hide;
 
    id lengthNormalDist = nil; // this distribution goes out of scope
 
-   id <List> utmCellList = [utmHabitatSpace getUTMCellList];
+   id <List> utmCellList = [habitatSpace getUTMCellList];
 
 
    int arraySize = [fishStockList getCount];
@@ -1354,7 +1354,7 @@ id <Symbol> Feed, Hide;
   // updates hourly flow, and updates daily habitat variables if the
   // current time is midnight.
   //
-  moveFish = [utmHabitatSpace shouldFishMoveAt: modelTime];
+  moveFish = [habitatSpace shouldFishMoveAt: modelTime];
 
   //
   // Third, if it is midnight, call the method the updates
@@ -1379,7 +1379,10 @@ id <Symbol> Feed, Hide;
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
   //
-  timeTillDaytimeStarts  = modelTime - [utmHabitatSpace getDaytimeStartTime];
+  timeTillDaytimeStarts  = modelTime - [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: modelTime]
+						    withHour: (int) [SolarManager getSunriseHour]
+						    withMinute: (int)  [SolarManager getSunriseHour]*60
+						    withSecond: 0];
 
   if((timeTillDaytimeStarts  >= (time_t) 0) && (timeTillDaytimeStarts < anHour))
   {
@@ -1442,16 +1445,16 @@ id <Symbol> Feed, Hide;
      if(isFirstStep == FALSE)
      {
         [self outputBreakoutReport];
-        [utmHabitatSpace printCellFishInfo];
+        [habitatSpace printCellFishInfo];
      }
 
      // 
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
      //
-     [utmHabitatSpace updateHabitat: modelTime];
+     [habitatSpace updateHabitat: modelTime];
 
-     [utmHabitatSpace resetNumPiscivorousFish];
+     [habitatSpace resetNumPiscivorousFish];
 
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
@@ -1459,8 +1462,8 @@ id <Symbol> Feed, Hide;
      //[self printTroutDepthUseHisto];
      //[self printTroutVelocityUseHisto];
 
-     //[utmHabitatSpace printAreaDepthHisto];
-     //[utmHabitatSpace printAreaVelocityHisto];
+     //[habitatSpace printAreaDepthHisto];
+     //[habitatSpace printAreaVelocityHisto];
 
      //
      // Finally, re-set the number of hours 
@@ -1751,9 +1754,9 @@ id <Symbol> Feed, Hide;
 // getHabitatSpace
 //
 /////////////////////////////////////////////////////////////////
--(UTMHabitatSpace *) getHabitatSpace 
+-(HabitatSpace *) getHabitatSpace 
 {
-  return utmHabitatSpace;
+  return habitatSpace;
 }
 
 
@@ -2154,7 +2157,7 @@ id <Symbol> Feed, Hide;
   [newFish setScenario: scenario];
   [newFish setReplicate: replicate];
   [newFish setTimeManager: timeManager];
-  [newFish setHabitatSpace: utmHabitatSpace];
+  [newFish setHabitatSpace: habitatSpace];
 
   if([aFishParams getFishSpecies] == nil)
   {
@@ -2529,7 +2532,7 @@ id <Symbol> Feed, Hide;
 - (int) getCurrentPhase
 {
 
-   int currentPhase = [utmHabitatSpace getCurrentPhase];;
+   int currentPhase = [habitatSpace getCurrentPhase];;
    
    return currentPhase;
 
@@ -3562,7 +3565,7 @@ id <Symbol> Feed, Hide;
                                          withLabel: "ModelHour"];
 
   [liveFishReporter addColumnWithValueOfVariable: "currentPhase"
-                                      fromObject: utmHabitatSpace
+                                      fromObject: habitatSpace
                                         withType: "int" 
                                        withLabel: "CurrentPhase"];
 
@@ -3572,12 +3575,12 @@ id <Symbol> Feed, Hide;
                                        withLabel: "NumHoursSinceLastStep"];
 
   [liveFishReporter addColumnWithValueOfVariable: "currentHourlyFlow"
-                                      fromObject: (id) utmHabitatSpace
+                                      fromObject: (id) habitatSpace
                                         withType: "double" 
                                        withLabel: "CurrentHourlyFlow"];
 
   [liveFishReporter addColumnWithValueOfVariable: "temperature"
-                                      fromObject: (id) utmHabitatSpace
+                                      fromObject: (id) habitatSpace
                                         withType: "double" 
                                        withLabel: "Temperature"];
  
@@ -3640,7 +3643,7 @@ id <Symbol> Feed, Hide;
                                          withLabel: "ModelHour"];
 
   [deadFishReporter addColumnWithValueOfVariable: "currentPhase"
-                                      fromObject: utmHabitatSpace
+                                      fromObject: habitatSpace
                                         withType: "int" 
                                        withLabel: "CurrentPhase"];
 
@@ -3739,7 +3742,7 @@ id <Symbol> Feed, Hide;
 - setShadeColorMax: (double) aShadeColorMax
 {
     shadeColorMax = aShadeColorMax;
-    [utmHabitatSpace setShadeColorMax: shadeColorMax];
+    [habitatSpace setShadeColorMax: shadeColorMax];
     return self;
 }
 
@@ -3758,7 +3761,7 @@ id <Symbol> Feed, Hide;
 
     [observerSwarm switchColorRep];  
 
-    //[utmHabitatSpace setShadeColorMax: shadeColorMax];
+    //[habitatSpace setShadeColorMax: shadeColorMax];
 
     return self;
 }
@@ -3771,7 +3774,7 @@ id <Symbol> Feed, Hide;
 //////////////////////////////////
 - updateCells
 {
-    [utmHabitatSpace updateCells];
+    [habitatSpace updateCells];
     return self;
 }
 
@@ -3818,10 +3821,10 @@ id <Symbol> Feed, Hide;
   [ndx drop];
 
 
-  if(utmHabitatSpace != nil)
+  if(habitatSpace != nil)
   {
-     [utmHabitatSpace drop];
-     utmHabitatSpace = nil;
+     [habitatSpace drop];
+     habitatSpace = nil;
   }
 
   if(liveFishReporter != nil)

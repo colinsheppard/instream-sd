@@ -10,7 +10,7 @@
 
 
 #import "FishParams.h"
-#import "UTMHabitatSpace.h"
+#import "HabitatSpace.h"
 #import "FishCell.h"
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"
@@ -289,7 +289,7 @@ id <List> badDestCellList;
 - setWorld: (FishCell *) aCell;
 - (FishCell *) getWorld;
 - setFishCell: (FishCell *) aCell;
-- setHabitatSpace: (UTMHabitatSpace *) aHabSpace;
+- setHabitatSpace: (HabitatSpace *) aHabSpace;
 
 - setSpeciesNdx: (int) anIndex;
 - (int) getSpeciesNdx;

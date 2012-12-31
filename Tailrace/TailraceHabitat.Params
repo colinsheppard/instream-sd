@@ -1,0 +1,23 @@
+# Pre-calibration habitat parameters for Tailrace	
+@begin	
+habAnglePressJan	3
+habAnglePressFeb	10
+habAnglePressMar	35
+habAnglePressApr	55
+habAnglePressMay	60
+habAnglePressJun	45
+habAnglePressJul	30
+habAnglePressAug	30
+habAnglePressSep	35
+habAnglePressOct	25
+habAnglePressNov	5
+habAnglePressDec	2
+habAngleNightFactor	0
+	
+habDriftRegenDist	1000
+habFracFlowChangeForMovement	0.1
+habLatitude	41
+habPreyEnergyDensity	4000
+habSearchProd	1.00E-06
+habTwilightLength	0.5
+@end	

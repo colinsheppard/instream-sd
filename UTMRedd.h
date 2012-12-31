@@ -9,7 +9,7 @@
 
 
 #import "globals.h"
-#import "UTMHabitatSpace.h"
+#import "HabitatSpace.h"
 #import "FishCell.h"
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"

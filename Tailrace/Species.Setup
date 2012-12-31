@@ -1,0 +1,16 @@
+Species.Setup file, Green River trout model.
+Set up for validation analysis, 2 species, no stocking.
+SFR 3/02
+
+Rainbow
+FlamingGorgeRainbowTrout.Params
+TailraceRainbowInitPops.Data
+cyan
+Stocking_Tailrace_Rainbow.Data
+
+Brown
+FlamingGorgeBrownTrout.Params
+TailraceBrownInitPops.Data
+firebrick
+NoStocking
+

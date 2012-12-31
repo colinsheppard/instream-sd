@@ -723,7 +723,7 @@
 // setHabitatSpace
 //
 ///////////////////////////////////////////////
-- setHabitatSpace: (UTMHabitatSpace *) aHabSpace
+- setHabitatSpace: (HabitatSpace *) aHabSpace
 {
     habitatSpace = aHabSpace;
     return self;

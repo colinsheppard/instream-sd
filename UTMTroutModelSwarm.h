@@ -14,7 +14,7 @@
 #import "Rainbow.h"
 #import "Brown.h"
 #import "UTMRedd.h"
-#import "UTMHabitatSpace.h"
+#import "HabitatSpace.h"
 #import "FishParams.h"
 #import "TimeManagerProtocol.h"
 #import "ZoneAllocMapper.h"
@@ -134,7 +134,7 @@ char*  reddOutputFile;
 char*  reddMortalityFile;
 char*  popInitDate;
 int    fileOutputFrequency;
-char*  utmHabSetupFile;
+char*  habSetupFile;
 
 //
 // HISTOGRAM VARIABLES
@@ -173,7 +173,7 @@ double shadeColorMax;
 id <List> speciesSymbolList;  // List of symbols corresp to species studied
   
 
-UTMHabitatSpace* utmHabitatSpace;        // discrete2d of Partitions
+HabitatSpace* habitatSpace;        // discrete2d of Partitions
 
 /*
  * model parameters -- we don't necessarily need get or set methods
@@ -326,7 +326,7 @@ double checkParam;
 
 
 
-- (UTMHabitatSpace *) getHabitatSpace;
+- (HabitatSpace *) getHabitatSpace;
 
 - addAFish: (UTMTrout *) aTrout;
 - (id <List>) getLiveFishList;

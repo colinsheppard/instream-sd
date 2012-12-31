@@ -1,0 +1,41 @@
+# Model Setup for instream-SD2D, Tailrace analysis runs
+# SFR 9/08
+# Tailrace standard scenario
+
+
+@begin
+
+randGenSeed                         62324
+numberOfSpecies                         2
+habParamFile                     TailraceHabitat.Params
+
+runStartDate                     10/1/2000
+runEndDate                       9/30/2007
+
+fishOutputFile                   Tailrace_Fish.Out
+fishMortalityFile                Tailrace_DeadFish.Out
+reddMortalityFile                TailraceDeadRedds.Out
+reddOutputFile                   TailraceRedds.Out
+popInitDate                      10/1/2000
+fileOutputFrequency                     30
+appendFiles				 0
+
+
+depthBinWidth                   50
+velocityBinWidth                50
+depthHistoMaxDepth              200
+velocityHistoMaxVelocity        200
+
+depthAvailabilityFileName       depthAvailability.Out
+velocityAvailabilityFileName     velocityAvailability.Out
+
+fishDepthUseFileName            DepthUse.Out
+fishVelocityUseFileName         VelocityUse.Out
+
+tagFishColor                   LimeGreen
+
+
+utmHabSetupFile           Reach.Setup
+
+@end
+

@@ -13,7 +13,7 @@
 
 #import "ExperSwarm.h"
 #import "UTMTroutModelSwarm.h"
-#import "UTMHabitatSpace.h"
+#import "HabitatSpace.h"
 #import "UTMTroutObserverSwarm.h"
 
 @implementation UTMTroutObserverSwarm
@@ -70,7 +70,7 @@
   //
   // HabitatSpace
   //
-  probeMap = [CustomProbeMap create: aZone forClass: [UTMHabitatSpace class]
+  probeMap = [CustomProbeMap create: aZone forClass: [HabitatSpace class]
 			     withIdentifiers: "Date",
                              "hour",
                              "currentPhase",
@@ -85,7 +85,7 @@
                              "untagAllCells",
                              "writeDepthsAndVelsToFile:",
                              NULL];
-  [probeLibrary setProbeMap: probeMap For: [UTMHabitatSpace class]];
+  [probeLibrary setProbeMap: probeMap For: [HabitatSpace class]];
 
 
   //
