@@ -1,9 +1,12 @@
 /*
-inSTREAM Version 4.2, October 2006.
-Individual-based stream trout modeling software. Developed and maintained by Steve Railsback (Lang, Railsback & Associates, Arcata, California) and
-Steve Jackson (Jackson Scientific Computing, McKinleyville, California).
-Development sponsored by EPRI, US EPA, USDA Forest Service, and others.
-Copyright (C) 2004 Lang, Railsback & Associates.
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,10 +27,11 @@ Boston, MA 02111-1307, USA.
 
 
 
+#import <objc/objc-api.h>
+#include <stdlib.h>
 
 #import "BreakoutVarProbe.h"
 
-#import <objc/objc-api.h>
 
 @implementation BreakoutVarProbe
 
@@ -66,32 +70,67 @@ Boston, MA 02111-1307, USA.
     return self;
 }
 
+- setUseCSV: (BOOL) aUseCSV
+{
+     useCSV = aUseCSV;
+     return self;
+}
 
 - setDataType: (char *) aDataType
 {
      strcpy(dataType, aDataType);
 
-     if(strcmp(dataType, "id") == 0)
+     if(!useCSV)
      {
-          sprintf(formatString, "%s%d%s", "%-", columnWidth, "p");
-     }
-     else if(strcmp(dataType, "double") == 0)
-     {
-          sprintf(formatString, "%s%d%s", "%-", columnWidth, "f");
-     }
-     else if(strcmp(dataType, "int") == 0)
-     {
-          sprintf(formatString, "%s%d%s", "%-", columnWidth, "ld");
-     }
-     else if(strcmp(dataType, "string") == 0)
-     {
-          sprintf(formatString, "%s%d%s", "%-", columnWidth, "s");
+         if(strcmp(dataType, "id") == 0)
+         {
+              sprintf(formatString, "%s%d%s", "%-", columnWidth, "p");
+         }
+         else if(strcmp(dataType, "double") == 0)
+         {
+              sprintf(formatString, "%s%d%s", "%-", columnWidth, "f");
+         }
+         else if(strcmp(dataType, "int") == 0)
+         {
+              sprintf(formatString, "%s%d%s", "%-", columnWidth, "ld");
+         }
+         else if(strcmp(dataType, "string") == 0)
+         {
+              sprintf(formatString, "%s%d%s", "%-", columnWidth, "s");
+         }
+         else
+         {
+             fprintf(stderr, "ERROR: BreakoutDataColumn >>>> setDataType >>>> data type not found\n");
+             fflush(0);
+             exit(1);
+         }
      }
      else
      {
-         [InternalError raiseEvent: "ERROR: BreakoutDataColumn >>>> setDataType >>>> data type not found\n"];
-     }
+         if(strcmp(dataType, "id") == 0)
+         {
+              sprintf(formatString, "%s%s%s", "%", "p", ",");
+         }
+         else if(strcmp(dataType, "double") == 0)
+         {
+              sprintf(formatString, "%s%s%s", "%", "f", ",");
+         }
+         else if(strcmp(dataType, "int") == 0)
+         {
+              sprintf(formatString, "%s%s%s", "%", "ld", ",");
+         }
+         else if(strcmp(dataType, "string") == 0)
+         {
+              sprintf(formatString, "%s%s%s", "%", "s", ",");
+         }
+         else
+         {
+             fprintf(stderr, "ERROR: BreakoutDataColumn >>>> setDataType >>>> data type not found\n");
+             fflush(0);
+             exit(1);
+         }
 
+     }
      return self;
 }
 

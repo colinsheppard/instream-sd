@@ -28,6 +28,7 @@ Boston, MA 02111-1307, USA.
 #import <random.h>
 #import <space.h>
 #import <space/Discrete2d.h>
+#import "DayPhaseTypes.h"
 #import "FishCell.h"
 #import "globals.h"
 #import "BreakoutReporter.h"
@@ -127,6 +128,7 @@ long int maxYCoordinate;
   id <TimeSeriesInputManager> flowInputManager;
   id <TimeSeriesInputManager> temperatureInputManager;
   id <TimeSeriesInputManager> turbidityInputManager;
+  id <TimeSeriesInputManager> driftFoodInputManager;
 
   double temperature;
   double turbidity;
@@ -189,6 +191,38 @@ long int maxYCoordinate;
 
 
 
+  // Variables for instream-sd
+  time_t prevTime; //use in getHabitatStateForMoveWith: 
+  double flowAtLastMove;
+  BOOL flowChangeForMove;
+  double numberOfDaylightHours;
+  double numberOfNightHours;
+  DayPhase currentPhase;
+  DayPhase phaseOfPrevStep;
+  int anglingPressure;
+  double habAngleNightFactor;
+  BOOL dayNightPhaseSwitch;
+  double currentHourlyFlow;
+  double habFracFlowChangeForMovement;
+  double changeInDailyFlow;
+  double dailyMeanFlow;
+  double prevDailyMeanFlow;
+  double dailyMeanLogFlow;
+  double dailyMaxFlow;
+  double nextDailyMaxFlow;
+  double prevDailyMaxFlow;
+  int habAnglePressJan;
+  int habAnglePressFeb;
+  int habAnglePressMar;
+  int habAnglePressApr;
+  int habAnglePressMay;
+  int habAnglePressJun;
+  int habAnglePressJul;
+  int habAnglePressAug;
+  int habAnglePressSep;
+  int habAnglePressOct;
+  int habAnglePressNov;
+  int habAnglePressDec;
 
   //  
   // CELL REPORT VARIABLES
@@ -294,6 +328,12 @@ long int maxYCoordinate;
 - (id <Symbol>) getReachSymbol;
 
 - buildKDTree;
+
+// for instream-sd
+- (BOOL) shouldFishMoveAt: (time_t) theCurrentTime;
+-  updateMeanCellDepthAndVelocity: (double) aMeanFlow;
+- updateAnglePressureWith: (time_t) aTime;
+
 
 //
 // Adjacent Cells BEGIN

@@ -1,9 +1,12 @@
 /*
-inSTREAM Version 4.2, October 2006.
-Individual-based stream trout modeling software. Developed and maintained by Steve Railsback (Lang, Railsback & Associates, Arcata, California) and
-Steve Jackson (Jackson Scientific Computing, McKinleyville, California).
-Development sponsored by EPRI, US EPA, USDA Forest Service, and others.
-Copyright (C) 2004 Lang, Railsback & Associates.
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,19 +25,28 @@ Boston, MA 02111-1307, USA.
 */
 
 
+/*
 
+This version of BreakoutReporter was created 12/7/2011 by Steve Railsback.
+It is modified to write one column of output for each output variable, with the breakout 
+categories listed in columns, instead of having separate output columns for each value
+of each breakout category. This format is more flexible
+for use with Excel pivot tables: it lets you create the breakouts you want in Excel,
+and pivot tables are easier to create because the number of columns does not vary
+with model input.
 
+*/
 
-#include "BreakoutReporter.h"
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+
+#import "BreakoutReporter.h"
 
 @implementation BreakoutReporter
 
-
-
-+          createBegin: aZone
++          createBeginWithFixedColumns: aZone
                forList: (id <List>) aListOfObj
     withOutputFilename: (char *) aFileName
      withFileOverwrite: (BOOL) aBool
@@ -45,8 +57,7 @@ Boston, MA 02111-1307, USA.
    size_t fileNameLen = strlen(aFileName) + 1;
    id <Zone> myZone = [Zone create: aZone];
 
-   if(aListOfObj == nil)
-   {
+   if(aListOfObj == nil){
        fprintf(stderr, "ERROR: BreakoutReporter >>>> createBegin: >>>> objectList is nil\n");
        fflush(0);
        exit(1);
@@ -54,8 +65,7 @@ Boston, MA 02111-1307, USA.
 
    reporter->objectList = aListOfObj; 
 
-   if(fileNameLen > 50)
-   {
+   if(fileNameLen > 50){
         fprintf(stderr, "ERROR: BreakoutReporter >>>> createBegin >>>> fileName length is too long\n");
         fflush(0);
         exit(1);
@@ -63,22 +73,17 @@ Boston, MA 02111-1307, USA.
    strncpy(reporter->fileName, aFileName, fileNameLen);
 
    reporter->numberOfBreakoutLevels = 0;
-
    reporter->dummyKeySymbol = [Symbol create: myZone
                                         setName: "dummyKeySymbol"];
 
    reporter->level1ListOfKeys = [List create: myZone];
    [reporter->level1ListOfKeys addLast: reporter->dummyKeySymbol];  
-
    reporter->level2ListOfKeys = [List create: myZone];
    [reporter->level2ListOfKeys addLast: reporter->dummyKeySymbol];  
-
    reporter->level3ListOfKeys = [List create: myZone];
    [reporter->level3ListOfKeys addLast: reporter->dummyKeySymbol];  
-
    reporter->level4ListOfKeys = [List create: myZone];
    [reporter->level4ListOfKeys addLast: reporter->dummyKeySymbol];  
-
    reporter->level5ListOfKeys = [List create: myZone];
    [reporter->level5ListOfKeys addLast: reporter->dummyKeySymbol];  
 
@@ -90,41 +95,115 @@ Boston, MA 02111-1307, USA.
 
    reporter->breakoutMap = [Map create: myZone];
    reporter->averagerMapList = [List create: myZone];
-
+   reporter->useCSV = FALSE;
    reporter->columnWidth = aColumnWidth;
    sprintf(reporter->headerFormatString, "%s%d%s", "%-",aColumnWidth,"s");
-   sprintf(reporter->floatFormatString, "%s%d%s", "%-",aColumnWidth,"E");
+   sprintf(reporter->floatFormatString, "%s%d%s", "%-",aColumnWidth,"f");
+   sprintf(reporter->intFormatString, "%s%d%s", "%-",aColumnWidth,"d");
+   sprintf(reporter->expFormatString, "%s%d%s", "%-",aColumnWidth,"E");
+   fprintf(stdout, "BreakoutReport >>>>   createBegin: aZone >>>> useCSV = %d \n", (int) reporter->useCSV);
+   fprintf(stdout, "BreakoutReport >>>>   headerFormatString = %s\n", reporter->headerFormatString);
+   fprintf(stdout, "BreakoutReport >>>>   floatFormatString = %s\n", reporter->floatFormatString);
+   fprintf(stdout, "BreakoutReport >>>>   intFormatString = %s\n", reporter->intFormatString);
+   fprintf(stdout, "BreakoutReport >>>>   expFormatString = %s\n", reporter->expFormatString);
 
-
-   if(aBool == TRUE)
-   {
+   if(aBool == TRUE){
       [reporter openFileNamed: reporter->fileName
                 withWriteMode: "w"];
-
-   }
-   else
-   {
+   }else{
       [reporter openFileNamed: reporter->fileName
                 withWriteMode: "a"];
-
    }
 
    reporter->outputWithLabelsList = [List create: myZone];
-
    reporter->dataColumnStructList = [List create: myZone];
    reporter->dataColumnList = [List create: myZone];
    reporter->blankColumnLabelList = [List create: myZone];
-
    reporter->reporterZone = myZone;
-
    reporter->suppressColumnLabels = NO;
 
    return reporter;
-
 }
 
-- suppressColumnLabels: (BOOL) aBool
+
++          createBeginWithCSV: aZone
+               forList: (id <List>) aListOfObj
+    withOutputFilename: (char *) aFileName
+     withFileOverwrite: (BOOL) aBool
 {
+   BreakoutReporter* reporter = [super createBegin: aZone];
+   size_t fileNameLen = strlen(aFileName) + 1;
+   id <Zone> myZone = [Zone create: aZone];
+
+   if(aListOfObj == nil){
+       fprintf(stderr, "ERROR: BreakoutReporter >>>> createBegin: >>>> objectList is nil\n");
+       fflush(0);
+       exit(1);
+   }
+
+   reporter->objectList = aListOfObj; 
+
+   if(fileNameLen > 50){
+        fprintf(stderr, "ERROR: BreakoutReporter >>>> createBegin >>>> fileName length is too long\n");
+        fflush(0);
+        exit(1);
+   }
+   strncpy(reporter->fileName, aFileName, fileNameLen);
+
+   reporter->numberOfBreakoutLevels = 0;
+   reporter->dummyKeySymbol = [Symbol create: myZone
+                                        setName: "dummyKeySymbol"];
+   reporter->level1ListOfKeys = [List create: myZone];
+   [reporter->level1ListOfKeys addLast: reporter->dummyKeySymbol];  
+   reporter->level2ListOfKeys = [List create: myZone];
+   [reporter->level2ListOfKeys addLast: reporter->dummyKeySymbol];  
+   reporter->level3ListOfKeys = [List create: myZone];
+   [reporter->level3ListOfKeys addLast: reporter->dummyKeySymbol];  
+   reporter->level4ListOfKeys = [List create: myZone];
+   [reporter->level4ListOfKeys addLast: reporter->dummyKeySymbol];  
+   reporter->level5ListOfKeys = [List create: myZone];
+   [reporter->level5ListOfKeys addLast: reporter->dummyKeySymbol];  
+
+   reporter->level1KeySelector = (SEL) nil;
+   reporter->level2KeySelector = (SEL) nil;
+   reporter->level3KeySelector = (SEL) nil;
+   reporter->level4KeySelector = (SEL) nil;
+   reporter->level5KeySelector = (SEL) nil;
+   reporter->breakoutMap = [Map create: myZone];
+   reporter->averagerMapList = [List create: myZone];
+
+   reporter->useCSV = TRUE;
+   reporter->columnWidth = 25;
+   sprintf(reporter->headerFormatString, "%s%s%s", "%", "s", ",");
+   sprintf(reporter->floatFormatString, "%s%d%s%s", "%",reporter->columnWidth,"f", "\n");
+
+   //fprintf(stdout, "BreakoutReport >>>>   createBegin: aZone >>>> useCSV = %d \n", (int) reporter->useCSV);
+   //fprintf(stdout, "BreakoutReport >>>>   headerFormatString = %s\n", reporter->headerFormatString);
+   //fprintf(stdout, "BreakoutReport >>>>   floatFormatString = %s\n", reporter->floatFormatString);
+   //fprintf(stdout, "BreakoutReport >>>>   test >>>>\n");
+   //fprintf(stdout, reporter->headerFormatString, "testString");
+   //fprintf(stdout, reporter->floatFormatString, -0.0012345678901234567890123456789012345678901234567890);
+   //fprintf(stdout, reporter->floatFormatString, log10(0.00012345678901234567890123456789012345678901234567890));
+   //fflush(0);
+   //exit(0);
+   
+   if(aBool == TRUE){
+      [reporter openFileNamed: reporter->fileName
+                withWriteMode: "w"];
+   }else{
+      [reporter openFileNamed: reporter->fileName
+                withWriteMode: "a"];
+   }
+   reporter->outputWithLabelsList = [List create: myZone];
+   reporter->dataColumnStructList = [List create: myZone];
+   reporter->dataColumnList = [List create: myZone];
+   reporter->blankColumnLabelList = [List create: myZone];
+   reporter->reporterZone = myZone;
+   reporter->suppressColumnLabels = NO;
+   return reporter;
+}
+
+- suppressColumnLabels: (BOOL) aBool{
    suppressColumnLabels = aBool;
    return self;
 }
@@ -248,6 +327,7 @@ Boston, MA 02111-1307, USA.
                     [level1ListOfKeys addLast: aKey];
                  }
                  level1KeySelector = aBreakoutVariableSelector;
+                 level1HeaderString = (char *) sel_get_name(aBreakoutVariableSelector);
                  break;
       
         case 2:  [level2ListOfKeys removeAll];
@@ -256,6 +336,7 @@ Boston, MA 02111-1307, USA.
                     [level2ListOfKeys addLast: aKey];
                  }
                  level2KeySelector = aBreakoutVariableSelector;
+                 level2HeaderString = (char *) sel_get_name(aBreakoutVariableSelector);
                  break;
       
         case 3:  [level3ListOfKeys removeAll];
@@ -264,6 +345,7 @@ Boston, MA 02111-1307, USA.
                     [level3ListOfKeys addLast: aKey];
                  }
                  level3KeySelector = aBreakoutVariableSelector;
+                 level3HeaderString = (char *) sel_get_name(aBreakoutVariableSelector);
                  break;
       
         case 4:  [level4ListOfKeys removeAll];
@@ -272,6 +354,7 @@ Boston, MA 02111-1307, USA.
                     [level4ListOfKeys addLast: aKey];
                  }
                  level4KeySelector = aBreakoutVariableSelector;
+                 level4HeaderString = (char *) sel_get_name(aBreakoutVariableSelector);
                  break;
       
         case 5:  [level5ListOfKeys removeAll];
@@ -280,6 +363,7 @@ Boston, MA 02111-1307, USA.
                     [level5ListOfKeys addLast: aKey];
                  }
                  level5KeySelector = aBreakoutVariableSelector;
+                 level5HeaderString = (char *) sel_get_name(aBreakoutVariableSelector);
                  break;
       
         default: fprintf(stderr, "ERROR: BreakoutReporter >>>> breakOutUsingSelector:withListOfKeys >>>> called more than 5 times\n");
@@ -299,8 +383,7 @@ Boston, MA 02111-1307, USA.
            withAveragerType: (char *) anAveragerType
 {
 
-      //OutputWithLabel* outputLabel = (OutputWithLabel *) [reporterZone alloc: sizeof(OutputWithLabel)];
-      OutputWithLabel* outputLabel = (OutputWithLabel *) [reporterZone allocBlock: sizeof(OutputWithLabel)];
+      OutputWithLabel* outputLabel = (OutputWithLabel *) [reporterZone alloc: sizeof(OutputWithLabel)];
 
       
       strncpy(outputLabel->outputLabel, anOutputLabel, 50);
@@ -400,7 +483,7 @@ Boston, MA 02111-1307, USA.
                      withLabel: (char *) aDataLabel
 {
 
-   DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) [reporterZone allocBlock: sizeof(DataColumnWithLabel)];
+   DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) [reporterZone alloc: sizeof(DataColumnWithLabel)];
 
    dataColumnWithLabel->isVarProbe = TRUE;
    strncpy(dataColumnWithLabel->dataVariable, aDataVariable, 50);
@@ -424,7 +507,7 @@ Boston, MA 02111-1307, USA.
                        withLabel: (char *) aDataLabel;
 {
    
-   DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) [reporterZone allocBlock: sizeof(DataColumnWithLabel)];
+   DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) [reporterZone alloc: sizeof(DataColumnWithLabel)];
 
 
    dataColumnWithLabel->isVarProbe = FALSE;
@@ -473,6 +556,7 @@ Boston, MA 02111-1307, USA.
            [dataColumn setDataObject: aDataObject];
 
            [dataColumn setDataColumnWidth: columnWidth];
+           [dataColumn setUseCSV: useCSV];
            [dataColumn setDataType: aDataType];
     
            dataColumn = [dataColumn createEnd];
@@ -504,6 +588,7 @@ Boston, MA 02111-1307, USA.
            [dataColumn setColumnLabel: aDataLabel];
 
            [dataColumn setDataColumnWidth: columnWidth];
+           [dataColumn setUseCSV: useCSV];
            [dataColumn setDataType: aDataType];
     
            dataColumn = [dataColumn createEnd];
@@ -698,7 +783,6 @@ Boston, MA 02111-1307, USA.
       id level3Key = nil;
       id level4Key = nil;
       id level5Key = nil;
-      BOOL printLn = FALSE;
       int i;
 
       char sysDateAndTime[35];
@@ -720,258 +804,80 @@ Boston, MA 02111-1307, USA.
           fflush(filePtr);
       }
 
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
       [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        const char* level1KeyName = [level1Key getName];
-                        if((id) level1Key != (id) dummyKeySymbol)
-                        {
-                           fprintf(filePtr, headerFormatString, level1KeyName);
-                           fflush(filePtr);
-                           printLn = TRUE;
-                        }
-                  }
-               }
-            }
-         }
-      }
-      }
-  
-      if(printLn == TRUE)
-      {
-          fprintf(filePtr, "\n"); 
-          for(i = 0; i < [blankColumnLabelList getCount]; i++)
+      level1Key = [level1Ndx next];
+      if((id) level1Key != (id) dummyKeySymbol)
+        {
+           fprintf(filePtr, headerFormatString, level1HeaderString);
+        }
+
+      [level2Ndx setLoc: Start];
+      level2Key = [level2Ndx next];
+      if((id) level2Key != (id) dummyKeySymbol)
+        {
+           fprintf(filePtr, headerFormatString, level2HeaderString);
+        }
+
+      [level3Ndx setLoc: Start];
+      level3Key = [level3Ndx next];
+      if((id) level3Key != (id) dummyKeySymbol)
+        {
+           fprintf(filePtr, headerFormatString, level3HeaderString);
+        }
+
+      [level4Ndx setLoc: Start];
+      level4Key = [level4Ndx next];
+      if((id) level4Key != (id) dummyKeySymbol)
+        {
+           fprintf(filePtr, headerFormatString, level4HeaderString);
+        }
+
+      [level5Ndx setLoc: Start];
+      level5Key = [level5Ndx next];
+      if((id) level5Key != (id) dummyKeySymbol)
+        {
+           fprintf(filePtr, headerFormatString, level5HeaderString);
+        }
+
+//      fprintf(filePtr, headerFormatString, "OutputType");
+
+//      fprintf(filePtr, headerFormatString, "Value");
+
+     id <ListIndex> lstNdx = [outputWithLabelsList listBegin: scratchZone];
+     OutputWithLabel* outputLabel = (OutputWithLabel *) nil;
+       
+     while(([lstNdx getLoc] != nil) && ((outputLabel = (OutputWithLabel *) [lstNdx next]) != (OutputWithLabel *) nil))
+     {
+         fprintf(filePtr, headerFormatString, outputLabel);
+
+     }
+
+
+          if(useCSV == TRUE)
           {
-              fprintf(filePtr, headerFormatString, (char *) [blankColumnLabelList atOffset: i]);
-              fflush(filePtr);
-          }
-      } 
+             //
+             // go back one character and in order to 
+             // overwrite trailing ',' with a \n
+             //
+             long filePos = 0;
+             if((filePos = ftell(filePtr)) != (long) -1)
+             {
+                 filePos = filePos - 1;
+                 if(fseek(filePtr, filePos, 0) != 0)
+                 {
+                     fprintf(stderr, "BreakoutReporter >>>>  printBreakoutReportHeader >>>> ERROR: cannot reset output file position\n");
+                     fflush(0);
+                     exit(1);
+                 }
 
-      printLn = FALSE;
-     
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
-      [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        const char* level2KeyName = [level2Key getName];
-                        if((id) level2Key != (id) dummyKeySymbol)
-                        {
-                            fprintf(filePtr, headerFormatString, level2KeyName);
-                            fflush(filePtr);
-                            printLn = TRUE;
-                        }
-                  }
-               }
-            }
-         }
-      }
-      }
-  
-      if(printLn == TRUE)
-      {
-          fprintf(filePtr, "\n"); 
-          for(i = 0; i < [blankColumnLabelList getCount]; i++)
-          {
-              fprintf(filePtr, headerFormatString, (char *) [blankColumnLabelList atOffset: i]);
-              fflush(filePtr);
-          }
-          //fprintf(filePtr, totalDataColumnWidthStr, "*");
-          //fflush(filePtr);      
-      } 
- 
-      printLn = FALSE;
-      
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
-      [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        const char* level3KeyName = [level3Key getName];
-                        if((id) level3Key != (id) dummyKeySymbol)
-                        {
-                            fprintf(filePtr, headerFormatString, level3KeyName);
-                            fflush(filePtr);
-                            printLn = TRUE;
-                        }
-                  }
-               }
-            }
-         }
-      }
-      }
-
-  
-      if(printLn == TRUE)
-      {
-          fprintf(filePtr, "\n"); 
-          for(i = 0; i < [blankColumnLabelList getCount]; i++)
-          {
-              fprintf(filePtr, headerFormatString, (char *) [blankColumnLabelList atOffset: i]);
-              fflush(filePtr);
-          }
-      } 
- 
-      printLn = FALSE;
-
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
-      [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        const char* level4KeyName = [level4Key getName];
-                        if((id) level4Key != (id) dummyKeySymbol)
-                        {
-                            fprintf(filePtr, headerFormatString, level4KeyName);
-                            fflush(filePtr);
-                            printLn = TRUE;
-                        }
-                  }
-               }
-            }
-         }
-      }
-      }
-
-  
-      if(printLn == TRUE)
-      {
-          fprintf(filePtr, "\n"); 
-          for(i = 0; i < [blankColumnLabelList getCount]; i++)
-          {
-              fprintf(filePtr, headerFormatString, (char *) [blankColumnLabelList atOffset: i]);
-              fflush(filePtr);
-          }
-      } 
-
-      printLn = FALSE; 
-
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
-      [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        const char* level5KeyName = [level5Key getName];
-                        if((id) level5Key != (id) dummyKeySymbol)
-                        {
-                            fprintf(filePtr, headerFormatString, level5KeyName);
-                            fflush(filePtr);
-                            printLn = TRUE;
-                        }
-                  }
-               }
-            }
-         }
-      }
-      }
-
-      if(printLn == TRUE)
-      {
-          fprintf(filePtr, "\n"); 
-          for(i = 0; i < [blankColumnLabelList getCount]; i++)
-          {
-              fprintf(filePtr, headerFormatString, (char *) [blankColumnLabelList atOffset: i]);
-              fflush(filePtr);
-          }
-      } 
-
-      printLn = FALSE;
-
-      for(i = 0; i < [averagerMapList getCount]; i++)
-      {
-      id <Map> anAveragerMap = [averagerMapList atOffset: i];
-      [level1Ndx setLoc: Start];
-      while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-      {
-         [level2Ndx setLoc: Start];
-         while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-         {
-            [level3Ndx setLoc: Start];
-            while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-            {
-               [level4Ndx setLoc: Start];
-               while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-               {
-                  [level5Ndx setLoc: Start];
-                  while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                  {
-                        BreakoutAverager* anAverager = [[[[[anAveragerMap at: level1Key]
-                                                                          at: level2Key]
-                                                                          at: level3Key]
-                                                                          at: level4Key]
-                                                                          at: level5Key];
-
-                        fprintf(filePtr, headerFormatString, [anAverager getOutputLabel]);
-                        fflush(filePtr);
-                  }
-               }
-            }
-         }
-      }
-      }
-
+              }
+              else
+              {
+                    fprintf(stderr, "BreakoutReporter >>>> printBreakoutReportHeader >>>> ERROR: cannot get output file position\n");
+                    fflush(0);
+                    exit(1);
+              }
+          } //if useCSV
       fprintf(filePtr, "\n");  
  
       return self;
@@ -1044,6 +950,199 @@ Boston, MA 02111-1307, USA.
       id level4Key = nil;
       id level5Key = nil;
 
+      char* levelKeyName;
+
+      double aVal;
+
+          [level1Ndx setLoc: Start];
+          while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
+          {
+
+	    //const char* level1KeyName = [level1Key getName];
+
+             [level2Ndx setLoc: Start];
+             while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
+             {
+
+	       //const char* level2KeyName = [level2Key getName];
+
+                [level3Ndx setLoc: Start];
+                while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
+                {
+
+		  //const char* level3KeyName = [level3Key getName];
+
+                   [level4Ndx setLoc: Start];
+                   while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
+                   {
+
+		     //const char* level4KeyName = [level4Key getName];
+
+                      [level5Ndx setLoc: Start];
+                      while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
+                      {
+
+			//const char* level5KeyName = [level5Key getName];
+
+ 
+                           // Now, print out one line per combination of categories, with data columns
+
+                           [self outputDataColumns];
+
+                           if (level1Key != dummyKeySymbol) {
+			     levelKeyName = (char *)[level1Key getName];
+                             fprintf(filePtr, headerFormatString,levelKeyName);
+			     [scratchZone free: levelKeyName];
+			   }
+                           if (level2Key != dummyKeySymbol) {
+			     levelKeyName = (char *)[level2Key getName];
+                             fprintf(filePtr, headerFormatString,levelKeyName);
+			     [scratchZone free: levelKeyName];
+			   }
+                           if (level3Key != dummyKeySymbol) {
+			     levelKeyName = (char *)[level3Key getName];
+                             fprintf(filePtr, headerFormatString,levelKeyName);
+			     [scratchZone free: levelKeyName];
+			   }
+                           if (level4Key != dummyKeySymbol) {
+			     levelKeyName = (char *)[level4Key getName];
+                             fprintf(filePtr, headerFormatString,levelKeyName);
+			     [scratchZone free: levelKeyName];
+			   }
+                           if (level5Key != dummyKeySymbol) {
+			     levelKeyName = (char *)[level5Key getName];
+                             fprintf(filePtr, headerFormatString,levelKeyName);
+			     [scratchZone free: levelKeyName];
+			   }
+
+                      [ndx setLoc: Start];
+                      while(([ndx getLoc] != End) && ((anAveragerMap = [ndx next]) != nil))
+                      {
+                        BreakoutAverager* anAverager;
+                           
+                           anAverager = [[[[[anAveragerMap at: level1Key]
+                                                           at: level2Key]
+                                                           at: level3Key]
+                                                           at: level4Key]
+                                                           at: level5Key];
+                           [anAverager update];
+
+			  aVal = [anAverager getAveragerValue];
+			  if(aVal==(double)(int)aVal)  // It's an integer
+                          {
+			    if(useCSV == TRUE)
+                            {
+			      fprintf(filePtr, "%d,",(int)aVal);
+			    }
+                            else
+                            {
+			      fprintf(filePtr, intFormatString,(int)aVal);
+			    }
+			  }
+                          else   // It's a float
+                          {
+                            
+			    if(aVal == 0.0)
+                            {
+				   fprintf(filePtr, floatFormatString,aVal);
+			    }
+                            else if(aVal < 0.0)  // It's a negative float
+                             {
+                               if(log10(-aVal) < -3.0)  // It's a small neg. float
+                               {
+                                 if(useCSV == TRUE)
+                                      {
+					   fprintf(filePtr,"%E,",aVal);
+				      }
+                                      else
+                                      {
+				        fprintf(filePtr,expFormatString,aVal);
+				      }
+			       }                        // It's a small neg. float
+                               else  // It's a big neg. float
+                               {
+			         if(useCSV == TRUE)
+                                 {
+				   fprintf(filePtr,"%f,",aVal);
+			         }
+                                 else
+                                 {
+				   fprintf(filePtr,floatFormatString,aVal);
+				 }
+			       }                        // It's a big neg. float
+			     }                                // It's a negative float
+                            else if(log10(aVal) < -3.0)    // It's a small pos. float
+                             {
+			       if(useCSV == TRUE)
+                               {
+				   fprintf(filePtr,"%E,",aVal);
+			       }
+                               else
+                               {
+				 fprintf(filePtr,expFormatString,aVal);
+			       }
+			     }                        // It's a small pos. float
+                            else                      // It's a big pos. float
+                            {
+			       if(useCSV == TRUE)
+                               {
+				   fprintf(filePtr,"%f,",aVal);
+			       }
+                               else
+                               {
+				   fprintf(filePtr, floatFormatString,aVal);
+			       }
+			    }                         // It's a big pos. float
+			  }  // It's a float
+
+                      } //while ndx
+
+                      if(useCSV == TRUE)
+                      {
+                         //
+                         // go back one character and in order to 
+                         // overwrite trailing ',' with a \n
+                         //
+                         long filePos = 0;
+                         if((filePos = ftell(filePtr)) != (long) -1)
+                         {
+                             filePos = filePos - 1;
+                             if(fseek(filePtr, filePos, 0) != 0)
+                             {
+                              fprintf(stderr, "BreakoutReporter >>>>  printBreakoutReportHeader >>>> ERROR: cannot reset output file position\n");
+                                 fflush(0);
+                                 exit(1);
+                             }
+
+                         }
+                         else
+                          {
+                                fprintf(stderr, "BreakoutReporter >>>> printBreakoutReportHeader >>>> ERROR: cannot get output file position\n");
+                                fflush(0);
+                                exit(1);
+                          }
+                      } //if useCSV
+
+                      // And finally end the line
+                      fprintf(filePtr, "\n");
+
+                   }  //level5Ndx
+                }  //level4Ndx
+             }  //level3Ndx
+          }  //level2Ndx
+       } //level1Ndx
+
+      fflush(filePtr);
+
+      [ndx drop];
+
+      return self;
+}
+
+
+- outputDataColumns
+{
+
       int i;
 
       for(i = 0; i < [dataColumnList getCount]; i++)
@@ -1098,48 +1197,7 @@ Boston, MA 02111-1307, USA.
            }
       }
 
-      while(([ndx getLoc] != End) && ((anAveragerMap = [ndx next]) != nil))
-      {
 
-          [level1Ndx setLoc: Start];
-          while(([level1Ndx getLoc] != End) && ((level1Key = [level1Ndx next]) != nil))
-          {
-
-             [level2Ndx setLoc: Start];
-             while(([level2Ndx getLoc] != End) && ((level2Key = [level2Ndx next]) != nil))
-             {
-                [level3Ndx setLoc: Start];
-                while(([level3Ndx getLoc] != End) && ((level3Key = [level3Ndx next]) != nil))
-                {
-                   [level4Ndx setLoc: Start];
-                   while(([level4Ndx getLoc] != End) && ((level4Key = [level4Ndx next]) != nil))
-                   {
-                      [level5Ndx setLoc: Start];
-                      while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
-                      {
-                           BreakoutAverager* anAverager;
-                           
-                           anAverager = [[[[[anAveragerMap at: level1Key]
-                                                           at: level2Key]
-                                                           at: level3Key]
-                                                           at: level4Key]
-                                                           at: level5Key];
-                           [anAverager update];
-
-                           fprintf(filePtr, floatFormatString, [anAverager getAveragerValue]);
-                           fflush(filePtr);
-                      }                           
-                   }
-                }
-             }
-          }
-
-      } //while ndx
-
-      fprintf(filePtr, "\n");
-      fflush(filePtr);
-
-      [ndx drop];
 
       return self;
 }
@@ -1263,14 +1321,69 @@ Boston, MA 02111-1307, USA.
 
 }
 
++ (char *) reportFileMetaData: (id) aZone {
+  char* sysDateAndTime = (char *) [(id <Zone>)aZone alloc: (size_t) 55];
+  struct tm *timeStruct;
+  time_t aTime;
+  aTime = time(NULL);
+  timeStruct = localtime(&aTime);
+  strftime(sysDateAndTime, 55, "Model Run System Date and Time: %a %d-%b-%Y %H:%M:%S", timeStruct);
+  return sysDateAndTime;
+}
+    
++ (char *) formatFloatOrExponential: (double) aVal{
+	int sigFigsKept = 4;
 
+	if(aVal == 0.0){
+	   return "%f";
+	}else if(aVal < 0.0){
+	    if(log10(-aVal) < -(sigFigsKept-1)){
+		   return "%E";
+	    }else{
+		   return "%f";
+	    }
+	}else if(log10(aVal) < -(sigFigsKept-1)){
+	   return "%E";
+	}else{
+	   return "%f";
+	}
+}
     
 
 - (void) drop
 {
 
-    fprintf(stdout, "BreakoutReporter drop >>>> BEGIN\n");
-    fflush(0);
+   // fprintf(stdout, "BreakoutReporter drop >>>> BEGIN\n");
+   // fflush(0);
+
+    if(outputWithLabelsList)
+    {
+       id <ListIndex> lstNdx = [outputWithLabelsList listBegin: scratchZone];
+       OutputWithLabel* outputLabel = (OutputWithLabel *) nil;
+       
+       while(([lstNdx getLoc] != nil) && ((outputLabel = (OutputWithLabel *) [lstNdx next]) != (OutputWithLabel *) nil))
+       {
+              [reporterZone free: outputLabel];
+       }
+    
+       [lstNdx drop];
+       [outputWithLabelsList drop];
+    }
+
+    if(dataColumnStructList)
+    {   
+       id <ListIndex> lstNdx = [dataColumnStructList listBegin: scratchZone];
+       DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) nil;
+
+       while(([lstNdx getLoc] != nil) && ((dataColumnWithLabel = (DataColumnWithLabel *) [lstNdx next]) != (DataColumnWithLabel *) nil))
+       {
+              [reporterZone free: dataColumnWithLabel];
+       }
+
+       [lstNdx drop];
+       [dataColumnStructList drop];
+
+    }
 
     if(filePtr != NULL) 
     {
@@ -1288,33 +1401,6 @@ Boston, MA 02111-1307, USA.
     if(level5Ndx)
         [level5Ndx drop];
 
-    if(outputWithLabelsList)
-    {
-        id <ListIndex> ndx = [outputWithLabelsList listBegin: scratchZone];
-        OutputWithLabel* outputLabel = (OutputWithLabel *) nil;
-        while(([ndx getLoc] != End) && ((outputLabel = (OutputWithLabel *) [ndx next]) != (OutputWithLabel *) nil))
-        {
-              [reporterZone freeBlock: outputLabel blockSize: sizeof(OutputWithLabel)];
-                       
-        }
-        [ndx drop]; 
-
-        [outputWithLabelsList drop];
-
-    }
-  
-    if(dataColumnStructList)
-    {
-        id <ListIndex> ndx = [dataColumnStructList listBegin: scratchZone];
-        DataColumnWithLabel* dataColumnWithLabel = (DataColumnWithLabel *) nil; 
-        while(([ndx getLoc] != End) && ((dataColumnWithLabel = (DataColumnWithLabel *) [ndx next]) != (DataColumnWithLabel *) nil))
-        {
-              [reporterZone freeBlock: dataColumnWithLabel blockSize: sizeof(DataColumnWithLabel)];
-        }
-        [ndx drop]; 
-
-        [dataColumnStructList drop];
-    }
 
     if(averagerMapList)
     {
@@ -1337,14 +1423,19 @@ Boston, MA 02111-1307, USA.
     [breakoutMap drop];
     breakoutMap = nil;
 
+
+
+
     [reporterZone drop];
 
     [super drop];
 
-    fprintf(stdout, "BreakoutReporter drop >>>> END\n");
-    fflush(0);
+   // fprintf(stdout, "BreakoutReporter drop >>>> END\n");
+   // fflush(0);
 
 }
 
 @end
+
+
 

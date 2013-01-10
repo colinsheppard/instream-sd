@@ -113,7 +113,7 @@
 - setModelNumberTo: (int) anInt;
 - (void) writeFrame;
 - iAmAlive;
-- (id <Raster>) getWorldRaster;
+- (id <ZoomRaster>) getWorldRaster;
 - (id <Swarm>) getModelSwarm;
 - (void) drop;
 

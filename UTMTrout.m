@@ -366,6 +366,15 @@
    return age;
 }
 
+- setCell (FishCell *) aFishCell 
+{
+  fishCell = aFishCell;
+  return self;
+}
+- (FishCell *) getCell 
+{
+  return fishCell;
+}
 
 
 /*

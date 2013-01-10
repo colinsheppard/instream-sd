@@ -38,8 +38,8 @@ Boston, MA 02111-1307, USA.
 
 
 #import "globals.h"
-#import "Trout.h"
-#import "Redd.h"
+#import "UTMTrout.h"
+#import "UTMRedd.h"
 #import "FishCell.h"
 #import "HabitatSpace.h"
 
@@ -316,7 +316,7 @@ Boston, MA 02111-1307, USA.
 // getModel
 //
 ///////////////////////////////////////////////////////////
-- (id <TroutModelSwarm>) getModel 
+- (id <UTMTroutModelSwarm>) getModel 
 {
   return modelSwarm;
 }
@@ -2020,8 +2020,8 @@ Boston, MA 02111-1307, USA.
 - probeFishAtX: (int) probedX Y: (int) probedY 
 {
   FishCell*  fishCell = nil;
-  Trout* fish = nil;
-  Redd* redd = nil;
+  UTMTrout* fish = nil;
+  UTMRedd* redd = nil;
   id <ListIndex> fishNdx = nil;
   id <ListIndex> reddNdx = nil;
 
@@ -2425,8 +2425,6 @@ Boston, MA 02111-1307, USA.
    //
    if([timeManager getHourWithTimeT: theCurrentTime] == 0)
    {
-        [self calcDayLength: theCurrentTime];
-
         temperature = [temperatureInputManager getValueForTime: theCurrentTime];
         turbidity = [turbidityInputManager getValueForTime: theCurrentTime];
   
@@ -2475,8 +2473,8 @@ Boston, MA 02111-1307, USA.
           //
           // Switch night->day
           //
-          if(   (daytimeStartTime <= theCurrentTime) 
-             && (daytimeEndTime > theCurrentTime))
+          if(   ([solarManager getDawnHour] <= [timeManager getHourWithTimeT: theCurrentTime]) 
+             && ([solarManager getDuskHour] > [timeManager getHourWithTimeT: theCurrentTime]))
           {
               //currentPhase = DAY;  
               //phaseOfPrevStep = NIGHT;
@@ -2489,7 +2487,7 @@ Boston, MA 02111-1307, USA.
            //
            // Switch day->night
            // 
-           if(daytimeEndTime <= theCurrentTime) 
+           if([solarManager getDuskHour] <= [timeManager getHourWithTimeT: theCurrentTime])
            {
               //currentPhase = NIGHT;
               //phaseOfPrevStep = DAY;
@@ -2518,6 +2516,31 @@ Boston, MA 02111-1307, USA.
     }
 
     return (dayNightPhaseSwitch || flowMove || simStartMove);
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+// updateMeanCellDepthAndVelocity
+//
+// Set the mean depth and velocities in each cell
+//
+///////////////////////////////////////////////////////////////////////
+-  updateMeanCellDepthAndVelocity: (double) aMeanFlow 
+{
+    id <ListIndex> lstNdx = nil;
+    FishCell* fishCell = (FishCell *) nil;
+
+    lstNdx = [polyCellList listBegin: scratchZone];
+
+    while(([lstNdx getLoc] != End) && ((fishCell = (FishCell *) [lstNdx next]) != (FishCell *) nil))
+    {
+         [fishCell calcDailyMeanDepthAndVelocityFor: aMeanFlow];
+    }
+
+    [lstNdx drop];
+
+
+    return self;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -2917,7 +2940,7 @@ Boston, MA 02111-1307, USA.
      currentPhase = DAY;
   }
 
-  [self updateAnglePressureWith: modelTime];
+  [self updateAnglePressureWith: modelTime_t];
 
   [polyCellList forEach: M(updateHabitatSurvivalProb)];
   [polyCellList forEach: M(updateDSCellHourlyTotal)];

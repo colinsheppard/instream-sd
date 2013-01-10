@@ -1,9 +1,12 @@
 /*
-inSTREAM Version 4.2, October 2006.
-Individual-based stream trout modeling software. Developed and maintained by Steve Railsback (Lang, Railsback & Associates, Arcata, California) and
-Steve Jackson (Jackson Scientific Computing, McKinleyville, California).
-Development sponsored by EPRI, US EPA, USDA Forest Service, and others.
-Copyright (C) 2004 Lang, Railsback & Associates.
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,11 +25,11 @@ Boston, MA 02111-1307, USA.
 */
 
 
-#include <stdlib.h>
-#include <time.h>
+#import <stdlib.h>
 
 #import <objectbase/SwarmObject.h>
 #import <analysis.h>
+#import <time.h>
 #import "BreakoutAverager.h"
 #import "BreakoutMessageProbe.h"
 #import "BreakoutVarProbe.h"
@@ -107,7 +110,10 @@ typedef struct DataColumnStruct DataColumnWithLabel;
 
   char headerFormatString[10];
   char floatFormatString[10];
+  char intFormatString[10];
+  char expFormatString[10];
   int columnWidth;
+  BOOL useCSV;
 
   int totalDataColumnWidth;
   char totalDataColumnWidthStr[10];
@@ -119,11 +125,16 @@ typedef struct DataColumnStruct DataColumnWithLabel;
 
 }
 
-+          createBegin: aZone
++          createBeginWithFixedColumns: aZone
                forList: (id <List>) aListOfObj
     withOutputFilename: (char *) aFileName
      withFileOverwrite: (BOOL) aBool
        withColumnWidth: (int) aColumnWidth;
+
++          createBeginWithCSV: aZone
+               forList: (id <List>) aListOfObj
+    withOutputFilename: (char *) aFileName
+     withFileOverwrite: (BOOL) aBool;
 
 - createEnd;
 
@@ -153,6 +164,7 @@ typedef struct DataColumnStruct DataColumnWithLabel;
                        withLabel: (char *) aDataLabel;
 
 - buildDataColumns;
+- outputDataColumns;
 
 - printBreakoutReportHeader;
 - suppressColumnLabels: (BOOL) aBool;
@@ -162,6 +174,9 @@ typedef struct DataColumnStruct DataColumnWithLabel;
 - output;
 
 - checkBreakoutSelectorsFor: anObj;
+
++ (char *) reportFileMetaData: (id) aZone;
++ (char *) formatFloatOrExponential: (double) aVal;
 
 - (void) drop;
 

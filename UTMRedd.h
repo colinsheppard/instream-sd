@@ -134,6 +134,9 @@
 //
 //
 
+// for instream 5.0
+- setRasterX: (unsigned) anX;
+- setRasterY: (unsigned) aY;
 
 - createReddSummaryStr;
 - printReddSummary;

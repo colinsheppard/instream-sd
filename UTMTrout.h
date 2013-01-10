@@ -304,6 +304,8 @@ id <List> badDestCellList;
 
 - setStockedFishActivity: (id <Symbol>) aSymbol;
 
+- (FishCell *) getCell;
+- setCell: (FishCell *) aFishCell;
 
 //
 // This is used to set a fish's activity, 

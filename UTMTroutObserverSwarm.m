@@ -498,8 +498,8 @@
 
    [utmWorldRaster setColormap: utmColormap];
 
-   rasterX = [habitatSpace getUTMPixelsX];
-   rasterY = [habitatSpace getUTMPixelsY];
+   rasterX = [habitatSpace getPixelsX];
+   rasterY = [habitatSpace getPixelsY];
    rasterSize = (rasterX >= rasterY ? rasterX : rasterY )/rasterResolution;
    [utmWorldRaster setZoomFactor: rasterZoomFactor];
  
@@ -514,8 +514,7 @@
    utmCellDisplay = [Object2dDisplay createBegin: obsZone];
    [utmCellDisplay setDisplayWidget: utmWorldRaster];
    [utmCellDisplay setDiscrete2dToDisplay: habitatSpace];
-   [utmCellDisplay setObjectCollection: 
-   [habitatSpace getUTMCellList]];
+   [utmCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
    [utmCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
    utmCellDisplay = [utmCellDisplay createEnd];
 

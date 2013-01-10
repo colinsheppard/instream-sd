@@ -578,6 +578,21 @@
    return self;
 }
 
+- setRasterX: (unsigned) anX
+{
+    myRasterX = anX;
+
+    //    fprintf(stderr,"Setting rasterX to %d \n",myRasterX);
+    //    fflush(0);
+
+    return self;
+}
+
+- setRasterY: (unsigned) aY
+{
+    myRasterY = aY;
+    return self;
+}
 
 ///////////////////////////////////////
 //

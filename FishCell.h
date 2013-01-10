@@ -1,11 +1,28 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 5.0, February 2012.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 
@@ -18,146 +35,244 @@
 #import <math.h>
 #import <stdlib.h>
 
+#import "globals.h"
 #import "TimeManagerProtocol.h"
+#import "UTMTroutModelSwarmP.h"
+#import "SurvMGRProtocol.h"
+#import "InterpolationTableP.h"
 
-#import "UTMCell.h"
+#import "PolyCell.h"
 
-@interface FishCell : UTMCell
+
+@interface FishCell : PolyCell
 {
   id space;  // space of which Im a member
-  id modelSwarm;
+  id reach;  // The reach in which I belong; actually the space
+  id <UTMTroutModelSwarm> model;
+
   id <TimeManager> timeManager;
-  id randGen;
+
+  id myRandGen;
+
   int numberOfSpecies;
   int numberOfFish;
-  id <List> fishList;
-  id <List> reddList;
+  int numberOfRedds;
+  double cellDistToHide;
+  id <List> fishIContain;
+  id <List> reddsIContain;
+
   id <Map> fishParamsMap;
-  id <Map> survMgrMap; 
-  id <Map> survMgrReddMap; 
+  id <Map> survMgrMap;
+  id <Map> survMgrReddMap;
   id <Symbol> ANIMAL;
   id <Symbol> HABITAT;
-  BOOL cellDataSet;
+
+  id <InterpolationTable> velocityInterpolator;
+  id <InterpolationTable> depthInterpolator;
 
   double cellFracSpawn;
   double cellFracShelter;
   double cellShelterArea;
   double shelterAreaAvailable;
-  double availableHidingCover;
   BOOL   isShelterAvailable;
-  double cellDistToHide;
-  double fracHidingCover;
+
   double driftHourlyCellTotal;
+  double searchCellTotal;
   double searchHourlyCellTotal;
   double hourlyAvailDriftFood;
   double hourlyAvailSearchFood;
 
+  double habShearParamA;
+  double habShearParamB;
 
-  double meanDepth;
-  double meanVelocity;
+  //
+  // For exception handling
+  //
+  BOOL cellDataSet;
+
+  
+  BOOL foodReportFirstTime;
+  BOOL depthVelRptFirstTime;
+
 
   double shadeColorMax;
-  
 
+  char reachEnd;
+  double cellDistToUS;
+  double cellDistToDS;
+
+  // for instream-sd
+  double meanDepth;
+  double meanVelocity;
 }
-
 + create: aZone;
+- buildObjects;
+
+
 - setSpace: aSpace;
 - getSpace;
-- setModelSwarm: aModelSwarm;
-- setTimeManager: aTimeManager;
-- setNumberOfSpecies: (int) aNumber;
-- setFishParamsMap: aMap;
+
+- setReach: aReach;
+- getReach;
+
+- setReachEnd: (char) aReachEnd;
+- (char) getReachEnd;
+
+- calcCellDistToUS;
+- calcCellDistToDS;
+
+- (double) getCellDistToUS;
+- (double) getCellDistToDS;
+
+
+- setTimeManager: (id <TimeManager>) aTimeManager;
+- setModel: (id <UTMTroutModelSwarm>) aModel;
 - setRandGen: aRandGen;
 - getRandGen;
-- addFish: aFish;
-- removeFish: aFish;
-- (id <List>) getFishList;
 
+-  setVelocityInterpolator: (id <InterpolationTable>) aVelocityInterpolator;
+-  (id <InterpolationTable>) getVelocityInterpolator;
+- checkVelocityInterpolator;
+-  setDepthInterpolator: (id <InterpolationTable>) aDepthInterpolator;
+-  (id <InterpolationTable>) getDepthInterpolator;
+- checkDepthInterpolator;
 
-- getNeighborsWithin: (double) aRange 
+//- updatePolyCellDepthWith: (double) aFlow;
+//- updatePolyCellVelocityWith: (double) aFlow;
+
+- updateWithDepthTableIndex: (int) depthInterpolationIndex
+        depthInterpFraction: (double) depthInterpFraction
+              velTableIndex: (int) velInterpolationIndex
+          velInterpFraction: (double) velInterpFraction;
+
+- (double) getPolyCellDepth;
+- (double) getPolyCellVelocity;
+
+- setFishParamsMap: (id <Map>) aMap;
+
+- setFishParamsMap: (id <Map>) aMap;
+- setNumberOfSpecies: (int) aNumberOfSpecies;
+
+- setHabShearParamA: (double) aShearParamA
+     habShearParamB: (double) aShearParamB;
+
+- (double) getHabShearParamA;
+- (double) getHabShearParamB;
+
+- (double) getHabShelterSpeedFrac;
+
+- tagDestCells;
+
+- getNeighborsWithin: (double) aRange
             withList: (id <List>) aCellList;
 
-- (id <List>) getListOfAdjacentCells;
+- getNeighborsInReachWithin: (double) aRange
+            withList: (id <List>) aCellList;
 
-- (double) getDistanceTo: aCell;
+- (int) getNumberOfFish;
+- (id <List>) getFishIContain;
+- (int)getNumberOfRedds;
+- (id <List>) getReddsIContain;
+
+- (double) getFlowChange;
+
+//- (double) getSpawnQualityForFish: aFish;
 
 //SHELTER AREA
 - (void) setCellFracShelter: (double) aDouble;
 - (void) calcCellShelterArea;
+- (double) getShelterAreaAvailable;
+- (void) resetShelterAreaAvailable;
 - (BOOL) getIsShelterAvailable;
+
+- setCellFracSpawn: (double) aDouble;
+- (double) getCellFracSpawn;
+- (double) getCellFracShelter;
+
+- spawnHere: aFish;
+- eatHere: aFish;
+- addFish: aFish;
+- removeFish: aFish;
+- addRedd: aRedd;
+- removeRedd: aRedd;
+
+
+- (double) getTemperature;
+- (double) getTurbidity;
+- (double) getDayLength;
+
+
+- (double) getHabPreyEnergyDensity;
 
 - setDistanceToHide: (double) aDistance;
 - (double) getDistanceToHide;
 
-
+// for instream-sd
 - calcDailyMeanDepthAndVelocityFor: (double) aMeanFlow;
-- (BOOL) isDryAtDailyMeanFlow;
 
-- setCellDataSet: (BOOL) aBool;
-- checkCellDataSet;
 
+
+// FOOD METHODS
+-  calcDriftHourlyTotal;
+- (double) getHourlyAvailDriftFood;
+- calcSearchHourlyTotal;
+- (double) getHourlyAvailSearchFood;
+
+- (double) getPolyCellDepth;
+- (BOOL) isDepthGreaterThan0;
+
+// mortality risk mods
+
+//SURVIVAL PROBABILITIES
 - initializeSurvProb;
-
-- updateHabitatSurvivalProb; 
-- updateReddHabitatSurvProb;
+- updateHabitatSurvivalProb;
 - updateHabSurvProbForAqPred;
 - updateFishSurvivalProbFor: aFish;
 - updateReddSurvivalProbFor: aRedd;
+- updatePolyCellVelocityWith: (double) aFlow;
+
 - (id <List>) getListOfSurvProbsFor: aFish;
 - (id <List>) getReddListOfSurvProbsFor: aRedd;
 - (double) getTotalKnownNonStarvSurvivalProbFor: aFish;
 - (double) getStarvSurvivalFor: aFish;
-- (double) getAnglingPressure;
-- (int) getCurrentPhase;
-- (double) getUTMCellTemperature;
-- (double) getUTMCellTurbidity;
-- (double) getCurrentHourlyFlow;
-- (double) getChangeInDailyFlow; 
-- (double) getPiscivorousFishDensity;
-- (double) getReachLength;
-- (double) getHabAngleNightFactor;
 
-- (void) resetShelterAreaAvailable;
-- (double) getShelterAreaAvailable;
-- resetHidingCover;
-- (BOOL) getIsHidingCoverAvailable;
-- (double) getHidingCoverAvailable;
-- setCellFracSpawn: (double) aFloat;
-- (double) getCellFracSpawn;
-- setFracHidingCover: (double) aFracHidingCover;
-- moveHere: aFish;
-- addRedd: aRedd;
-- removeRedd: aRedd;
-- (id <List>) getReddList;
-- (double) getHabSearchProd;
-- (double) getHabDriftConc;
-- (double) getHabDriftRegenDist;
-- (double) getHabPreyEnergyDensity;
-- (int) getPhaseOfPrevStep;
-- (BOOL) getDayNightPhaseSwitch;
-- (double) getNumberOfDaylightHours;
-- (double) getNumberOfNightHours;
--  calcDriftHourlyTotal;
-- calcSearchHourlyTotal;
-- (double) getHourlyAvailDriftFood;
-- (double) getHourlyAvailSearchFood;
-- (double) getDailyMeanFlow;
-- (double) getPrevDailyMeanFlow;
-- (double) getPrevDailyMaxFlow;
-- (double) getDailyMaxFlow;
-- (double) getNextDailyMaxFlow;
+
+- (double) getYesterdaysRiverFlow;
+- (double) getRiverFlow;            // These two get methods are
+- (double) getTomorrowsRiverFlow;   // pass throughs to the habitatSpace
+
 - (void) updateDSCellHourlyTotal;
 - (void) resetAvailHourlyTotal;
-- (BOOL) getIsItDaytime;
-- printCellFishInfo: (void *) filePtr;
+
+- foodAvailAndConInCell: aFish;
+
+- depthVelReport: (FILE *) depthVelPtr;
+
+
+//
+// PRED DENSITY 
+//
+- (double) getPiscivorousFishDensity;
+
+
+- (double) getHabDriftConc;
+- (double) getHabSearchProd;
+
 - setShadeColorMax: (double) aShadeColorMax;
-- tagUTMCell;
-- unTagUTMCell;
-- untagAllCells;
 - toggleColorRep: (double) aShadeColorMax;
 - drawSelfOn: (id <Raster>) aRaster;
-- depthVelReport: (FILE *) depthVelPtr;
+
+
+- setCellDataSet: (BOOL) aBool;
+- checkCellDataSet;
+
+
+- checkVelocityInterpolator;
+- checkDepthInterpolator;
+
+- (int) compareToUS: (FishCell *) cell;
+- (int) compareToDS: (FishCell *) cell;
+
 - (void) drop;
 
 @end
