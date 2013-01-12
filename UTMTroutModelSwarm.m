@@ -244,9 +244,12 @@ id <Symbol> Feed, Hide;
 
   [habitatManager buildObjects];
   
+  /*
+   * for now ignore reporting stuff --colin
   if(writeCellFishReport == YES){
       [habitatManager buildHabSpaceCellFishInfoReporter];
   }
+  */
 
   [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];

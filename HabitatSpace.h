@@ -307,6 +307,13 @@ long int maxYCoordinate;
   id <List> polyCellListSortedByDistFromDS;
   id <List> polyCellListSortedByDistFromUS;
 
+  // stuff from instream-sd
+  double habLatitude;
+  double habTwilightLength;
+  double daytimeStartHour;
+  time_t daytimeStartTime;
+  double daytimeEndHour;
+  time_t daytimeEndTime;
 }
 
 + createBegin: aZone;
@@ -482,6 +489,8 @@ long int maxYCoordinate;
 - (double) getHabMaxSpawnFlow;
 
 - (double) getDayLength;
+- (int) getCurrentPhase;
+- calcDayLength: (time_t) aTime_t;
 
 - (double) getHabSearchProd;
 - (double) getHabDriftConc;

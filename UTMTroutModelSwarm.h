@@ -262,6 +262,14 @@ time_t dataEndTime;
 // Experiment manager
 //
 double checkParam;
+
+// Stuff from instream 5.0
+  int    polyRasterResolutionX;
+  int    polyRasterResolutionY;
+  char   polyRasterColorVariable[35];
+  BOOL initialDay;
+  int numberOfReaches;
+  id <List> reachList;
 }
 
 + create: aZone;

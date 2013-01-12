@@ -301,6 +301,66 @@ Boston, MA 02111-1307, USA.
    return self;
 }
 
+//////////////////////////////////////////////
+//
+// calcDayLength
+//
+// This works with julian date = 366
+// but will be off by half a minute or so...
+//
+/////////////////////////////////////////////
+- calcDayLength: (time_t) aTime_t 
+{
+  double delta;
+  int date;
+
+  // 
+  // Added for Version 3 with diurnal movement
+  //
+  double startHour;
+  double startMinute;
+  double endHour;
+  double endMinute;
+
+  date = [timeManager getJulianDayWithTimeT: aTime_t]; 
+
+  delta = (23.45/180)*PI*cos((2*PI/365)*(173-date));
+  dayLength = 24.0 - 2.0*((12.0/PI)*acos(tan(PI*habLatitude/180.0)*tan(delta)));
+
+  numberOfDaylightHours = dayLength + (2 * habTwilightLength);
+  numberOfNightHours = 24 - numberOfDaylightHours;
+
+  daytimeStartHour = 12 - (numberOfDaylightHours/2.0);
+  daytimeEndHour = 12 + (numberOfDaylightHours/2.0);
+
+  startMinute = modf(daytimeStartHour, &startHour);
+  startMinute = 60*startMinute + 0.5;
+
+  endMinute = modf(daytimeEndHour, &endHour);
+  endMinute = 60*endMinute + 0.5;
+
+  daytimeStartTime = [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: aTime_t]
+                                          withHour: (int) startHour
+                                        withMinute: (int) startMinute
+                                        withSecond: 0];
+
+  daytimeEndTime = [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: aTime_t]
+                                          withHour: (int) endHour
+                                        withMinute: (int) endMinute
+                                        withSecond: 0];
+
+
+  //fprintf(stdout,"HABITAT >>>> startHour = %d startMinute = %d\n",
+                              //(int) startHour, (int) startMinute);
+  //fprintf(stdout,"HABITAT >>>> endHour = %d endMinute = %d\n",
+                              //(int) endHour, (int) endMinute);
+  //fflush(0); 
+
+
+
+return self;
+}
+
 ///////////////////////////////////////
 //
 // setNumberOfSpecies

@@ -56,19 +56,14 @@ Boston, MA 02111-1307, USA.
 
 - switchColorRepFor: aHabitatSpace;
 
+- (id <List>) getAgeSymbolList;
+- (id <List>) getSpeciesSymbolList;
 
-/*
- *
- * These methods aren't in UTMTroutModelSwarm.m, but probably should be
- *
- *
 - createNewFishWithSpeciesIndex: (int) speciesNdx  
                         Species: (id <Symbol>) species
                             Age: (int) age
                          Length: (double) fishLength;
 - (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;
-- (id <List>) getSpeciesSymbolList;
-- (id <List>) getAgeSymbolList;
 - (id <Symbol>) getReachSymbolWithName: (char *) aName;
 - getReddBinomialDist;
 - updateTkEventsFor: aReach;
@@ -86,7 +81,6 @@ Boston, MA 02111-1307, USA.
 - (BOOL) getWriteReddMortReport;
 - (BOOL) getWriteIndividualFishReport;
 - (BOOL) getWriteCellCentroidReport;
-*/
 @end
 
 @class UTMTroutModelSwarm;
