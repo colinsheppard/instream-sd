@@ -31,7 +31,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "HabitatSetup.h"
 #import "HabitatSpace.h"
-#import "TroutModelSwarmP.h"
+#import "UTMTroutModelSwarmP.h"
 #import "SolarManagerP.h"
 #import "globals.h"
 #import "PolyInputData.h"
@@ -39,7 +39,7 @@ Boston, MA 02111-1307, USA.
 @interface HabitatManager: SwarmObject
 {
 
-id <TroutModelSwarm> model;
+id <UTMTroutModelSwarm> model;
 id <Zone> habManagerZone;
 id <SolarManager> solarManager;
 double siteLatitude;

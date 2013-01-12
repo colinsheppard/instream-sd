@@ -98,7 +98,15 @@ id <Symbol> Feed, Hide;
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
 
-  habitatSpace = [HabitatSpace createBegin: modelZone];
+  habitatManager = [HabitatManager createBegin: modelZone];
+  [habitatManager instantiateObjects];
+  //[habitatManager setSiteLatitude: siteLatitude];
+  [habitatManager createSolarManager];
+  [habitatManager setModel: self];
+  [habitatManager readReachSetupFile: "Reach.Setup"];
+  [habitatManager setNumberOfSpecies: numberOfSpecies];
+  [habitatManager setFishParamsMap: fishParamsMap];
+  [habitatManager instantiateHabitatSpacesInZone: modelZone];
   
   //
   // habitatSpace createEnd is done in buildObjects
@@ -218,42 +226,36 @@ id <Symbol> Feed, Hide;
   //
   // Create the space in which the fish will live
   //
-  [habitatSpace buildObjects];
-  [habitatSpace setTimeManager:timeManager];
-  [habitatSpace setTimeStepSize: (time_t) 3600];
-  [habitatSpace setStartTime: runStartTime 
-                     andEndTime: runEndTime];
+  [habitatManager setTimeManager: timeManager];
 
-  [habitatSpace setRandGen: randGen];
-  [habitatSpace setFishParamsMap: fishParamsMap];
-  [habitatSpace setUTMRasterResolution:  utmRasterResolution
-                  setUTMRasterResolutionX:  utmRasterResolutionX
-                  setUTMRasterResolutionY:  utmRasterResolutionY
-                   setRasterColorVariable:  utmRasterColorVariable
-                         setShadeColorMax:  shadeColorMax];
-  [habitatSpace readHabSetupFile: habSetupFile];
-  [habitatSpace buildUTMCells]; 
+  [habitatManager setModelStartTime: (time_t) runStartTime
+                         andEndTime: (time_t) runEndTime];
+
+  [habitatManager setDataStartTime: (time_t) dataStartTime
+                        andEndTime: (time_t) dataEndTime];
+
+  //
+  // Moved from instantiateObjects 
+  //
+  [habitatManager setPolyRasterResolutionX:  polyRasterResolutionX
+                  setPolyRasterResolutionY:  polyRasterResolutionY
+                    setRasterColorVariable:   polyRasterColorVariable
+                          setShadeColorMax:  shadeColorMax];
+
+  [habitatManager buildObjects];
+  
+  if(writeCellFishReport == YES){
+      [habitatManager buildHabSpaceCellFishInfoReporter];
+  }
+
+  [habitatManager updateHabitatManagerWithTime: modelTime
+                         andWithModelStartFlag: initialDay];
+
+  numberOfReaches = [habitatManager getNumberOfHabitatSpaces];
+  reachList = [habitatManager getHabitatSpaceList];
 
   dataStartTime = runStartTime;
   dataEndTime = runEndTime;
-
-  [habitatSpace setDataStartTime: dataStartTime
-                     andDataEndTime: dataEndTime + 86400];
-
-  [habitatSpace createTimeSeriesInputManagers];
-
-  [habitatSpace setSizeX: [habitatSpace getSpaceDimX]  
-                          Y: [habitatSpace getSpaceDimY]];
-
-  
-  [habitatSpace setNumberOfSpecies: numberOfSpecies];
-
-  habitatSpace = [habitatSpace createEnd];
-
-  [habitatSpace createDemonicIntrusionSymbol];
-
-  [habitatSpace shouldFishMoveAt: modelTime];
-  [habitatSpace updateHabitat: modelTime];
 
   //
   // The Symbols needed by the model
@@ -757,7 +759,7 @@ id <Symbol> Feed, Hide;
    id <ListIndex> initPopLstNdx = nil;
    InitialFishRecord* initialFishRecord = (InitialFishRecord *) nil;
 
-   id <List> utmCellList = [habitatSpace getUTMCellList];
+   id <List> polyCellList = [habitatSpace getPolyCellList];
 
    //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
    //fflush(0);
@@ -769,7 +771,7 @@ id <Symbol> Feed, Hide;
    randCellDist = [UniformIntegerDist create: modelZone
                                 setGenerator: randGen
                                setIntegerMin: 0
-                                      setMax: [utmCellList getCount] - 1];
+                                      setMax: [polyCellList getCount] - 1];
 
    lengthDist = [NormalDist create: modelZone 
                       setGenerator: randGen];
@@ -831,14 +833,14 @@ id <Symbol> Feed, Hide;
           //
           for(counter=0; counter<=MAX_COUNT; counter++)
           {
-	       randSelectedCell = [utmCellList atOffset: [randCellDist getIntegerSample]];
+	       randSelectedCell = [polyCellList atOffset: [randCellDist getIntegerSample]];
 
                if(randSelectedCell != nil)
                {
-                   if([randSelectedCell getUTMCellDepth] > 0.0)
+                   if([randSelectedCell getPolyCellDepth] > 0.0)
                    {
                         double aMortFishVelocityV9 = [newFish getFishParams]->mortFishVelocityV9;
-                        if([randSelectedCell getUTMCellVelocity] > [newFish getMaxSwimSpeed] * aMortFishVelocityV9)
+                        if([randSelectedCell getPolyCellVelocity] > [newFish getMaxSwimSpeed] * aMortFishVelocityV9)
                         {
                              // Be sure to UNCOMMENT this...
                              //continue;
@@ -1022,7 +1024,7 @@ id <Symbol> Feed, Hide;
 
    id lengthNormalDist = nil; // this distribution goes out of scope
 
-   id <List> utmCellList = [habitatSpace getUTMCellList];
+   id <List> polyCellList = [habitatSpace getPolyCellList];
 
 
    int arraySize = [fishStockList getCount];
@@ -1041,7 +1043,7 @@ id <Symbol> Feed, Hide;
    randCellDist = [UniformIntegerDist create: modelZone
                                 setGenerator: randGen
                                setIntegerMin: 0
-                                      setMax: [utmCellList getCount] - 1];
+                                      setMax: [polyCellList getCount] - 1];
 
    lengthNormalDist = [NormalDist create: modelZone 
                       setGenerator: randGen];
@@ -1104,14 +1106,14 @@ id <Symbol> Feed, Hide;
                     //
 		    for(counter=0;counter<=MAX_COUNT;counter++)
 		    {
-	                randSelectedCell = [utmCellList atOffset: [randCellDist getIntegerSample]];
+	                randSelectedCell = [polyCellList atOffset: [randCellDist getIntegerSample]];
 
 		        if(randSelectedCell != nil)
 		        {
                             //
                             // Min depth changed to 50 SFR 4/7/03
                             //
-			    if([randSelectedCell getUTMCellDepth] > 50.0)
+			    if([randSelectedCell getPolyCellDepth] > 50.0)
 			    {
                                 double depthLengthRatio;
 			        [randSelectedCell addFish: newFish];
@@ -1120,7 +1122,7 @@ id <Symbol> Feed, Hide;
                                 //
                                 // Initialize fish's depth/length ratio so stranding mort works
                                 //
-                                depthLengthRatio = [randSelectedCell getUTMCellDepth] / [newFish getFishLength];
+                                depthLengthRatio = [randSelectedCell getPolyCellDepth] / [newFish getFishLength];
                                 [newFish setDepthLengthRatio: depthLengthRatio];
   
 			         numFish++;  //instance variable
@@ -1445,16 +1447,16 @@ id <Symbol> Feed, Hide;
      if(isFirstStep == FALSE)
      {
         [self outputBreakoutReport];
-        [habitatSpace printCellFishInfo];
+	// Comment the following for now, breakout reporting will need to be fixed later --colin
+        //[habitatSpace printCellFishInfo];
      }
 
      // 
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
      //
-     [habitatSpace updateHabitat: modelTime];
-
-     [habitatSpace resetNumPiscivorousFish];
+     [habitatManager updateHabitatManagerWithTime: modelTime
+                         andWithModelStartFlag: initialDay];
 
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
@@ -3189,7 +3191,7 @@ id <Symbol> Feed, Hide;
               age3PNdx = [ageClassList listBegin: scratchZone];
               while( ([age3PNdx getLoc] != End) && (( trout = [age3PNdx next]) != nil) ) {
              
-                   cellVelocity = [[trout getWorld] getUTMCellVelocity];
+                   cellVelocity = [[trout getWorld] getPolyCellVelocity];
 
                    if(cellVelocity < velocityHistoMaxVelocity) {
 

@@ -15,7 +15,7 @@
 #import "Rainbow.h"
 #import "Brown.h"
 #import "UTMRedd.h"
-#import "HabitatSpace.h"
+#import "HabitatManager.h"
 #import "FishParams.h"
 #import "TimeManagerProtocol.h"
 #import "ZoneAllocMapper.h"
@@ -256,6 +256,7 @@ char utmRasterColorVariable[35];
 time_t dataStartTime;
 time_t dataEndTime;
 
+  HabitatManager* habitatManager;
 
 //
 // Experiment manager
