@@ -366,7 +366,7 @@
    return age;
 }
 
-- setCell (FishCell *) aFishCell 
+- setCell: (FishCell *) aFishCell 
 {
   fishCell = aFishCell;
   return self;
@@ -849,7 +849,7 @@
 ///////////////////////////////////////////////////////
 - (double) getWorldDepth 
 {
-  return [fishCell getUTMCellDepth];
+  return [fishCell getPolyCellDepth];
 }
 
 /////////////////////////////////////////////////////
@@ -859,7 +859,7 @@
 /////////////////////////////////////////////////////
 - (double) getWorldVelocity 
 {
-  return [fishCell getUTMCellVelocity];
+  return [fishCell getPolyCellVelocity];
 }
 
 
@@ -1020,7 +1020,7 @@
   //
   if(fishCell != nil)
   {
-      currentTemp = [fishCell getUTMCellTemperature];
+      currentTemp = [fishCell getTemperature];
   }
 
   if(currentTemp == -LARGEINT)
@@ -1261,9 +1261,9 @@
    //fprintf(stdout, "UTMTrout >>>> getSpawnQuality >>>> BEGIN\n");
    //fflush(0);
 
-   spawnQuality = [self getSpawnDepthSuitFor: [aCell getUTMCellDepth]]
-                * [self getSpawnVelSuitFor: [aCell getUTMCellVelocity]]
-                * [aCell getUTMCellArea]
+   spawnQuality = [self getSpawnDepthSuitFor: [aCell getPolyCellDepth]]
+                * [self getSpawnVelSuitFor: [aCell getPolyCellVelocity]]
+                * [aCell getPolyCellArea]
                 * [aCell getCellFracSpawn]; 
 
    //fprintf(stdout, "UTMTrout >>>> getSpawnQuality >>>> END\n");
@@ -1613,9 +1613,9 @@
   destNdx = [moveCellList listBegin: scratchZone];
   while(([destNdx getLoc] != End) && ((destCell = [destNdx next]) != nil))
   {
-    if([destCell getUTMCellDepth] > 0.0)
+    if([destCell getPolyCellDepth] > 0.0)
     {
-       if(([destCell getUTMCellVelocity] * (fishParams->fishShelterSpeedFrac)/maxSwimSpeed) > fishParams->mortFishVelocityV9)
+       if(([destCell getPolyCellVelocity] * (fishParams->fishShelterSpeedFrac)/maxSwimSpeed) > fishParams->mortFishVelocityV9)
        {
             [badDestCellList addLast: destCell];
        }
@@ -1644,7 +1644,7 @@
           #ifdef LOHICELLOUTPUT
           if(!loHiFirstTime)
           {
-             fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "LoVelCell", [destCell getUTMCellVelocity], fishLength, expectedMaturityAtDest);
+             fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "LoVelCell", [destCell getPolyCellVelocity], fishLength, expectedMaturityAtDest);
              fflush(outPtr);
           }
           #endif
@@ -1687,7 +1687,7 @@
                 #ifdef LOHICELLOUTPUT
                 if(!loHiFirstTime)
                 {
-                   fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "HiVelCell", [destCell getUTMCellVelocity], fishLength, expectedMaturityAtDest);
+                   fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "HiVelCell", [destCell getPolyCellVelocity], fishLength, expectedMaturityAtDest);
                    fflush(outPtr);
                 }
                 #endif
@@ -1797,8 +1797,8 @@
 
 
   captureArea = [self calcCaptureArea: bestDest];
-  //cMax = [self calcCmax: [bestDest getUTMCellTemperature] ];
-  cMaxFT = [self calcCmaxTempFunction: [bestDest getUTMCellTemperature]];
+  //cMax = [self calcCmax: [bestDest getPolyCellTemperature] ];
+  cMaxFT = [self calcCmaxTempFunction: [bestDest getPolyCellTemperature]];
   driftFoodIntake = [self calcDriftFoodIntakeAt: bestDest];
   driftNetEnergy = [self calcDriftNetEnergyAt: bestDest];
   searchFoodIntake = [self calcSearchFoodIntakeAt: bestDest];
@@ -1809,7 +1809,7 @@
   // nonStarvSurvival
   // Commented out because depthLengthRatio is calculated in
   // expectedMaturityAt:
-  //depthLengthRatio = [bestDest getUTMCellDepth]/fishLength;
+  //depthLengthRatio = [bestDest getPolyCellDepth]/fishLength;
 
   
   nonStarvSurvival = [self getNonStarvSPAt: bestDest
@@ -1961,7 +1961,7 @@
    [bestDest moveHere: self]; 
    fishCell = bestDest;
 
-   CellNumber = [bestDest getUTMCellNumber];
+   CellNumber = [bestDest getPolyCellNumber];
 
   //fprintf(stdout, "Trout >>>> moveTo >>>> END\n");
   //fflush(0);
@@ -1987,7 +1987,7 @@
   FishActivity bestActivityForCell = HIDE;
   double bestERMForCell = -LARGEINT;
 
-  depthLengthRatio = [aCell getUTMCellDepth]/fishLength;
+  depthLengthRatio = [aCell getPolyCellDepth]/fishLength;
 
 
   hourlyNetEnergyIfFeed = [self calcNetEnergyAt: aCell
@@ -2378,11 +2378,11 @@
 
       if(numHoursSinceLastStep < fishParams->fishMovePenaltyTime)
       {
-            energyLossDuringPenalty = numHoursSinceLastStep * [self calcTotalRespirationAt: fishCell withSwimSpeed: [fishCell getUTMCellVelocity]];
+            energyLossDuringPenalty = numHoursSinceLastStep * [self calcTotalRespirationAt: fishCell withSwimSpeed: [fishCell getPolyCellVelocity]];
       }
       else
       {
-            energyLossDuringPenalty = fishParams->fishMovePenaltyTime * [self calcTotalRespirationAt: fishCell withSwimSpeed: [fishCell getUTMCellVelocity]];
+            energyLossDuringPenalty = fishParams->fishMovePenaltyTime * [self calcTotalRespirationAt: fishCell withSwimSpeed: [fishCell getPolyCellVelocity]];
       }
 
 
@@ -2718,7 +2718,7 @@
   {
       fishActivity = HIDE;
       if([aCell getIsHidingCoverAvailable]) hidingCover = YES;
-      swimSpdVelocityRatio = [aCell getUTMCellVelocity]/maxSwimSpeed;
+      swimSpdVelocityRatio = [aCell getPolyCellVelocity]/maxSwimSpeed;
   }
   else 
   {
@@ -2829,8 +2829,8 @@
       exit(1);
   }
 
-  temperature = [aCell getUTMCellTemperature];
-  velocity = [aCell getUTMCellVelocity];
+  temperature = [aCell getPolyCellTemperature];
+  velocity = [aCell getPolyCellVelocity];
 
   aReactDistance = fishLength*((2.197-fRPA-fRPB*(velocity/fishLength)-(fRPC*temperature))/fRPD);
 
@@ -2852,7 +2852,7 @@
       fishTurbidMin = fishParams->fishTurbidMin;
       fTPA = fishParams->fishTurbidParamA; 
       fTPB = fishParams->fishTurbidParamB; 
-      turbidity = [aCell getUTMCellTurbidity];
+      turbidity = [aCell getPolyCellTurbidity];
  
       //
       //  if turbidity <= fishTurbidMin (NTU), 
@@ -2892,7 +2892,7 @@
   double aReactDistance;
   double minvalue=0.0;
 
-  depth = [aCell getUTMCellDepth];
+  depth = [aCell getPolyCellDepth];
   aReactDistance = [self calcReactDistance: aCell];
 
   minvalue = (aReactDistance < depth) ? aReactDistance : depth;
@@ -2916,7 +2916,7 @@
 
   aCaptureArea = [self calcCaptureArea: aCell];
 
-  aDriftIntake = [aCell getHabDriftConc] * [aCell getUTMCellVelocity] * aCaptureArea * 3600;
+  aDriftIntake = [aCell getHabDriftConc] * [aCell getPolyCellVelocity] * aCaptureArea * 3600;
 
   return aDriftIntake;
 }
@@ -2965,7 +2965,7 @@
   
   fSA = fishParams->fishSearchArea;
 
-  velocity = [aCell getUTMCellVelocity];
+  velocity = [aCell getPolyCellVelocity];
   habSearchProd = [aCell getHabSearchProd];
  
   if(velocity > maxSwimSpeed) 
@@ -3017,7 +3017,7 @@
      exit(1);
   } 
  
-  temperature = [fishCell getUTMCellTemperature];
+  temperature = [fishCell getPolyCellTemperature];
   
   if(isnan(temperature) || isinf(temperature))
   {
@@ -3027,7 +3027,7 @@
      exit(1);
   } 
 
-  cmaxTempFunction = [self calcCmaxTempFunction: [fishCell getUTMCellTemperature]];
+  cmaxTempFunction = [self calcCmaxTempFunction: [fishCell getPolyCellTemperature]];
 
   //
   //Note the  instance variables cMax andfishWeight in the following
@@ -3138,7 +3138,7 @@
   fRPB = fishParams->fishRespParamB;
   fRPC = fishParams->fishRespParamC;
 
-  temperature = [fishCell getUTMCellTemperature];
+  temperature = [fishCell getPolyCellTemperature];
 
   //
   //Note the instance variables fishWeight and standardResp
@@ -3261,7 +3261,7 @@
 {
   if(([self getIsShelterAvailable: aCell] == YES) && (aFeedStrategy == DRIFT))
   {
-      return ([aCell getUTMCellVelocity] * fishParams->fishShelterSpeedFrac); 
+      return ([aCell getPolyCellVelocity] * fishParams->fishShelterSpeedFrac); 
      
   }
   else if(aFeedStrategy == HIDE)
@@ -3270,7 +3270,7 @@
   }
   else
   {
-     return [aCell getUTMCellVelocity];
+     return [aCell getPolyCellVelocity];
   }
 
 }
@@ -3504,14 +3504,14 @@
 
   time_t modelTime = [(id <Model>) model getModelTime];
   
-  int cellNo = [aCell getUTMCellNumber];
+  int cellNo = [aCell getPolyCellNumber];
   double shelterAreaAvailable = [aCell getShelterAreaAvailable];
   double hidingCoverAvailable = [aCell getHidingCoverAvailable];
 
-  velocity = [aCell getUTMCellVelocity];
-  depth    = [aCell getUTMCellDepth];
-  temp    = [aCell getUTMCellTemperature];
-  turbidity = [aCell getUTMCellTurbidity];
+  velocity = [aCell getPolyCellVelocity];
+  depth    = [aCell getPolyCellDepth];
+  temp    = [aCell getPolyCellTemperature];
+  turbidity = [aCell getPolyCellTurbidity];
   availableDrift = [aCell getHourlyAvailDriftFood];
   availableSearch = [aCell getHourlyAvailSearchFood];
 
@@ -3845,7 +3845,7 @@ return self;
                                                     "HidingCover",
                                                     "VelocitySurvProb", 
      //StrandingSurvProb:
-                                                    "UTMCellDepth",
+                                                    "PolyCellDepth",
                                                     "FishLength",
                                                     "CellDepth/FishLength",
                                                     "DepthLengthRatio",
@@ -3856,19 +3856,19 @@ return self;
      //AqPredationSurvProb:
                                                     "CurrentPhase", 
                                                     "AmIInHidingCover",	
-                                                    "UTMCellDepth",
-                                                    "UTMCellTemperature",
+                                                    "PolyCellDepth",
+                                                    "PolyCellTemperature",
                                                     "PiscivorousFishDensity",
                                                     "FishLength",
-                                                    "UTMCellTurbidity",
+                                                    "PolyCellTurbidity",
                                                     "AqPredationSurvProb",
     //TerrestialPredation:
                                                     "CurrentPhase",
                                                     "AmIInHidingCover",
-                                                    "UTMCellDepth",
-                                                    "UTMCellVelocity",
+                                                    "PolyCellDepth",
+                                                    "PolyCellVelocity",
                                                     "FishLength",
-                                                    "UTMCellTurbidity",
+                                                    "PolyCellTurbidity",
                                                     "DistanceToHide",
                                                     "TerrPredationSurvProb",
     //PoorCondition:
@@ -3906,27 +3906,27 @@ return self;
                                                    [self getSwimSpdVelocityRatio],
                                                    (double) [self getAmIInHidingCover], 
                                                    velocitySurvProb,
-                                                   [fishCell getUTMCellDepth],
+                                                   [fishCell getPolyCellDepth],
                                                    [self getFishLength],
-                                                   [fishCell getUTMCellDepth]/[self getFishLength],
+                                                   [fishCell getPolyCellDepth]/[self getFishLength],
                                                    [self getDepthLengthRatio],
                                                    strandingSurvProb,
                                                    (double) [self getFishSpawnedThisTime],
                                                     spawnSurvProb,
                                                    (double) [fishCell getCurrentPhase], 
                                                    (double) [self getAmIInHidingCover],
-                                                   [fishCell getUTMCellDepth],
-                                                   [fishCell getUTMCellTemperature],
+                                                   [fishCell getPolyCellDepth],
+                                                   [fishCell getPolyCellTemperature],
                                                    [self getPiscivorousFishDensity],
                                                    [self getFishLength],
-                                                   [fishCell getUTMCellTurbidity],
+                                                   [fishCell getPolyCellTurbidity],
                                                    aqPredationSurvProb, 
                                                    (double) [fishCell getCurrentPhase],
                                                    (double) [self getAmIInHidingCover],
-                                                   [fishCell getUTMCellDepth],
-                                                   [fishCell getUTMCellVelocity],
+                                                   [fishCell getPolyCellDepth],
+                                                   [fishCell getPolyCellVelocity],
                                                    [self getFishLength],
-                                                   [fishCell getUTMCellTurbidity],
+                                                   [fishCell getPolyCellTurbidity],
                                                    [fishCell getDistanceToHide],
                                                    terrPredationSurvProb,
                                                    [self getFishCondition],
@@ -4094,7 +4094,7 @@ return self;
 
   lastSpawnDate = [[self getZone] alloc: 12*sizeof(char)];
 
-  currentTemp = [fishCell getUTMCellTemperature];
+  currentTemp = [fishCell getPolyCellTemperature];
 
   currentTime = [self getCurrentTimeT];
 
@@ -4124,7 +4124,7 @@ return self;
                                                    [species getName],
                                                                  age,
                                                        [sex getName],
-                                    [fishCell getUTMCellTemperature],
+                                    [fishCell getPolyCellTemperature],
                                              [fishCell getDailyMeanFlow],
                                             [fishCell getChangeInDailyFlow],
                                                           fishLength,
@@ -4185,12 +4185,12 @@ return self;
   while(([cellListNdx getLoc] != End) && ((aCell = [cellListNdx next]) != nil))
   {
     
-      fprintf(spawnCellRptPtr,"%-15f%-15f%-15f%-15f%-15f%-15f%-15f\n",[aCell getUTMCellDepth],
-                                                              [aCell getUTMCellVelocity],
-                                                                    [aCell getUTMCellArea],
+      fprintf(spawnCellRptPtr,"%-15f%-15f%-15f%-15f%-15f%-15f%-15f\n",[aCell getPolyCellDepth],
+                                                              [aCell getPolyCellVelocity],
+                                                                    [aCell getPolyCellArea],
                                                              [aCell getCellFracSpawn],
-                                       [self getSpawnDepthSuitFor: [aCell getUTMCellDepth] ],
-                                  [self getSpawnVelSuitFor: [aCell getUTMCellVelocity] ],
+                                       [self getSpawnDepthSuitFor: [aCell getPolyCellDepth] ],
+                                  [self getSpawnVelSuitFor: [aCell getPolyCellVelocity] ],
                                                      [self getSpawnQuality: aCell]); 
 
       
