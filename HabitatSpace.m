@@ -2425,6 +2425,8 @@ Boston, MA 02111-1307, USA.
    //
    if([timeManager getHourWithTimeT: theCurrentTime] == 0)
    {
+        [self calcDayLength: theCurrentTime];
+
         temperature = [temperatureInputManager getValueForTime: theCurrentTime];
         turbidity = [turbidityInputManager getValueForTime: theCurrentTime];
   
@@ -2473,8 +2475,8 @@ Boston, MA 02111-1307, USA.
           //
           // Switch night->day
           //
-          if(   ([solarManager getDawnHour] <= [timeManager getHourWithTimeT: theCurrentTime]) 
-             && ([solarManager getDuskHour] > [timeManager getHourWithTimeT: theCurrentTime]))
+          if(   (daytimeStartTime <= theCurrentTime) 
+             && (daytimeEndTime > theCurrentTime))
           {
               //currentPhase = DAY;  
               //phaseOfPrevStep = NIGHT;
@@ -2487,7 +2489,7 @@ Boston, MA 02111-1307, USA.
            //
            // Switch day->night
            // 
-           if([solarManager getDuskHour] <= [timeManager getHourWithTimeT: theCurrentTime])
+           if(daytimeEndTime <= theCurrentTime) 
            {
               //currentPhase = NIGHT;
               //phaseOfPrevStep = DAY;

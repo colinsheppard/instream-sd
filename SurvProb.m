@@ -1,11 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
+
 
 
 
@@ -70,20 +88,20 @@
 }
 
 
-- setIsStarvProb: (BOOL) aBool
+- setIsStarvProb: (unsigned) aBool
 {
 
-  isStarvProb = (unsigned) aBool;
+  isStarvProb = aBool;
 
   return self;
 
 }
 
 
-- setAnAgentKnows: (BOOL) aBool
+- setAnAgentKnows: (unsigned) aBool
 {
 
-  anAgentKnows = (unsigned) aBool;
+ anAgentKnows = aBool;
 
  return self;
 
@@ -105,11 +123,7 @@
 
 - (const char *) getName
 {
-
-   //fprintf(stdout, "SurvProb >>>> getName >>>> probName = %s\n", probName);
-   //fflush(0);
-
-   return probName;
+  return [probSymbol getName];
 }
 
 
@@ -131,10 +145,6 @@
    return (BOOL) anAgentKnows;
 }
 
-- (id <List>) getFuncList
-{
-    return funcList;
-}
 
 
 - (double) getSurvivalProb
@@ -150,7 +160,6 @@
 
 
 - createLogisticFuncWithInputMethod: (SEL) inputMethod
-                withInputObjectType: (id <Symbol>) anObjType
                          andXValue1: (double) xValue1
                          andYValue1: (double) yValue1
                          andXValue2: (double) xValue2
@@ -225,7 +234,6 @@
 
 - createCustomFuncWithClassName: (char *) className
               withInputSelector: (SEL) anInputSelector
-            withInputObjectType: (id <Symbol>) objType
 {
    //
    // SurvProb knows nothing about the custom function
@@ -248,17 +256,41 @@
    //fprintf(stdout, "SurvProb >>>> createCustomFuncWithClassName >>>> aFunc = %p\n", aFunc);
    //fflush(0);
   
-  [funcList addLast: aFunc];
+   [funcList addLast: aFunc];
 
-  return aFunc;
+   return aFunc;
 
 }
 
-- (void) drop
+
+- createObjectValueFuncWithInputSelector: (SEL) anObjSelector
 {
-    [scratchZone free: probName];
-    [funcList deleteAll];
-    [super drop];
+
+    id aFunc = nil;
+
+    //fprintf(stdout, "SurvProb >>>> createObjectValueFuncWithInputSelector >>>> BEGIN\n");
+    //fflush(0);
+
+    aFunc = [ObjectValueFunc createBegin: [self getZone]
+                         withInputSelector: anObjSelector];
+
+
+    [funcList addLast: aFunc];
+
+    //fprintf(stdout, "SurvProb >>>> createObjectValueFuncWithInputSelector >>>> aFunc = %p END\n", aFunc);
+    //fflush(0);
+  
+    return aFunc;
+
+}
+
+
+- (void) drop {
+  //fprintf(stdout, "SurvProb >>>> drop BEGIN\n");
+  //fflush(0);
+  if(probName != nil)[scratchZone free: probName];
+  //fprintf(stdout, "SurvProb >>>> drop END\n");
+  //fflush(0);
 }
 
 

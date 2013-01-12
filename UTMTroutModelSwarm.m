@@ -103,7 +103,7 @@ id <Symbol> Feed, Hide;
   //
   // habitatSpace createEnd is done in buildObjects
   //
-  [habitatSpace setModelSwarm: self];
+  [habitatSpace setModel: self];
   [ObjectLoader load: habitatSpace fromFileNamed: habParamFile];
 
   return self;
@@ -3789,7 +3789,6 @@ id <Symbol> Feed, Hide;
     [observerSwarm redrawRaster];
     return self;
 }
-
 
 //////////////////////////////////////////////////////////
 //

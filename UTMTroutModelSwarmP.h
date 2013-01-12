@@ -33,12 +33,6 @@ Boston, MA 02111-1307, USA.
 
 - (time_t)getModelTime;
 - addToEmptyReddList: aRedd;
-
-- createNewFishWithSpeciesIndex: (int) speciesNdx  
-                        Species: (id <Symbol>) species
-                            Age: (int) age
-                         Length: (double) fishLength;
-
 - addAFish: aTrout;
 - (id <List>) getLiveFishList;
 - (BOOL) getAppendFiles;
@@ -53,23 +47,32 @@ Boston, MA 02111-1307, USA.
 - (id <List>) getReddList;
 
 - (int) getNumberOfSpecies;
-- (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;
-- (id <List>) getSpeciesSymbolList;
 - (id <Zone>) getModelZone;
 
 - (id <Symbol>) getFishMortalitySymbolWithName: (char *) aName;
 - (id <Symbol>) getReddMortalitySymbolWithName: (char *) aName;
 - (id <Symbol>) getAgeSymbolForAge: (int) anAge;
-- (id <List>) getAgeSymbolList;
-- (id <Symbol>) getReachSymbolWithName: (char *) aName;
 //- (id <BinomialDist>) getReddBinomialDist;
-- getReddBinomialDist;
-- updateTkEventsFor: aReach;
-
-- updateHabSurvProbs;
 
 - switchColorRepFor: aHabitatSpace;
 
+
+/*
+ *
+ * These methods aren't in UTMTroutModelSwarm.m, but probably should be
+ *
+ *
+- createNewFishWithSpeciesIndex: (int) speciesNdx  
+                        Species: (id <Symbol>) species
+                            Age: (int) age
+                         Length: (double) fishLength;
+- (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;
+- (id <List>) getSpeciesSymbolList;
+- (id <List>) getAgeSymbolList;
+- (id <Symbol>) getReachSymbolWithName: (char *) aName;
+- getReddBinomialDist;
+- updateTkEventsFor: aReach;
+- updateHabSurvProbs;
 - (BOOL) getWriteFoodAvailabilityReport;
 - (BOOL) getWriteDepthReport;
 - (BOOL) getWriteVelocityReport;
@@ -83,6 +86,7 @@ Boston, MA 02111-1307, USA.
 - (BOOL) getWriteReddMortReport;
 - (BOOL) getWriteIndividualFishReport;
 - (BOOL) getWriteCellCentroidReport;
+*/
 @end
 
 @class UTMTroutModelSwarm;

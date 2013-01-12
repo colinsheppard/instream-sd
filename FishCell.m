@@ -929,6 +929,16 @@ Boston, MA 02111-1307, USA.
     return self;
 }
 
+///////////////////////////////////////
+//
+// getAnglingPressure
+//
+///////////////////////////////////////
+- (double) getAnglingPressure
+{
+    return [space getAnglingPressure];
+}
+
 /////////////////////////////////
 //
 // tagDestCells

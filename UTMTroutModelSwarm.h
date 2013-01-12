@@ -10,6 +10,7 @@
 #import <objectbase/Swarm.h>
 #import <analysis/Averager.h>
 
+#import "UTMTroutModelSwarmP.h"
 #import "globals.h"
 #import "Rainbow.h"
 #import "Brown.h"
@@ -78,7 +79,7 @@ struct FishStockType {
 typedef struct FishStockType FishStockStruct;
 
 
-@interface UTMTroutModelSwarm: Swarm
+@interface UTMTroutModelSwarm: Swarm<UTMTroutModelSwarm>
 {
   id <List> speciesClassList;
 
