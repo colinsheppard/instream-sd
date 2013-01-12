@@ -340,6 +340,8 @@ long int maxYCoordinate;
 - (BOOL) shouldFishMoveAt: (time_t) theCurrentTime;
 -  updateMeanCellDepthAndVelocity: (double) aMeanFlow;
 - updateAnglePressureWith: (time_t) aTime;
+- (double) getDailyMeanFlow;
+- (double) getPrevDailyMeanFlow;
 
 
 //
