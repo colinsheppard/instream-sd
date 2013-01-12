@@ -1620,8 +1620,11 @@ Boston, MA 02111-1307, USA.
        withAgentKnows: YES
       withIsStarvProb: NO];
 
+     /*
+      * comment this out for now, Steve will think through parameters needed later
      [survMgr addConstantFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
                           withValue: fishParams->mortFishTerrPredMin];
+      */
 
      [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
                           withInputObjectType: 0
@@ -1714,6 +1717,9 @@ Boston, MA 02111-1307, USA.
                                   withXValue2: fishParams->mortFishAqPredF1
                                   withYValue2: 0.1];
 
+
+     /*
+      * comment this out for now, Steve will think through parameters needed later
      [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "AquaticPredation"] 
                           withInputObjectType: 0
                             withInputSelector: M(getPiscivorousFishDensity)
@@ -1721,6 +1727,7 @@ Boston, MA 02111-1307, USA.
                                   withYValue1: 0.9
                                   withXValue2: fishParams->mortFishAqPredP1
                                   withYValue2: 0.1];
+				  */
 
 
      [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "AquaticPredation"] 
