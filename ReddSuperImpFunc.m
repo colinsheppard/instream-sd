@@ -133,7 +133,7 @@
 
                   reddSize = otherReddFishParams->reddSize;
                  
-                  cellArea = [cell getUTMCellArea];
+                  cellArea = [cell getPolyCellArea];
   
                   cellGravelFrac = [[aRedd getWorld] getCellFracSpawn];
  

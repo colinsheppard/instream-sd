@@ -342,7 +342,7 @@ id <Symbol> Feed, Hide;
   //
   // Breakout reporters... 
   //
-  [self buildBreakoutReporters];
+  [self createBreakoutReporters];
 
 
   if(theColormaps != nil) 
@@ -1963,6 +1963,58 @@ id <Symbol> Feed, Hide;
     return mortSymbol;
 }
 
+////////////////////////////////////////////
+//
+// getReachSymbolWithName
+//
+////////////////////////////////////////////
+- (id <Symbol>) getReachSymbolWithName: (char *) aName
+{
+    id <ListIndex> lstNdx;
+    id aSymbol = nil;
+    id reachSymbol = nil;
+    char* reachName = NULL;
+
+    //fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
+    //fflush(0);
+
+    lstNdx = [reachSymbolList listBegin: scratchZone]; 
+
+    while(([lstNdx getLoc] != End) && ((aSymbol = [lstNdx next]) != nil))
+    {
+        reachName = (char *) [aSymbol getName];
+        if(strncmp(aName, reachName, strlen(aName)) == 0) 
+        {
+           reachSymbol = aSymbol;
+           [scratchZone free: reachName];
+           reachName = NULL;
+           break;
+        }
+
+        if(reachName != NULL) 
+        {
+           [scratchZone free: reachName];
+           reachName = NULL;
+        }
+    }
+  
+    [lstNdx drop];
+
+    if(reachSymbol == nil)
+    {
+        reachSymbol = [Symbol create: modelZone setName: aName];
+        [reachSymbolList addLast: reachSymbol];
+    }
+
+
+    //fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
+    //fflush(0);
+
+
+    return reachSymbol;
+
+}
+
 
 
 
@@ -3458,7 +3510,6 @@ id <Symbol> Feed, Hide;
 
 
 
-
 //////////////////////////////////////////////////////
 //
 ////
@@ -3467,87 +3518,86 @@ id <Symbol> Feed, Hide;
 //////////
 /////////////////////////////////////////////////////
 
-- buildBreakoutReporters
+
+//////////////////////////////////////////////////////
+//
+// createBreakoutReporters
+//
+/////////////////////////////////////////////////////
+- createBreakoutReporters
 {
+
   BOOL fileOverWrite = TRUE;
-
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> buildBreakoutReporters >>>> BEGIN\n");
-  //fflush(0);
-
-  if(liveFish == nil)
-  {
-      fprintf(stderr, "ERROR TroutModelSwarm >>>> buildBreakoutReporters >>>> liveFish list is nil\n");
-      fflush(0);
-      exit(1);
-  }
-  if(speciesSymbolList == nil)
-  {
-      fprintf(stderr, "ERROR TroutModelSwarm >>>> buildBreakoutReporters >>>> speciesSymbolList is nil\n");
-      fflush(0);
-      exit(1);
-  }
+  BOOL suppressBreakoutColumns = NO;
 
   if(appendFiles == TRUE)
   {
      fileOverWrite = FALSE;
   }
 
-  if(fishOutputFile == (char *) nil)
+  if((scenario != 1) || (replicate != 1))
   {
-      fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> buildBreakoutReporters >>>> fishOutputFile is nil, set in Model.Setup\n");
-      fflush(0);
-      exit(1);
+      suppressBreakoutColumns = YES;
+      fileOverWrite = FALSE;
   }
-  
+      
+  //
+  // Fish mortality reporter
+  //
+  fishMortalityReporter = [BreakoutReporter   createBeginWithCSV: modelZone
+                                                  forList: deadFish
+                                       //withOutputFilename: "FishMortality.rpt"
+                                       withOutputFilename: (char *) fishMortalityFile
+                                        withFileOverwrite: fileOverWrite];
+					//withColumnWidth: 25];
 
-  liveFishReporter = [BreakoutReporter   createBegin: modelZone
+
+  [fishMortalityReporter addColumnWithValueOfVariable: "scenario"
+                                        fromObject: self
+                                          withType: "int"
+                                         withLabel: "Scenario"];
+
+  [fishMortalityReporter addColumnWithValueOfVariable: "replicate"
+                                        fromObject: self
+                                          withType: "int"
+                                         withLabel: "Replicate"];
+
+  [fishMortalityReporter addColumnWithValueOfVariable: "modelDate"
+                                        fromObject: self
+                                          withType: "string"
+                                         withLabel: "ModelDate"];
+
+  [fishMortalityReporter breakOutUsingSelector: @selector(getReachSymbol)
+                                withListOfKeys: reachSymbolList];
+
+  [fishMortalityReporter breakOutUsingSelector: @selector(getSpecies)
+                                withListOfKeys: speciesSymbolList];
+
+  [fishMortalityReporter breakOutUsingSelector: @selector(getAgeSymbol)
+                                withListOfKeys: ageSymbolList];
+
+  [fishMortalityReporter breakOutUsingSelector: @selector(getCauseOfDeath)
+                                withListOfKeys: fishMortSymbolList];
+
+  [fishMortalityReporter createOutputWithLabel: "Count"
+                                  withSelector: @selector(getFishCount)
+                              withAveragerType: "Count"];
+
+  [fishMortalityReporter suppressColumnLabels: suppressBreakoutColumns];
+
+  fishMortalityReporter = [fishMortalityReporter createEnd];
+
+
+  //
+  // Live fish reporter
+  //
+  liveFishReporter = [BreakoutReporter   createBeginWithCSV: modelZone
                                              forList: liveFish
-                                  withOutputFilename: fishOutputFile
-                                   withFileOverwrite: fileOverWrite
-                                     withColumnWidth: 25];
+                                  //withOutputFilename: "LiveFish.rpt"
+                                  withOutputFilename: (char *) fishOutputFile
+                                   withFileOverwrite: fileOverWrite];
+  //withColumnWidth: 25];
 
-  [liveFishReporter breakOutUsingSelector: @selector(getSpecies)
-                          withListOfKeys: speciesSymbolList];
-
-  [liveFishReporter breakOutUsingSelector: @selector(getAgeSymbol)
-                           withListOfKeys: ageSymbolList];
-
-  //[liveFishReporter breakOutUsingSelector: @selector(getFishActivitySymbol)
-                           //withListOfKeys: fishActivitySymbolList];
-
-  //[liveFishReporter createOutputWithLabel: "FoodCons"
-                             //withSelector: @selector(getTotalFoodCons)
-                         //withAveragerType: "Total"];
-
-  [liveFishReporter createOutputWithLabel: "Count"
-                             withSelector: @selector(getFishActivity)
-                         withAveragerType: "Count"];
-
-  [liveFishReporter createOutputWithLabel: "FractionFeeding"
-                             withSelector: @selector(getIsFishFeeding)
-                         withAveragerType: "Average"];
-
-  [liveFishReporter createOutputWithLabel: "MeanLength"
-                             withSelector: @selector(getFishLength)
-                         withAveragerType: "Average"];
-
-  [liveFishReporter createOutputWithLabel: "MeanWeight"
-                             withSelector: @selector(getFishWeight)
-                         withAveragerType: "Average"];
-
-  [liveFishReporter createOutputWithLabel: "MaxLength"
-                             withSelector: @selector(getFishLength)
-                         withAveragerType: "Max"];
-
-  /*
-  [liveFishReporter createOutputWithLabel: "MeanDepth"
-                             withSelector: @selector(getWorldDepth)
-                         withAveragerType: "Average"];
-
-  [liveFishReporter createOutputWithLabel: "MeanVelocity"
-                             withSelector: @selector(getWorldVelocity)
-                         withAveragerType: "Average"];
-  */
 
   [liveFishReporter addColumnWithValueOfVariable: "scenario"
                                       fromObject: self
@@ -3564,142 +3614,37 @@ id <Symbol> Feed, Hide;
                                         withType: "string"
                                        withLabel: "ModelDate"];
 
-  [liveFishReporter addColumnWithValueFromSelector: @selector(getModelHour)
-                                        fromObject: (id) self
-                                          withType: "long"
-                                         withLabel: "ModelHour"];
+  [liveFishReporter breakOutUsingSelector: @selector(getReachSymbol)
+                           withListOfKeys: reachSymbolList];
 
-  [liveFishReporter addColumnWithValueOfVariable: "currentPhase"
-                                      fromObject: habitatSpace
-                                        withType: "int" 
-                                       withLabel: "CurrentPhase"];
+  [liveFishReporter breakOutUsingSelector: @selector(getSpecies)
+                           withListOfKeys: speciesSymbolList];
 
-  [liveFishReporter addColumnWithValueOfVariable: "numHoursSinceLastStep"
-                                      fromObject: (id) self
-                                        withType: "int" 
-                                       withLabel: "NumHoursSinceLastStep"];
+  [liveFishReporter breakOutUsingSelector: @selector(getAgeSymbol)
+                           withListOfKeys: ageSymbolList];
 
-  [liveFishReporter addColumnWithValueOfVariable: "currentHourlyFlow"
-                                      fromObject: (id) habitatSpace
-                                        withType: "double" 
-                                       withLabel: "CurrentHourlyFlow"];
-
-  [liveFishReporter addColumnWithValueOfVariable: "temperature"
-                                      fromObject: (id) habitatSpace
-                                        withType: "double" 
-                                       withLabel: "Temperature"];
- 
-  liveFishReporter = [liveFishReporter createEnd];
-  
-  
-  if(deadFish == nil)
-  {
-       fprintf(stderr, "ERROR TroutModelSwarm >>>> buildBreakoutReporters >>>> deadFish list is nil\n");
-       fflush(0);
-       exit(1);
-  }
-
-
-  //
-  // Create the dead fish report...
-  //
-  deadFishReporter = [BreakoutReporter   createBegin: modelZone
-                                             forList: deadFish
-                                  withOutputFilename: fishMortalityFile
-                                   withFileOverwrite: fileOverWrite
-                                     withColumnWidth: 20];
-
-
-  [deadFishReporter breakOutUsingSelector: @selector(getSpecies)
-                       withListOfKeys: speciesSymbolList];
-
-  [deadFishReporter breakOutUsingSelector: @selector(getAgeSymbol)
-                       withListOfKeys: ageSymbolList];
-
-
-  [deadFishReporter breakOutUsingSelector: @selector(getFishActivitySymbol)
-                           withListOfKeys: fishActivitySymbolList];
-
-  [deadFishReporter breakOutUsingSelector: @selector(getCauseOfDeath)
-                       withListOfKeys: fishMortSymbolList];
-
-  [deadFishReporter createOutputWithLabel: "Count"
-                             withSelector: @selector(getFishActivity)
+  [liveFishReporter createOutputWithLabel: "Count"
+                             withSelector: @selector(getFishCount)
                          withAveragerType: "Count"];
 
-  [deadFishReporter addColumnWithValueOfVariable: "scenario"
-                                      fromObject: self
-                                        withType: "int"
-                                       withLabel: "Scenario"];
-
-  [deadFishReporter addColumnWithValueOfVariable: "replicate"
-                                      fromObject: self
-                                        withType: "int"
-                                       withLabel: "Replicate"];
-
-  [deadFishReporter addColumnWithValueOfVariable: "modelDate"
-                                      fromObject: self
-                                        withType: "string"
-                                       withLabel: "ModelDate"];
-
-  [deadFishReporter addColumnWithValueFromSelector: @selector(getModelHour)
-                                        fromObject: (id) self
-                                          withType: "long"
-                                         withLabel: "ModelHour"];
-
-  [deadFishReporter addColumnWithValueOfVariable: "currentPhase"
-                                      fromObject: habitatSpace
-                                        withType: "int" 
-                                       withLabel: "CurrentPhase"];
-
-  deadFishReporter = [deadFishReporter createEnd];
-
-  
-
-
-  //
-  // Create the move report ...
-  //
-  moveFishReporter = [BreakoutReporter   createBegin: modelZone
-                                             forList: liveFish
-                                  withOutputFilename: "CumDistanceMoved.rpt"
-                                   withFileOverwrite: fileOverWrite
-                                     withColumnWidth: 15];
-
-  [moveFishReporter breakOutUsingSelector: @selector(getSpecies)
-                       withListOfKeys: speciesSymbolList];
-
-  [moveFishReporter breakOutUsingSelector: @selector(getAgeSymbol)
-                       withListOfKeys: ageSymbolList];
-
-
-  [moveFishReporter createOutputWithLabel: "CumDistMoved"
-                             withSelector: @selector(getFishCumulativeDistanceMoved)
+  [liveFishReporter createOutputWithLabel: "MeanLength"
+                             withSelector: @selector(getFishLength)
                          withAveragerType: "Average"];
 
-[moveFishReporter addColumnWithValueOfVariable: "scenario"
-                                      fromObject: self
-                                        withType: "int"
-                                       withLabel: "Scenario"];
+  [liveFishReporter createOutputWithLabel: "TotalWeight"
+                             withSelector: @selector(getFishWeight)
+                         withAveragerType: "Total"];
 
-  [moveFishReporter addColumnWithValueOfVariable: "replicate"
-                                      fromObject: self
-                                        withType: "int"
-                                       withLabel: "Replicate"];
+  [liveFishReporter createOutputWithLabel: "MeanWeight"
+                             withSelector: @selector(getFishWeight)
+                         withAveragerType: "Average"];
 
-  [moveFishReporter addColumnWithValueOfVariable: "modelDate"
-                                      fromObject: self
-                                        withType: "string"
-                                       withLabel: "ModelDate"];
+  [liveFishReporter suppressColumnLabels: suppressBreakoutColumns];
 
-  moveFishReporter = [moveFishReporter createEnd];
-
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> buildBreakoutReporters >>>> END\n");
-  //fflush(0);
+  liveFishReporter = [liveFishReporter createEnd];
 
   return self;
 }
-
 
 ////////////////////////////////////////////
 //
@@ -3721,8 +3666,8 @@ id <Symbol> Feed, Hide;
    // Changed from updateByAccumulation to updateByReplacement
    // per request from sfr during mem leak debug. skj 18Jun08
    //
-   [deadFishReporter updateByReplacement];
-   [deadFishReporter output];
+   [fishMortalityReporter updateByReplacement];
+   [fishMortalityReporter output];
 
    //
    // Added the following during memory leak debug

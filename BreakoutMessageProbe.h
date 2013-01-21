@@ -1,9 +1,12 @@
 /*
-inSTREAM Version 4.2, October 2006.
-Individual-based stream trout modeling software. Developed and maintained by Steve Railsback (Lang, Railsback & Associates, Arcata, California) and
-Steve Jackson (Jackson Scientific Computing, McKinleyville, California).
-Development sponsored by EPRI, US EPA, USDA Forest Service, and others.
-Copyright (C) 2004 Lang, Railsback & Associates.
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,12 +24,12 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
-#include <string.h>
-#include <stdlib.h>
 
 
 #import <objectbase/SwarmObject.h>
 #import <objectbase/MessageProbe.h>
+#import <string.h>
+#import <stdlib.h>
 
 #ifndef TRUE
    #define TRUE 1
@@ -49,6 +52,7 @@ Boston, MA 02111-1307, USA.
 
    int columnWidth;
 
+   BOOL useCSV;
 
 }
 
@@ -68,6 +72,7 @@ Boston, MA 02111-1307, USA.
 - (char *) getColumnLabel;
 - (id) getDataObject;
 - (SEL) getDataSelector;
+- setUseCSV: (BOOL) aUseCSV;
 - (char *) getDataType;
 - (char *) getFormatString;
 

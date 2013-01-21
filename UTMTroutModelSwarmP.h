@@ -41,6 +41,36 @@ Boston, MA 02111-1307, USA.
 - (FILE *) getReddSummaryFilePtr;
 - (FILE *) getReddReportFilePtr;
 
+  //THE FOLLOWING VARIABLES ARE INITIALIZED BY Model.Setup
+  //THE FOLLOWING VARIABLES ARE INITIALIZED BY Model.Setup
+  //THE FOLLOWING VARIABLES ARE INITIALIZED BY Model.Setup
+
+  int          randGenSeed;
+  int          numberOfSpecies;
+
+  int          runStartYear;
+  int          runStartDay;
+  char * runStartDate;
+  char * runEndDate;
+  const char*  fishOutputFile;
+  const char*  fishMortalityFile;
+  const char*  reddMortalityFile;
+  const char*  individualFishFile;
+  const char*  reddOutputFile;
+  char* popInitDate;
+  int          fileOutputFrequency;
+  char*        movementRule;
+  int	    resultsAgeThreshold;
+  char*	    resultsCensusDay;
+
+  //END VARIABLES INITIALIZED BY Model.Setup
+  //END VARIABLES INITIALIZED BY Model.Setup
+  //END VARIABLES INITIALIZED BY Model.Setup
+
+  //// NEW VARIABLES CONTROLLED BY OR USED BY LIMITING FACTOR TOOL
+  double lftNumAdultTrout;	  // Total number of all adult trout with age >= resultsAgeThreshold, summed across every resultsCensusDay
+  double lftBiomassAdultTrout;	  // Total weight of all adult trout with age >= resultsAgeThreshold, summed across every resultsCensusDay
+  int lftNumCensusDays;		  // Number of census days, used to calculate average of the above to metrics 
 
 //- createANewFishFrom: aRedd;
 - addToKilledList: aFish;

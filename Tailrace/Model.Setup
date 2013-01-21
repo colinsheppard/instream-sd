@@ -35,7 +35,7 @@ fishVelocityUseFileName         VelocityUse.Out
 tagFishColor                   LimeGreen
 
 
-utmHabSetupFile           Reach.Setup
+habSetupFile           Reach.Setup
 
 @end
 

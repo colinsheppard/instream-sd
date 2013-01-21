@@ -213,7 +213,10 @@ Boston, MA 02111-1307, USA.
 - calcDailyMeanDepthAndVelocityFor: (double) aMeanFlow;
 - (double) getAnglingPressure;
 - (double) getDailyMeanFlow;
+- (double) getDailyMaxFlow;
 - (double) getPrevDailyMeanFlow;
+- (double) getPrevDailyMaxFlow;
+- (double) getNextDailyMaxFlow;
 - (double) getChangeInDailyFlow;
 - (int) getPhaseOfPrevStep;
 - (int) getCurrentPhase;

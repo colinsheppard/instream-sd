@@ -226,10 +226,11 @@ id <List> liveFish;
 id <List> killedFish;
 id <List> deadFish;
 BreakoutReporter* liveFishReporter;
-BreakoutReporter* deadFishReporter;
+BreakoutReporter* fishMortalityReporter;
 BreakoutReporter* moveFishReporter;
 id <List> ageSymbolList;
 id <List> fishActivitySymbolList;
+id <List> reachSymbolList;
 
 
 id <List> reddList;
@@ -271,6 +272,7 @@ double checkParam;
   int numberOfReaches;
   id <List> reachList;
 }
+
 
 + create: aZone;
 
@@ -388,6 +390,7 @@ double checkParam;
 - (id <Symbol>) getAgeSymbolForAge: (int) anAge;
 - (id <Symbol>) getFishMortalitySymbolWithName: (char *) aName;
 - (id <Symbol>) getReddMortalitySymbolWithName: (char *) aName;
+- (id <Symbol>) getReachSymbolWithName: (char *) aName;
 
 - (BOOL) whenToStop;
 
@@ -443,7 +446,7 @@ double checkParam;
 
 
 
-- buildBreakoutReporters;
+- createBreakoutReporters;
 - outputBreakoutReport;
 
 - setShadeColorMax: (double) aShadeColorMax;
