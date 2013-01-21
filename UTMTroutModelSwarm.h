@@ -451,7 +451,6 @@ double checkParam;
 
 - setShadeColorMax: (double) aShadeColorMax;
 - switchColorRep;
-- updateCells;
 - redrawRaster;
 
 - (void) drop;

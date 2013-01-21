@@ -3717,18 +3717,6 @@ id <Symbol> Feed, Hide;
 }
 
 
-///////////////////////////////////
-//
-// updateCells
-//
-//////////////////////////////////
-- updateCells
-{
-    [habitatSpace updateCells];
-    return self;
-}
-
-
 /////////////////////////////////////
 //
 // redrawRaster

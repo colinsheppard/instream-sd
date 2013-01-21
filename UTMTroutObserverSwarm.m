@@ -662,7 +662,6 @@
   }
 
 
-  [troutModelSwarm updateCells];
   [self redrawRaster];
 
   //fprintf(stdout, "UTMTroutOPbserverSwarm >>>> switchColorRep END\n");
