@@ -21,9 +21,9 @@ Value   YES
 Value   YES
 Value   YES
 	
-ClassName	UTMHabitatSpace
+ClassName	HabitatSpace
 InstanceName	NONE
-ParamName	utmFlowFile
+ParamName	flowFile
 ValueType	filename
 Value	Test-Flow.Data
 Value	FG-Steady-30-Flow.Data

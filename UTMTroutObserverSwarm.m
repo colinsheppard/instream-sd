@@ -95,20 +95,20 @@
   probeMap = [CustomProbeMap createBegin: aZone];
   [probeMap setProbedClass: [FishCell class]];
   probeMap = [probeMap createEnd];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "utmCellNumber"
-  				   inClass: [UTMCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellNumber"
+  				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "rasterColorVariable"
-  				   inClass: [UTMCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "utmCellDepth"
-  				   inClass: [UTMCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "utmCellVelocity"
-  				   inClass: [UTMCell class]]];
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellDepth"
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellVelocity"
+  				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "meanDepth"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "meanVelocity"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "interiorColor"
-  				   inClass: [UTMCell class]]];
+  				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "cellFracSpawn"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "cellFracShelter"
@@ -135,10 +135,10 @@
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "numberOfFish"
   				   inClass: [FishCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForMessage: "tagUTMCell"
-  				   inClass: [UTMCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForMessage: "unTagUTMCell"
-  				   inClass: [UTMCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForMessage: "tagPolyCell"
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForMessage: "unTagPolyCell"
+  				   inClass: [PolyCell class]]];
   [probeLibrary setProbeMap: probeMap For: [FishCell class]];
 
 
@@ -156,7 +156,7 @@
                              "emergeDays",
                              "fracDeveloped",
                              "spawnerLength",
-                             "utmCellNumber",
+                             "polyCellNumber",
                              ":",
                              NULL];
   [probeLibrary setProbeMap: probeMap For: [UTMRedd class]];
@@ -408,14 +408,14 @@
       exit(1);
   }
 
-  [depthColormap setColor: UTMBOUNDARYCOLOR ToName: "black"];
+  [depthColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
   [depthColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
   [depthColormap setColor: TAG_FISH_COLOR ToName: "green"];
   [depthColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
   //[depthColormap setColor: NIGHTTIMERASTER ToName: "gray5"];
   [depthColormap setColor: NIGHTTIMERASTER ToName: "MidnightBlue"];
 
-  [velocityColormap setColor: UTMBOUNDARYCOLOR ToName: "black"];
+  [velocityColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
   [velocityColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
   [velocityColormap setColor: TAG_FISH_COLOR ToName: "green"];
   [velocityColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
@@ -423,7 +423,7 @@
   [velocityColormap setColor: NIGHTTIMERASTER ToName: "MidnightBlue"];
   
   /*
-  [utmColormap setColor: UTMBOUNDARYCOLOR ToName: "black"];
+  [utmColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
   [utmColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
   [utmColormap setColor: TAG_FISH_COLOR ToName: "green"];
   [utmColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
@@ -433,8 +433,8 @@
 
   /*
   [utmColormap setColor: TAG_CELL_COLOR ToName: "aquamarine"];
-  [utmColormap setColor: UTMINTERIORCOLOR ToName: "yellow"];
-  [utmColormap setColor: UTMBOUNDARYCOLOR ToName: "LightCyan"];
+  [utmColormap setColor: POLYINTERIORCOLOR ToName: "yellow"];
+  [utmColormap setColor: POLYBOUNDARYCOLOR ToName: "LightCyan"];
   */
 
   /*
@@ -511,16 +511,16 @@
    [utmWorldRaster pack];				  // draw the window.
 
 
-   utmCellDisplay = [Object2dDisplay createBegin: obsZone];
-   [utmCellDisplay setDisplayWidget: utmWorldRaster];
-   [utmCellDisplay setDiscrete2dToDisplay: habitatSpace];
-   [utmCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
-   [utmCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
-   utmCellDisplay = [utmCellDisplay createEnd];
+   polyCellDisplay = [Object2dDisplay createBegin: obsZone];
+   [polyCellDisplay setDisplayWidget: utmWorldRaster];
+   [polyCellDisplay setDiscrete2dToDisplay: habitatSpace];
+   [polyCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
+   [polyCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
+   polyCellDisplay = [polyCellDisplay createEnd];
 
    [utmWorldRaster setButton: ButtonLeft
                       Client: habitatSpace 
-                     Message: M(probeUTMCellAtX:Y:)];
+                     Message: M(probePolyCellAtX:Y:)];
      
    [utmWorldRaster setButton: ButtonRight
                       Client: habitatSpace 
@@ -704,7 +704,7 @@
 
   }
 
-  [utmCellDisplay display];
+  [polyCellDisplay display];
   [utmWorldRaster drawSelf];
 
   return self;
@@ -721,7 +721,7 @@
   //{
     [self redrawRaster];
     //[utmWorldRaster erase];
-    //[utmCellDisplay display];
+    //[polyCellDisplay display];
     //[utmWorldRaster drawSelf];
   //}
   if(mortalityGraph) 

@@ -104,6 +104,8 @@ Boston, MA 02111-1307, USA.
   // for instream-sd
   double meanDepth;
   double meanVelocity;
+  double availableHidingCover;
+  double fracHidingCover;
 }
 + create: aZone;
 - buildObjects;
@@ -212,7 +214,17 @@ Boston, MA 02111-1307, USA.
 - (double) getAnglingPressure;
 - (double) getDailyMeanFlow;
 - (double) getPrevDailyMeanFlow;
-
+- (double) getChangeInDailyFlow;
+- (int) getPhaseOfPrevStep;
+- (int) getCurrentPhase;
+- (BOOL) getDayNightPhaseSwitch;
+- (double) getNumberOfDaylightHours;
+- (double) getNumberOfNightHours;
+- resetHidingCover;
+- (BOOL) getIsHidingCoverAvailable;
+- (double) getHidingCoverAvailable;
+- (double) getDistanceTo: aCell;
+- moveHere: aFish;
 
 
 // FOOD METHODS

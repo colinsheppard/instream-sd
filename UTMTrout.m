@@ -1797,8 +1797,8 @@
 
 
   captureArea = [self calcCaptureArea: bestDest];
-  //cMax = [self calcCmax: [bestDest getPolyCellTemperature] ];
-  cMaxFT = [self calcCmaxTempFunction: [bestDest getPolyCellTemperature]];
+  //cMax = [self calcCmax: [bestDest getTemperature] ];
+  cMaxFT = [self calcCmaxTempFunction: [bestDest getTemperature]];
   driftFoodIntake = [self calcDriftFoodIntakeAt: bestDest];
   driftNetEnergy = [self calcDriftNetEnergyAt: bestDest];
   searchFoodIntake = [self calcSearchFoodIntakeAt: bestDest];
@@ -2829,7 +2829,7 @@
       exit(1);
   }
 
-  temperature = [aCell getPolyCellTemperature];
+  temperature = [aCell getTemperature];
   velocity = [aCell getPolyCellVelocity];
 
   aReactDistance = fishLength*((2.197-fRPA-fRPB*(velocity/fishLength)-(fRPC*temperature))/fRPD);
@@ -2852,7 +2852,7 @@
       fishTurbidMin = fishParams->fishTurbidMin;
       fTPA = fishParams->fishTurbidParamA; 
       fTPB = fishParams->fishTurbidParamB; 
-      turbidity = [aCell getPolyCellTurbidity];
+      turbidity = [aCell getTurbidity];
  
       //
       //  if turbidity <= fishTurbidMin (NTU), 
@@ -3017,7 +3017,7 @@
      exit(1);
   } 
  
-  temperature = [fishCell getPolyCellTemperature];
+  temperature = [fishCell getTemperature];
   
   if(isnan(temperature) || isinf(temperature))
   {
@@ -3027,7 +3027,7 @@
      exit(1);
   } 
 
-  cmaxTempFunction = [self calcCmaxTempFunction: [fishCell getPolyCellTemperature]];
+  cmaxTempFunction = [self calcCmaxTempFunction: [fishCell getTemperature]];
 
   //
   //Note the  instance variables cMax andfishWeight in the following
@@ -3138,7 +3138,7 @@
   fRPB = fishParams->fishRespParamB;
   fRPC = fishParams->fishRespParamC;
 
-  temperature = [fishCell getPolyCellTemperature];
+  temperature = [fishCell getTemperature];
 
   //
   //Note the instance variables fishWeight and standardResp
@@ -3510,8 +3510,8 @@
 
   velocity = [aCell getPolyCellVelocity];
   depth    = [aCell getPolyCellDepth];
-  temp    = [aCell getPolyCellTemperature];
-  turbidity = [aCell getPolyCellTurbidity];
+  temp    = [aCell getTemperature];
+  turbidity = [aCell getTurbidity];
   availableDrift = [aCell getHourlyAvailDriftFood];
   availableSearch = [aCell getHourlyAvailSearchFood];
 
@@ -3916,17 +3916,17 @@ return self;
                                                    (double) [fishCell getCurrentPhase], 
                                                    (double) [self getAmIInHidingCover],
                                                    [fishCell getPolyCellDepth],
-                                                   [fishCell getPolyCellTemperature],
+                                                   [fishCell getTemperature],
                                                    [self getPiscivorousFishDensity],
                                                    [self getFishLength],
-                                                   [fishCell getPolyCellTurbidity],
+                                                   [fishCell getTurbidity],
                                                    aqPredationSurvProb, 
                                                    (double) [fishCell getCurrentPhase],
                                                    (double) [self getAmIInHidingCover],
                                                    [fishCell getPolyCellDepth],
                                                    [fishCell getPolyCellVelocity],
                                                    [self getFishLength],
-                                                   [fishCell getPolyCellTurbidity],
+                                                   [fishCell getTurbidity],
                                                    [fishCell getDistanceToHide],
                                                    terrPredationSurvProb,
                                                    [self getFishCondition],
@@ -4094,7 +4094,7 @@ return self;
 
   lastSpawnDate = [[self getZone] alloc: 12*sizeof(char)];
 
-  currentTemp = [fishCell getPolyCellTemperature];
+  currentTemp = [fishCell getTemperature];
 
   currentTime = [self getCurrentTimeT];
 
@@ -4124,7 +4124,7 @@ return self;
                                                    [species getName],
                                                                  age,
                                                        [sex getName],
-                                    [fishCell getPolyCellTemperature],
+                                    [fishCell getTemperature],
                                              [fishCell getDailyMeanFlow],
                                             [fishCell getChangeInDailyFlow],
                                                           fishLength,

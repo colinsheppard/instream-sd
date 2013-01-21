@@ -156,7 +156,7 @@
 - setWorld: (FishCell *) aCell 
 {
   fishCell = aCell;
-  utmCellNumber = [fishCell getUTMCellNumber];
+  polyCellNumber = [fishCell getPolyCellNumber];
   return self;
 }
 
@@ -315,7 +315,8 @@
         id <ListIndex> lstNdx;
         id <SurvProb> aProb;
 
-        [fishCell updateReddHabitatSurvProb];
+	// I think the following is redundant of updateReddSurvivalProbFor --colin
+        // [fishCell updateReddHabitatSurvProb];
         [fishCell updateReddSurvivalProbFor: self];
 
         listOfSurvProbs = [fishCell getReddListOfSurvProbsFor: self];
@@ -426,7 +427,7 @@
 
        if(fishCell != nil) 
        {
-          temperature = [fishCell getUTMCellTemperature];
+          temperature = [fishCell getTemperature];
        }
        else 
        {
@@ -561,7 +562,7 @@
    //
    // Initialize fish's depth/length ratio so stranding mort works
    //
-   depthLengthRatio = [fishCell getUTMCellDepth] /length;
+   depthLengthRatio = [fishCell getPolyCellDepth] /length;
    [newFish setDepthLengthRatio: depthLengthRatio];
    [newFish setNewFishActivityToFEED];
   
@@ -638,7 +639,7 @@
 
       fprintf(printRptPtr,"Redd: %p Species: %s  CellNo: %d\n", self,
                                                                 [species getName],
-                                                                utmCellNumber);
+                                                                polyCellNumber);
 
       fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
 
@@ -743,7 +744,7 @@
 
        fprintf(printRptPtr,"Redd: %p Species: %s  CellNo: %d\n",self,
                                                    [species getName],
-                                                      utmCellNumber);
+                                                      polyCellNumber);
        fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
 
        formatString = "\n%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n";
@@ -821,7 +822,8 @@
              id <SurvProb> aProb;
 
              [fishCell updateReddSurvivalProbFor: self];
-             [fishCell updateReddHabitatSurvProb];
+             // again I think the following is redundant --colin
+	     //[fishCell updateReddHabitatSurvProb];
      
              listOfSurvProbs = [fishCell getReddListOfSurvProbsFor: self];
              lstNdx = [listOfSurvProbs listBegin: scratchZone];
@@ -865,9 +867,9 @@
        formatString = "%-12p%-12s%-12f%-12f%-12f%-12f%-12f%-12f%-12f%-12f\n";
      
        sprintf((char *)printString,formatString, self  , [species getName],
-                                                       [fishCell getUTMCellTemperature],
+                                                       [fishCell getTemperature],
                                                        [fishCell getDailyMeanFlow],
-                                                       [fishCell getUTMCellDepth],
+                                                       [fishCell getPolyCellDepth],
                                                        dewater,
                                                        scour,
                                                        loTemp,
@@ -917,7 +919,7 @@
                                        [model getReplicate],
                                        self,
                                        [species getName],
-                                       utmCellNumber,
+                                       polyCellNumber,
                                        reddCreateDate,
                                        initialNumberOfEggs,
                                        emptyDate,

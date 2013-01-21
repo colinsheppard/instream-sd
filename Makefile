@@ -16,6 +16,7 @@ OBJECTS=GraphDataObject.o \
 \
 	ZoneAllocMapper.o \
 \
+	ObjectValueFunc.o \
 	SurvProb.o \
 	SingleFuncProb.o \
 	LimitingFunctionProb.o \
@@ -47,9 +48,12 @@ OBJECTS=GraphDataObject.o \
 \
 	UTMTroutObserverSwarm.o \
 	UTMTroutModelSwarm.o \
+        HabitatManager.o \
+        HabitatSetup.o \
 	HabitatSpace.o \
-	UTMInputData.o \
-	UTMCell.o \
+	PolyInputData.o \
+	PolyCell.o \
+	PolyPoint.o \
 	FishCell.o \
 	UTMTrout.o \
 	Rainbow.o \
@@ -57,7 +61,9 @@ OBJECTS=GraphDataObject.o \
 	UTMRedd.o \
 	UTMInterpolatorFactory.o \
 	InterpolationTable.o \
-	TimeSeriesInputManager.o
+	TimeSeriesInputManager.o\
+	SolarManager.o\
+	KDTree.o
 
 
 OTHERCLEAN= trout.exe.core trout.exe unhappiness.output
@@ -79,6 +85,7 @@ UTMTroutBatchSwarm.o : UTMTroutBatchSwarm.[hm]
 #
 ZoneAllocMapper.o : ZoneAllocMapper.[hm]
 #
+ObjectValueFunc.o : ObjectValueFunc.[hm]
 SurvProb.o : SurvProb.[hm]
 SingleFuncProb.o : SingleFuncProb.[hm]
 MultiFunctionMax.o : MultiFunctionMax.[hm]
@@ -108,8 +115,9 @@ BreakoutAverager.o : BreakoutAverager.[hm]
 BreakoutVarProbe.o : BreakoutVarProbe.[hm]
 BreakoutMessageProbe.o : BreakoutMessageProbe.[hm]
 #
-UTMInputData.o : UTMInputData.[hm]
-UTMCell.o : UTMCell.[hm]
+PolyInputData.o : PolyInputData.[hm]
+PolyCell.o : PolyCell.[hm]
+PolyPoint.o : PolyCell.[hm]
 FishCell.o : FishCell.[hm]
 UTMTrout.o : UTMTrout.[hm]
 Rainbow.o : Rainbow.[hm]
@@ -118,7 +126,11 @@ UTMRedd.o : UTMRedd.[hm]
 UTMInterpolatorFactory.o : UTMInterpolatorFactory.[hm]
 InterpolationTable.o : InterpolationTable.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
+SolarManager.o : SolarManager.[hm]
 #
 UTMTroutObserverSwarm.o  : UTMTroutObserverSwarm.[hm]
 UTMTroutModelSwarm.o : UTMTroutModelSwarm.[hm]
+HabitatManager.o : HabitatManager.[hm]
+HabitatSetup.o : HabitatSetup.[hm]
 HabitatSpace.o : HabitatSpace.[hm]
+KDTree.o : KDTree.[hm]

@@ -52,7 +52,7 @@
   id <NormalDist> reddNormalDist;
 
   FishCell* fishCell;
-  int utmCellNumber;
+  int polyCellNumber;
   Color myColor;
   unsigned myRasterX, myRasterY;
 

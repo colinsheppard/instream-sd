@@ -82,7 +82,7 @@
   id <Map> utmColorMaps;
 
   id <ZoomRaster> utmWorldRaster;		// 2d display widget
-  id <Object2dDisplay> utmCellDisplay;	        // display the trout
+  id <Object2dDisplay> polyCellDisplay;	        // display the trout
 
   int maxShadeDepth;
   int maxShadeVelocity;

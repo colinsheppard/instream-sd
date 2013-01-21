@@ -54,6 +54,8 @@ Boston, MA 02111-1307, USA.
 - (id <Symbol>) getAgeSymbolForAge: (int) anAge;
 //- (id <BinomialDist>) getReddBinomialDist;
 
+- (int) getNumHoursSinceLastStep;
+
 - switchColorRepFor: aHabitatSpace;
 
 - (id <List>) getAgeSymbolList;

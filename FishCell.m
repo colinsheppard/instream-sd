@@ -882,6 +882,42 @@ Boston, MA 02111-1307, USA.
    return [space getHabShelterSpeedFrac];
 }
 
+////////////////////////////////
+//
+// getDistanceTo
+//
+///////////////////////////////
+- (double) getDistanceTo: aCell
+{
+   double distance  = 0.0;
+   double distanceX = 0.0;
+   double distanceY = 0.0;
+  
+   if(aCell != self)
+   {
+       distanceX =  [self getPolyCenterX] - [aCell getPolyCenterX];
+       distanceY =  [self getPolyCenterY] - [aCell getPolyCenterY];
+       distance = distanceX*distanceX + distanceY*distanceY;
+       distance = sqrt(distance);
+   }
+   else
+   {
+      distance = 0.0;
+   }
+  
+   /*
+   fprintf(stdout, "FishCell >>>> getDistanceTo >>>> utmCenterX = %f [aCell getUTMCenterX] = %f\n", utmCenterX, [aCell getUTMCenterX]);
+   fprintf(stdout, "FishCell >>>> getDistanceTo >>>> utmCenterY = %f [aCell getUTMCenterY] = %f\n", utmCenterY, [aCell getUTMCenterY]);
+   fprintf(stdout, "FishCell >>>> getDistanceTo >>>> distanceX = %f\n", distanceX);
+   fprintf(stdout, "FishCell >>>> getDistanceTo >>>> distanceY = %f\n", distanceY);
+   fprintf(stdout, "FishCell >>>> getDistanceTo >>>> distance = %f\n", distance);
+   fflush(0);
+   */
+   	
+   return distance;
+}
+
+
 
 ////////////////////////////////////////////////////////
 //
@@ -1187,6 +1223,46 @@ Boston, MA 02111-1307, USA.
       return isShelterAvailable;
 }
 
+////////////////////////////////////
+//
+// resetHidingCover
+//
+////////////////////////////////////
+- resetHidingCover
+{
+   availableHidingCover = [self getPolyCellArea] * fracHidingCover;
+   return self;
+
+}
+
+
+//////////////////////////////////////
+//
+// getIsHidingCoverAvailable
+//
+//////////////////////////////////////
+- (BOOL) getIsHidingCoverAvailable
+{
+    BOOL isHidingCoverAvailable = NO;
+
+    if(availableHidingCover > 0.0) 
+    {
+        isHidingCoverAvailable = YES;
+    }
+  
+    return isHidingCoverAvailable;
+}
+
+
+/////////////////////////////////////////
+//
+// getHidingCoverAvailable
+//
+////////////////////////////////////////
+- (double) getHidingCoverAvailable
+{
+    return availableHidingCover;  
+}   
 
 //////////////////////////////////////////////////////////////////
 //
@@ -1300,6 +1376,57 @@ Boston, MA 02111-1307, USA.
   return self;
 }
 
+
+/////////////////////////////////////////////////////////////
+//
+// moveHere
+//
+/////////////////////////////////////////////////////////////
+- moveHere: aFish 
+{
+  //
+  //in Hiding cover
+  //
+  if(availableHidingCover > 0.0)
+  {
+        if([aFish getAmIInHidingCover] == YES)
+        {
+           availableHidingCover -= [aFish getFishHidingCoverArea];
+        }
+        if(availableHidingCover < 0.0)
+        {
+           availableHidingCover = 0.0;
+        }
+  }      
+
+
+  //
+  // sheltered?
+  //
+  if(shelterAreaAvailable > 0.0 ) 
+  {
+      if([aFish getAmIInAShelter] == YES ) 
+      {
+             shelterAreaAvailable -= [aFish getFishShelterArea];
+      }
+      if(shelterAreaAvailable < 0.0) 
+      {
+         shelterAreaAvailable = 0.0;
+      }
+  }
+
+  hourlyAvailDriftFood -= [aFish getHourlyDriftConRate];
+  hourlyAvailSearchFood -= [aFish getHourlySearchConRate];
+
+  
+  [self addFish: aFish];
+
+#ifdef REPORT_ON
+  [self foodAvailAndConInCell: aFish];
+#endif
+
+  return self;
+}
 
 
 
@@ -1862,6 +1989,65 @@ Boston, MA 02111-1307, USA.
   return self;
 }
 
+////////////////////////////
+//
+// getPhaseOfPrevStep
+//
+////////////////////////////
+- (int) getPhaseOfPrevStep
+{
+   return [space getPhaseOfPrevStep];
+}
+
+//////////////////////////////
+//
+// getDayNightPhaseSwitch
+//
+//////////////////////////////
+- (BOOL) getDayNightPhaseSwitch
+{
+    return [space getDayNightPhaseSwitch];
+}
+
+/////////////////////////////////////////
+//
+// getCurrentPhase
+//
+////////////////////////////////////////
+- (int) getCurrentPhase
+{
+    return [space getCurrentPhase];
+}
+
+///////////////////////////////
+//
+// getNumberOfDaylightHours
+//
+///////////////////////////////
+- (double) getNumberOfDaylightHours
+{
+    return [space getNumberOfDaylightHours];
+}
+
+///////////////////////////////
+//
+// getNumberOfNightHours
+//
+///////////////////////////////
+- (double) getNumberOfNightHours
+{
+    return [space getNumberOfNightHours];
+}
+
+////////////////////////////////////////////////////////////////////
+//
+// getChangeInDailyFlow
+//
+////////////////////////////////////////////////////////////////////
+- (double) getChangeInDailyFlow 
+{
+  return [space getChangeInDailyFlow];
+}
 
 //////////////////////////////////////
 //
@@ -1870,7 +2056,7 @@ Boston, MA 02111-1307, USA.
 /////////////////////////////////////
 - (double) getDailyMeanFlow
 {
-//     return [space getDailyMeanFlow];
+     return [space getDailyMeanFlow];
 }
 
 ////////////////////////////////////
@@ -1880,7 +2066,7 @@ Boston, MA 02111-1307, USA.
 ////////////////////////////////////
 - (double) getPrevDailyMeanFlow
 {
- //   return [space getPrevDailyMeanFlow];
+    return [space getPrevDailyMeanFlow];
 }
 
 
