@@ -86,6 +86,21 @@ typedef struct FishStockType FishStockStruct;
   int scenario;
   int replicate;
 
+  // Optional Output Flags
+  BOOL  writeFoodAvailabilityReport;
+  BOOL  writeDepthReport;
+  BOOL  writeVelocityReport;
+  BOOL  writeDepthVelocityReport;
+  BOOL  writeHabitatReport;
+  BOOL  writeMoveReport;
+  BOOL  writeReadyToSpawnReport;
+  BOOL  writeSpawnCellReport;
+  BOOL  writeReddSurvReport;
+  BOOL  writeCellFishReport;
+  BOOL  writeReddMortReport;
+  BOOL  writeIndividualFishReport;
+  BOOL  writeCellCentroidReport;
+
 @public
   //int rasterResolution;
   //int rasterResolutionX;
@@ -265,14 +280,30 @@ time_t dataEndTime;
 double checkParam;
 
 // Stuff from instream 5.0
+  int fishCounter;
   int    polyRasterResolutionX;
   int    polyRasterResolutionY;
   char   polyRasterColorVariable[35];
   BOOL initialDay;
   int numberOfReaches;
   id <List> reachList;
+  id <Map> cmaxInterpolatorMap; //One for each species
+  id <Map> spawnDepthInterpolatorMap; //One for each species
+  id <Map> spawnVelocityInterpolatorMap; //One for each species
+  id <Map> captureLogisticMap; //One for each species
+  id <BinomialDist> reddBinomialDist;
 }
 
+// Stuff from instream 5.0
+- (UTMTrout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
+                                  Species: (id <Symbol>) species
+                                      Age: (int) age
+                                   Length: (double) fishLength;
+- updateTkEventsFor: aReach;
+- (id <BinomialDist>) getReddBinomialDist;
+- (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;
+- (id <List>) getSpeciesSymbolList;
+- (id <List>) getAgeSymbolList;
 
 + create: aZone;
 
@@ -450,7 +481,7 @@ double checkParam;
 - outputBreakoutReport;
 
 - setShadeColorMax: (double) aShadeColorMax;
-- switchColorRep;
+- switchColorRepFor: aHabitatSpace;
 - redrawRaster;
 
 - (void) drop;

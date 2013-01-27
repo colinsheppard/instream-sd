@@ -14,6 +14,7 @@
 #import "FishCell.h"
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"
+#import "LogisticFunc.h"
 
 
 //#define MOVE_REPORT_ON
@@ -236,38 +237,52 @@ id toggledFishForHabSurvUpdate;
 
 
 
-//
-// Variables added for the survival manager 4/6/01
-//
+  //
+  // Variables added for the survival manager 4/6/01
+  //
   id <Map> probMap;
   id <UniformDoubleDist> uniformDist;
   
   unsigned int timesHooked;
 
 
-//
-// Variables added for the Move Distance Report
-//
-int scenario;
-int replicate;
-
-
-//
-// Variables added for the breakout report
-//
-id <Symbol> ageSymbol;
-
-double fishDistanceLastMoved;
-double fishCumulativeDistanceMoved;
-
-//
-// Lists added for destination cells
-//
-id <List> goodDestCellList;
-id <List> badDestCellList;
-
+  //
+  // Variables added for the Move Distance Report
+  //
+  int scenario;
+  int replicate;
+  
+  
+  //
+  // Variables added for the breakout report
+  //
+  id <Symbol> ageSymbol;
+  
+  double fishDistanceLastMoved;
+  double fishCumulativeDistanceMoved;
+  
+  //
+  // Lists added for destination cells
+  //
+  id <List> goodDestCellList;
+  id <List> badDestCellList;
+  
+  // Stuff from Instream 5.0
+  int fishID;
+  id <InterpolationTable> cmaxInterpolator;
+  id <InterpolationTable> spawnDepthInterpolator;
+  id <InterpolationTable> spawnVelocityInterpolator;
+  LogisticFunc* captureLogistic;
 
 }
+
+// Stuff from Instream 5.0
+- setFishID: (int) anIDNum;
+- (int) getFishID;
+- setCMaxInterpolator: (id <InterpolationTable>) anInterpolator;
+- setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator;
+- setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator;
+- setCaptureLogistic: (LogisticFunc *) aLogisticFunc;
 
 + createBegin: aZone;
 - createEnd;

@@ -23,6 +23,7 @@ id <Symbol> Female, Male;  // sex of fish
 id <Symbol> Age0, Age1, Age2, Age3Plus;
 
 id <Symbol> Feed, Hide;
+Class *MyTroutClass; 
 
 @implementation UTMTroutModelSwarm
 
@@ -62,6 +63,22 @@ id <Symbol> Feed, Hide;
   troutModelSwarm->fishOutputFile = (char *) nil;
   troutModelSwarm->speciesDepthUseOutStreamMap = nil; 
   troutModelSwarm->speciesVelocityUseOutStreamMap = nil;
+
+  // Initialize optional output file controls
+  troutModelSwarm->writeFoodAvailabilityReport = NO;
+  troutModelSwarm->writeDepthReport = NO;
+  troutModelSwarm->writeVelocityReport = NO;
+  troutModelSwarm->writeHabitatReport = NO;
+  troutModelSwarm->writeDepthVelocityReport = NO;
+  troutModelSwarm->writeMoveReport = NO;
+  troutModelSwarm->writeReadyToSpawnReport = NO;
+  troutModelSwarm->writeSpawnCellReport = NO;
+  troutModelSwarm->writeReddSurvReport = NO;
+  troutModelSwarm->writeCellFishReport = NO;
+  troutModelSwarm->writeReddMortReport = NO;
+  troutModelSwarm->writeIndividualFishReport = NO;
+  troutModelSwarm->writeCellCentroidReport = NO;
+
   return troutModelSwarm;
 
 }
@@ -97,6 +114,8 @@ id <Symbol> Feed, Hide;
   [self readSpeciesSetupFile];
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
+
+  fishCounter = 0;
 
   habitatManager = [HabitatManager createBegin: modelZone];
   [habitatManager instantiateObjects];
@@ -1309,6 +1328,22 @@ id <Symbol> Feed, Hide;
 }  // buildActions
 
 
+///////////////////////////////////
+//
+// updateTkEvents
+//
+///////////////////////////////////
+- updateTkEventsFor: aReach
+{
+    //
+    // Passes message to the observer
+    // which in turn passes the message
+    // to the experSwarm.
+    //
+    [observerSwarm updateTkEventsFor: aReach];
+    return self;
+}
+
 //////////////////////////////////////////////////////
 //
 // activateIn
@@ -2018,7 +2053,6 @@ id <Symbol> Feed, Hide;
 
 
 
-/*
 ////////////////////////////////////
 //
 // updateHabSurvProbs
@@ -2029,8 +2063,90 @@ id <Symbol> Feed, Hide;
    [reachList forEach: M(updateHabSurvProbForAqPred)];
    return self;
 }
-*/
 
+//////////////////////////////////////////////////////
+//
+// createNewFishWithSpeciesIndex
+//
+/////////////////////////////////////////////////////
+- (UTMTrout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
+                                  Species: (id <Symbol>) species
+                                      Age: (int) age
+                                   Length: (double) fishLength 
+{
+
+  id newFish;
+  id <Symbol> ageSymbol = nil;
+  id <InterpolationTable> aCMaxInterpolator = nil;
+  id <InterpolationTable> aSpawnDepthInterpolator = nil;
+  id <InterpolationTable> aSpawnVelocityInterpolator = nil;
+  LogisticFunc* aCaptureLogistic = nil;
+
+  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
+  //fflush(0);
+
+  //
+  // The newFish color is currently being set in the observer swarm
+  //
+
+  newFish = [MyTroutClass[speciesNdx] createBegin: modelZone];
+
+  [newFish setFishParams: [fishParamsMap at: species]];
+
+  //
+  // set properties of the new Trout
+  //
+
+  ((UTMTrout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
+
+  ((UTMTrout *)newFish)->randGen = randGen;
+
+  ((UTMTrout *)newFish)->rasterResolutionX = polyRasterResolutionX;
+  ((UTMTrout *)newFish)->rasterResolutionY = polyRasterResolutionY;
+
+  [newFish setSpecies: species];
+  [newFish setSpeciesNdx: speciesNdx];
+  [newFish setAge: age];
+
+  ageSymbol = [self getAgeSymbolForAge: age];
+   
+  [newFish setAgeSymbol: ageSymbol];
+
+  [newFish setFishLength: fishLength];
+  [newFish setFishCondition: 1.0];
+  [newFish setFishWeightFromLength: fishLength andCondition: 1.0]; 
+  [newFish setTimeTLastSpawned: 0];    //Dec 31 1969
+
+  [newFish calcStarvPaAndPb];
+
+  if(fishColorMap != nil)
+  {
+     [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
+  }
+
+  [newFish setTimeManager: timeManager];
+  [newFish setModel: (id <UTMTroutModelSwarm>) self];
+
+  aCMaxInterpolator = [cmaxInterpolatorMap at: species];
+  aSpawnDepthInterpolator = [spawnDepthInterpolatorMap at: species];
+  aSpawnVelocityInterpolator = [spawnVelocityInterpolatorMap at: species];
+  aCaptureLogistic = [captureLogisticMap at: species];
+  
+  [newFish setCMaxInterpolator: aCMaxInterpolator];
+  [newFish setSpawnDepthInterpolator: aSpawnDepthInterpolator];
+  [newFish setSpawnVelocityInterpolator: aSpawnVelocityInterpolator];
+  [newFish setCaptureLogistic: aCaptureLogistic];
+
+  fishCounter++;  // Give each fish a serial number ID
+  [newFish setFishID: fishCounter];
+
+  newFish = [newFish createEnd];
+
+  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
+  //fflush(0);
+        
+  return newFish;
+}
 
 //////////////////////////////////////////
 //
@@ -2536,6 +2652,25 @@ id <Symbol> Feed, Hide;
   }
 
   return self;
+}
+
+////////////////////////////////////
+//
+// getSpeciesSymbolList
+//
+////////////////////////////////////
+- (id <List>) getSpeciesSymbolList
+{
+   return speciesSymbolList;
+}
+///////////////////////////////////
+//
+// getAgeSymbolList
+//
+///////////////////////////////////
+- (id <List>) getAgeSymbolList
+{
+   return ageSymbolList;
 }
 
 
@@ -3317,6 +3452,56 @@ id <Symbol> Feed, Hide;
 */
 
 
+////////////////////////////////////////////
+//
+// getSpeciesSymbolWithName
+//
+////////////////////////////////////////////
+- (id <Symbol>) getSpeciesSymbolWithName: (char *) aName
+{
+   id <Symbol> speciesSymbol = nil;
+   id <ListIndex> ndx = nil;
+   BOOL speciesNameFound = NO;
+   char* speciesName = NULL;
+
+   if(speciesSymbolList != nil)
+   {
+       ndx = [speciesSymbolList listBegin: scratchZone];
+   }
+   else
+   {
+      fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> method invoked before instantiateObjects\n");
+      fflush(0);
+      exit(1);
+   }
+
+   while(([ndx getLoc] != End) && ((speciesSymbol = [ndx next]) != nil))  
+   {
+        speciesName = (char *)[speciesSymbol getName];
+        if(strncmp(aName, speciesName, strlen(speciesName)) == 0)
+        {
+            speciesNameFound = YES;
+            [scratchZone free: speciesName];
+            speciesName = NULL; 
+            break;
+        }
+
+        if(speciesName != NULL)
+        { 
+            [scratchZone free: speciesName];
+            speciesName = NULL;
+        }
+   } 
+
+   if(!speciesNameFound)
+   {
+       fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> no species symbol for name %s\n", aName);
+       fflush(0);
+       exit(1);
+   } 
+
+   return speciesSymbol;
+}
 
 
 /////////////////////////////////////////////////////
@@ -3507,6 +3692,15 @@ id <Symbol> Feed, Hide;
    return reddSummaryFilePtr;
 }
 
+/////////////////////////////////////////////
+//
+// getReddBinomialDist
+//
+////////////////////////////////////////////
+- (id <BinomialDist>) getReddBinomialDist
+{
+   return reddBinomialDist;
+}
 
 
 
@@ -3696,26 +3890,30 @@ id <Symbol> Feed, Hide;
     return self;
 }
 
-//////////////////////////////////////////
+///////////////////////////////////////////////////////
 //
-// switchColorRep
+// switchColorRepFor 
 //
-////////////////////////////////////////
-- switchColorRep
+///////////////////////////////////////////////////////
+- switchColorRepFor: aHabitatSpace
 {
+    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> BEGIN\n");
+    fflush(0);
+
     if(observerSwarm == nil)
     {
-       fprintf(stderr, "WARNING: UTMTroutModelSwarm >>>> switchColorMap >>>> observerSwarm is nil >>>> Cannot handel your request\n");
+       fprintf(stderr, "WARNING: TroutModelSwarm >>>> switchColorRepFor >>>> observerSwarm is nil >>>> Cannot handle your request\n");
        fflush(0);
     }
 
-    [observerSwarm switchColorRep];  
+    [observerSwarm switchColorRepFor: aHabitatSpace];  
 
-    //[habitatSpace setShadeColorMax: shadeColorMax];
+
+    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> END\n");
+    fflush(0);
 
     return self;
 }
-
 
 /////////////////////////////////////
 //
@@ -3728,6 +3926,122 @@ id <Symbol> Feed, Hide;
     return self;
 }
 
+/////////////////////////////////////////////////////////////////
+//
+// getWriteFoodAvailabilityReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteFoodAvailabilityReport {
+  return writeFoodAvailabilityReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteDepthReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteDepthReport {
+  return writeDepthReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteVelocityReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteVelocityReport {
+  return writeVelocityReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteDepthVelocityReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteDepthVelocityReport {
+  return writeDepthVelocityReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteHabitatReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteHabitatReport {
+  return writeHabitatReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteMoveReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteMoveReport {
+  return writeMoveReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteReadyToSpawnReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteReadyToSpawnReport {
+  return writeReadyToSpawnReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteSpawnCellReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteSpawnCellReport {
+  return writeSpawnCellReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteReddSurvReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteReddSurvReport {
+  return writeReddSurvReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteCellFishReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteCellFishReport {
+  return writeCellFishReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteReddMortReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteReddMortReport {
+  return writeReddMortReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteIndividualFishReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteIndividualFishReport {
+  return writeIndividualFishReport;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// getWriteCellCentroidReport
+//
+//////////////////////////////////////////////////////////////
+- (BOOL) getWriteCellCentroidReport {
+  return writeCellCentroidReport;
+}
 //////////////////////////////////////////////////////////
 //
 // drop
@@ -3769,9 +4083,9 @@ id <Symbol> Feed, Hide;
      [liveFishReporter drop];
   }
 
-  if(deadFishReporter != nil)
+  if(fishMortalityReporter != nil)
   {
-     [deadFishReporter drop];
+     [fishMortalityReporter drop];
   }
 
   //if(moveFishReporter != nil)
