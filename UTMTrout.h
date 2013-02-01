@@ -283,6 +283,7 @@ id toggledFishForHabSurvUpdate;
 - setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator;
 - setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator;
 - setCaptureLogistic: (LogisticFunc *) aLogisticFunc;
+- (int) getFishCount;
 
 + createBegin: aZone;
 - createEnd;

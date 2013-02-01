@@ -229,7 +229,7 @@
 // _worldRasterDeath_
 //
 ///////////////////////////////
-- _worldRasterDeath_ : caller
+- worldRasterDeath : caller
 {
   //[utmWorldRaster drop];
   utmWorldRaster = nil;
@@ -494,7 +494,7 @@
    SET_WINDOW_GEOMETRY_RECORD_NAME (utmWorldRaster);
    utmWorldRaster = [utmWorldRaster createEnd];
    [utmWorldRaster enableDestroyNotification: self
-                          notificationMethod: @selector (utmRasterDeath:)];
+                          notificationMethod: @selector (worldRasterDeath:)];
 
    [utmWorldRaster setColormap: utmColormap];
 

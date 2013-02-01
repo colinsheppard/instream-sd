@@ -925,8 +925,8 @@ return self;
 /////////////////////////////////////////////
 - buildPolyCells
 {
-	//fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> BEGIN\n");
-	//fflush(0);
+	fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> BEGIN\n");
+	fflush(0);
 
     polyCellList = [List create: habitatZone];
    
@@ -953,8 +953,8 @@ return self;
     //[self outputCellCorners];
 
   
-    //fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> END\n");
-    //fflush(0);
+    fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> END\n");
+    fflush(0);
 
     return self;
 }
@@ -1022,6 +1022,8 @@ return self;
           (void) fgets(inputString, 300, dataFPTR);
 	  //fprintf(stdout, "%s\n", inputString);
 	  //fflush(0);
+	  //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> top loop\n");
+	  //fflush(0);
 
           if(strchr(inputString, '-') != NULL)
           { 
@@ -1036,6 +1038,8 @@ return self;
                isDataValid = YES;
                continue;
           }
+	  //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before validation \n");
+	  //fflush(0);
 
           if(isNewCell && isDataValid)
           {
@@ -1045,6 +1049,8 @@ return self;
 
               int cellNumber;
 
+	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before create FishCell \n");
+	      //fflush(0);
           
               newPolyCell = [FishCell create: habitatZone]; 
               [newPolyCell setSpace: self];
@@ -1058,8 +1064,6 @@ return self;
 	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before buildObjects\n");
 	      //fflush(0);
               [newPolyCell buildObjects]; //fishCell needs to have objects built
-	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after buildObjects\n");
-	      //fflush(0);
               [polyCellList addLast: newPolyCell];
               isNewCell = NO;
 
@@ -1073,6 +1077,8 @@ return self;
 	      //fflush(0);
 
               [newPolyCell setPolyCellNumber: cellNumber]; 
+	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after setcellnum\n");
+	      //fflush(0);
          
 
               continue;
@@ -1083,14 +1089,22 @@ return self;
           //
           if(!isNewCell && isDataValid)
           {
+		  //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before getLast\n");
+		  //fflush(0);
                  newPolyCell = [polyCellList getLast];
+		 //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after getLast\n");
+		 //fflush(0);
 
                  //
                  // newPolyCell needs to know how much
                  // memeory to allocate for the coordinates
                  //
                  [newPolyCell incrementNumCoordinates: 1];
+		 //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after increment coord\n");
+		 //fflush(0);
           }                              
+	  //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after parse data\n");
+	  //fflush(0);
 
     }
 
@@ -1202,9 +1216,9 @@ return self;
 
     if((polyRasterResolutionX <= 0) || (polyRasterResolutionY <= 0))
     {
-        fprintf(stdout, "ERROR: HabitatSpace >>>> createPolyCells >>>> a rasterResolution variable is negative\n");
+        fprintf(stderr, "ERROR: HabitatSpace >>>> createPolyCells >>>> a rasterResolution variable is negative, X=%d, Y=%d \n",polyRasterResolutionX, polyRasterResolutionY);
         fflush(0);
-        exit(1);
+	//exit(1);
     }
     //
     // We need to find the min x- and y- coordinates also the max

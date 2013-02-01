@@ -1697,6 +1697,7 @@ Boston, MA 02111-1307, USA.
                                    withYValue2: 0.1];
 */
 
+     /*
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Velocity"] 
                         withType: "SingleFunctionProb"
                   withAgentKnows: YES
@@ -1711,7 +1712,9 @@ Boston, MA 02111-1307, USA.
                                    withYValue1: 0.9
                                    withXValue2: fishParams->mortFishVelocityV1
                                    withYValue2: 0.1];
+				   */
 
+     /*
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Stranding"] 
                         withType: "SingleFunctionProb"
                   withAgentKnows: YES
@@ -1724,9 +1727,10 @@ Boston, MA 02111-1307, USA.
                                    withYValue1: 0.1
                                    withXValue2: fishParams->mortFishStrandD9
                                    withYValue2: 0.9];
+				   */
 
-      //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before PoorCondition \n");
-      //fflush(0);
+     //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before PoorCondition \n");
+     //fflush(0);
      //
      // Poor Condition
      //

@@ -69,6 +69,10 @@
   obsZone = [Zone create: [self getZone]];
   troutModelSwarm = [UTMTroutModelSwarm create: obsZone];
 
+  [troutModelSwarm setPolyRasterResolutionX:  rasterResolutionX
+                   setPolyRasterResolutionY:  rasterResolutionY 
+                 setPolyRasterColorVariable:  rasterColorVariable];
+
   fprintf(stderr,"modelSetupFile = %s \n", modelSetupFile);
   fflush(stderr);
 
@@ -95,11 +99,6 @@
 - buildObjects
  {
   [super buildObjects];
-
-  [troutModelSwarm setUTMRasterResolution:  rasterResolution
-                  setUTMRasterResolutionX:  rasterResolutionX
-                  setUTMRasterResolutionY:  rasterResolutionY 
-                setUTMRasterColorVariable:  rasterColorVariable];
 
   [troutModelSwarm buildObjectsWith: nil
                             andWith: 0.0]; 

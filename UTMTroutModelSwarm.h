@@ -300,6 +300,9 @@ double checkParam;
                                   Species: (id <Symbol>) species
                                       Age: (int) age
                                    Length: (double) fishLength;
+-   setPolyRasterResolutionX:  (int) aRasterResolutionX
+    setPolyRasterResolutionY:  (int) aRasterResolutionY
+    setPolyRasterColorVariable:  (char *) aRasterColorVariable;
 - updateTkEventsFor: aReach;
 - (id <BinomialDist>) getReddBinomialDist;
 - (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;

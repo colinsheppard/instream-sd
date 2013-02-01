@@ -421,6 +421,22 @@ Class *MyTroutClass;
 } // buildObjects  
 
 
+/////////////////////////////////////////////////////////////
+//
+// setPolyRasterResolution
+//
+/////////////////////////////////////////////////////////////
+-   setPolyRasterResolutionX:  (int) aRasterResolutionX
+    setPolyRasterResolutionY:  (int) aRasterResolutionY
+  setPolyRasterColorVariable:  (char *) aRasterColorVariable
+{
+     polyRasterResolutionX = aRasterResolutionX;
+     polyRasterResolutionY = aRasterResolutionY;
+     strncpy(polyRasterColorVariable, aRasterColorVariable, 35);
+
+
+     return self;
+}
 
 /////////////////////////
 //

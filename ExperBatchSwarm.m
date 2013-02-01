@@ -721,9 +721,6 @@
                       id <ListIndex> instanceNameNdx = [experInstanceNames listBegin: scratchZone];
                       while(([instanceNameNdx getLoc] != End) && ((instanceName = [instanceNameNdx next]) != nil))
                       {
-                           fprintf(stdout, "ExperBatchSwarm >>>> setUpModel .... instanceName = %p\n", instanceName);
-                           fflush(0);
-                           xprint(instanceName);
                            if([anObj respondsTo: @selector(getInstanceName)])
                            {
                                if(strcmp([instanceName getName], [anObj getInstanceName]) == 0)
@@ -756,7 +753,7 @@
 
           [lstNdx drop];
 
-       } //while Class
+    } //while Class
     if([instanceNamesUsed getCount] != [experInstanceNames getCount])
     {
         id <ListIndex> ndx = [experInstanceNames listBegin: scratchZone];
@@ -781,7 +778,6 @@
     [instanceNamesUsed drop];
     instanceNamesUsed = nil;
 
-
   } // if modelZone
 
 
@@ -805,9 +801,14 @@
 /////////////////////////////////////////////////
 - buildModel 
 {
+  fprintf(stdout, "ExperBatchSwarm >>>> setupModel >>>> END\n");
+  fflush(0);
   [subSwarm buildObjects];
   [subSwarm buildActions];
   [subSwarm activateIn: nil];
+  fprintf(stdout, "ExperBatchSwarm >>>> setupModel >>>> END\n");
+  fflush(0);
+  exit(0);
 
   return self;
 }  
