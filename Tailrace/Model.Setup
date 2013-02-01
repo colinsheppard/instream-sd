@@ -37,5 +37,7 @@ tagFishColor                   LimeGreen
 
 habSetupFile           Reach.Setup
 
+siteLatitude                 40.9
+
 @end
 

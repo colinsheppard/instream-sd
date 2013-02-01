@@ -111,6 +111,8 @@ Class *MyTroutClass;
        exit(1);
   }
 
+  reachSymbolList = [List create: modelZone];
+
   [self readSpeciesSetupFile];
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
@@ -119,19 +121,13 @@ Class *MyTroutClass;
 
   habitatManager = [HabitatManager createBegin: modelZone];
   [habitatManager instantiateObjects];
-  //[habitatManager setSiteLatitude: siteLatitude];
+  [habitatManager setSiteLatitude: siteLatitude];
   [habitatManager createSolarManager];
   [habitatManager setModel: self];
   [habitatManager readReachSetupFile: "Reach.Setup"];
   [habitatManager setNumberOfSpecies: numberOfSpecies];
   [habitatManager setFishParamsMap: fishParamsMap];
   [habitatManager instantiateHabitatSpacesInZone: modelZone];
-  
-  //
-  // habitatSpace createEnd is done in buildObjects
-  //
-  [habitatSpace setModel: self];
-  [ObjectLoader load: habitatSpace fromFileNamed: habParamFile];
 
   return self;
 
@@ -2010,8 +2006,8 @@ Class *MyTroutClass;
     id reachSymbol = nil;
     char* reachName = NULL;
 
-    //fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
-    //fflush(0);
+    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
+    fflush(0);
 
     lstNdx = [reachSymbolList listBegin: scratchZone]; 
 
@@ -2042,8 +2038,8 @@ Class *MyTroutClass;
     }
 
 
-    //fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
-    //fflush(0);
+    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
+    fflush(0);
 
 
     return reachSymbol;
@@ -2099,7 +2095,7 @@ Class *MyTroutClass;
 
   ((UTMTrout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
 
-  ((UTMTrout *)newFish)->randGen = randGen;
+  //((UTMTrout *)newFish)->randGen = randGen;
 
   ((UTMTrout *)newFish)->rasterResolutionX = polyRasterResolutionX;
   ((UTMTrout *)newFish)->rasterResolutionY = polyRasterResolutionY;

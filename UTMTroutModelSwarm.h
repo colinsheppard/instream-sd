@@ -286,6 +286,7 @@ double checkParam;
   char   polyRasterColorVariable[35];
   BOOL initialDay;
   int numberOfReaches;
+  double siteLatitude;
   id <List> reachList;
   id <Map> cmaxInterpolatorMap; //One for each species
   id <Map> spawnDepthInterpolatorMap; //One for each species

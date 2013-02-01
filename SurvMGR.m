@@ -79,6 +79,9 @@ Boston, MA 02111-1307, USA.
 - createEnd
 {
 
+	//fprintf(stdout, "SurvMGR >>>> createEnd >>>> BEGIN\n");
+	//fflush(0);
+
   id aProb = nil;
 
 
@@ -86,6 +89,8 @@ Boston, MA 02111-1307, USA.
   //
   //
   [listOfSurvProbs forEach: M(createEnd)];
+  //fprintf(stdout, "SurvMGR >>>> createEnd >>>> after forEach createEnd ....\n");
+  //fflush(0);
 
   numberOfProbs = [listOfSurvProbs getCount];
 
@@ -104,6 +109,8 @@ Boston, MA 02111-1307, USA.
       [listOfKnownNonStarvSurvProbs removeAll];
   }
  
+  //fprintf(stdout, "SurvMGR >>>> createEnd >>>> after listOfKnownNon....\n");
+  //fflush(0);
 
   [survProbLstNdx setLoc: Start];
 
@@ -125,6 +132,8 @@ Boston, MA 02111-1307, USA.
   //
   knownNonStarvSurvProbLstNdx  = [listOfKnownNonStarvSurvProbs listBegin: mgrZone];
 
+  //fprintf(stdout, "SurvMGR >>>> createEnd >>>> END\n");
+  //fflush(0);
 
   return [super createEnd];
 

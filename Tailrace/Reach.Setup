@@ -5,6 +5,7 @@ Reach name, parameter file name, junction numbers, and input file names.
 
 REACHBEGIN
 reachName                         TailRace
+habParamFile                      TailraceHabitat.Params
 cellGeomFile                      Tailrace-Geom.Data
 flowFile                          FlamingGorgePHHourlyFlow.Data
 temperatureFile                   GreendaleTemperature.Data

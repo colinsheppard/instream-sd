@@ -160,13 +160,13 @@ double mortFishAqPredCoverFactor;
 
 
 // Added from instream 5.0
-double mortFishHiTT1;
-double mortFishHiTT9;
-double mortFishTerrPredF1;
-double mortFishTerrPredF9;
-double mortFishAqPredMin;
-double mortFishAqPredF1;
-double mortFishAqPredF9;
+/*double mortFishHiTT1;*/
+/*double mortFishHiTT9;*/
+/*double mortFishTerrPredF1;*/
+/*double mortFishTerrPredF9;*/
+/*double mortFishAqPredMin;*/
+/*double mortFishAqPredF1;*/
+/*double mortFishAqPredF9;*/
 
 
 double mortFishConditionK1;

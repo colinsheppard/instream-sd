@@ -925,19 +925,27 @@ return self;
 /////////////////////////////////////////////
 - buildPolyCells
 {
-    //fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> BEGIN\n");
-    //fflush(0);
+	//fprintf(stdout, "HabitatSpace >>>> buildPolyCells >>>> BEGIN\n");
+	//fflush(0);
 
     polyCellList = [List create: habitatZone];
    
     [self read2DGeometryFile];
+    //fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
+    //fflush(0);
     [self createPolyAdjacentCells];
+    //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
+    //fflush(0);
     [self calcPolyCellCentroids];
+    //fprintf(stdout, "HabitatSpace >>>> afterCalcCentroids \n");
+    //fflush(0);
     [self createPolyInterpolationTables];
     [self setCellShadeColorMax];
     [self readPolyCellDataFile];
     [self calcPolyCellsDistFromRE];
     [self buildKDTree];
+    //fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    //fflush(0);
 
     if([[self getModel] getWriteCellCentroidReport]){
       [self outputCellCentroidRpt];
@@ -1012,6 +1020,8 @@ return self;
           FishCell* newPolyCell = (FishCell *) nil;
 
           (void) fgets(inputString, 300, dataFPTR);
+	  //fprintf(stdout, "%s\n", inputString);
+	  //fflush(0);
 
           if(strchr(inputString, '-') != NULL)
           { 
@@ -1045,7 +1055,11 @@ return self;
               [newPolyCell setFishParamsMap: fishParamsMap];
               [newPolyCell setTimeManager: timeManager];
 
+	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before buildObjects\n");
+	      //fflush(0);
               [newPolyCell buildObjects]; //fishCell needs to have objects built
+	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> after buildObjects\n");
+	      //fflush(0);
               [polyCellList addLast: newPolyCell];
               isNewCell = NO;
 
@@ -1053,10 +1067,10 @@ return self;
 
               cellNumber = atoi(sCellNumber);
 
-              //fprintf(stdout, "%s\n", sCellNumber);
-              //fprintf(stdout, "%s\n", sCentroidX);
-              //fprintf(stdout, "%s\n", sCentroidY);
-              //fflush(0);
+	      //fprintf(stdout, "%s\n", sCellNumber);
+	      //fprintf(stdout, "%s\n", sCentroidX);
+	      //fprintf(stdout, "%s\n", sCentroidY);
+	      //fflush(0);
 
               [newPolyCell setPolyCellNumber: cellNumber]; 
          

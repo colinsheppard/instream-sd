@@ -552,8 +552,8 @@ Boston, MA 02111-1307, USA.
   HabitatSpace* habitatSpace = nil;
   int habitatSpaceCount;
 
-  //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> BEGIN\n");
-  //fflush(0); 
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> BEGIN\n");
+  fflush(0); 
   
   for(habitatSpaceCount = 0; habitatSpaceCount < numHabitatSpaces; habitatSpaceCount++)
   {  
@@ -576,8 +576,6 @@ Boston, MA 02111-1307, USA.
 
      [habitatSpace buildObjects];
 
-  //fprintf(stdout, "HabitatManager >>> before setPolyCellGeomFile\n");
-  //fflush(0); 
      [habitatSpace setPolyCellGeomFile: [habSetup getCellGeomFile]];
      [habitatSpace setHydraulicFile: [habSetup getHydraulicFile]];
      [habitatSpace setFlowFile: [habSetup getFlowFile]];
@@ -586,8 +584,6 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setCellHabVarsFile: [habSetup getCellHabVarsFile]];
      [habitatSpace setListOfPolyInputData: [habSetup getListOfPolyInputData]];
    
-  //fprintf(stdout, "HabitatManager >>> after setListOfPolyInputData \n");
-  //fflush(0); 
   //xprint(habitatSpace);
 
      [habitatSpaceList addLast: habitatSpace];  
@@ -601,8 +597,8 @@ Boston, MA 02111-1307, USA.
   //
   habitatSpaceNdx = [habitatSpaceList listBegin: habManagerZone];
 
-  //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> END\n");
-  //fflush(0); 
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> END\n");
+  fflush(0); 
 
   return self;
 }
@@ -633,6 +629,8 @@ Boston, MA 02111-1307, USA.
      //[habitatSpace setSpaceDimensions];
 
      [habitatSpace setTimeManager: timeManager];
+  fprintf(stdout, "HabitatManager >>>> afterSetTimeMan \n");
+  fflush(0);
 
      //
      // Poly Cells BEGIN
@@ -644,6 +642,8 @@ Boston, MA 02111-1307, USA.
                            setShadeColorMax: shadeColorMax];
 
      [habitatSpace buildPolyCells];
+  fprintf(stdout, "HabitatManager >>>> afterBuildPolyC \n");
+  fflush(0);
 
      [habitatSpace setSizeX: [habitatSpace getSpaceDimX]  Y: [habitatSpace getSpaceDimY] ];
      habitatSpace = [habitatSpace createEnd];
@@ -660,6 +660,8 @@ Boston, MA 02111-1307, USA.
      [habitatSpace createTimeSeriesInputManagers]; 
 
      habitatSpace = [habitatSpace createEnd];
+  fprintf(stdout, "HabitatManager >>>> afterCreateEnd \n");
+  fflush(0);
 
      
      //
@@ -672,8 +674,8 @@ Boston, MA 02111-1307, USA.
 
   [self buildReachJunctions];
   
-  //fprintf(stdout, "HabitatManager >>>> finishBuildingTheHabitatSpaces >>>> END\n");
-  //fflush(0);
+  fprintf(stdout, "HabitatManager >>>> finishBuildingTheHabitatSpaces >>>> END\n");
+  fflush(0);
 
   return self;
 }

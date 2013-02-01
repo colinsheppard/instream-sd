@@ -30,19 +30,27 @@
 
 - createEnd
 {
+	//fprintf(stdout, "SingleFuncProb >>>> createEnd >>>> BEGIN, %s \n", [self getName]);
+	//fflush(0);
 
   
   if(singleFunc == nil)
   {
+	  //fprintf(stdout, "SingleFuncProb >>>> createEnd >>>> singleFunc == nil \n");
+	  //fflush(0);
      if([funcList getCount] > 1)
      {
         [Warning raiseEvent: "WARNING: SingleFuncProb >>>> more than one function on funcList\n"];
      }
   
+     //fprintf(stdout, "SingleFuncProb >>>> createEnd >>>> before getFirst \n");
+     //fflush(0);
      singleFunc = [funcList getFirst];
 
   }
 
+  //fprintf(stdout, "SingleFuncProb >>>> createEnd >>>> END\n");
+  //fflush(0);
   return [super createEnd];
 
 }

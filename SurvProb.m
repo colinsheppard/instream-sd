@@ -54,7 +54,8 @@ Boston, MA 02111-1307, USA.
 
 - createEnd
 {
-
+	//fprintf(stdout, "SurvProb >>>> creatEnd >>>> BEGIN\n");
+	//fflush(0);
    if(isStarvProb == 3)
    {
       [InternalError raiseEvent: "ERROR: SurvProb >>>> isStarvProb has not been set\n"];
@@ -70,7 +71,8 @@ Boston, MA 02111-1307, USA.
        funcListNdx = [funcList listBegin: [self getZone]];
    }
 
-
+   //fprintf(stdout, "SurvProb >>>> creatEnd >>>> END\n");
+   //fflush(0);
    return [super createEnd];
 
 }
