@@ -2,7 +2,7 @@
 #Steady flow experiments	
 #SFR; created:	7/06/2009 8:02
 	
-numberOfScenarios	5
+numberOfScenarios	1
 numberOfReplicates	1
 	
 sendScenarioCountToParam:	scenario
@@ -16,20 +16,20 @@ InstanceName	NONE
 ParamName	appendFiles
 ValueType	BOOL
 Value	NO
-Value   YES
-Value   YES
-Value   YES
-Value   YES
+#Value   YES
+#Value   YES
+#Value   YES
+#Value   YES
 	
 ClassName	HabitatSpace
 InstanceName	NONE
 ParamName	flowFile
 ValueType	filename
-Value	Test-Flow.Data
-Value	FG-Steady-30-Flow.Data
-Value	FG-Steady-40-Flow.Data
-Value	FG-Steady-50-Flow.Data
-Value	FG-Steady-60-Flow.Data
+Value	FlamingGorgePHHourlyFlow.Data
+#Value	FG-Steady-30-Flow.Data
+#Value	FG-Steady-40-Flow.Data
+#Value	FG-Steady-50-Flow.Data
+#Value	FG-Steady-60-Flow.Data
 #Value	FG-Steady-70-Flow.Data
 #Value	FG-Steady-80-Flow.Data
 #Value	FG-Steady-90-Flow.Data
@@ -51,8 +51,8 @@ InstanceName                   NONE
 ParamName                      fishSpawnMaxFlow
 ValueType                      double
 Value                          134
-Value                          134
-Value                          134
-Value                          134
-Value                          134
+#Value                          134
+#Value                          134
+#Value                          134
+#Value                          134
 

@@ -809,6 +809,8 @@
           }
     
 
+	  //fprintf(stdout,"start %d end %d input %d \n", startTime, endTime, anInputTime);
+	  //fflush(0);
           if((startTime <= anInputTime) && (anInputTime <= endTime))
           {
               numRecords++;
