@@ -546,8 +546,8 @@ Boston, MA 02111-1307, USA.
       polyPointI = [polyPointList atOffset: i];
       polyPointJ = [polyPointList atOffset: j];
 
-      polyCellArea += [polyPointI getXCoordinate] * [polyPointJ getYCoordinate];
-      polyCellArea -= [polyPointI getYCoordinate] * [polyPointJ getXCoordinate];
+      polyCellArea += [polyPointI getYCoordinate] * [polyPointJ getXCoordinate];
+      polyCellArea -= [polyPointI getXCoordinate] * [polyPointJ getYCoordinate];
 
 
    }
