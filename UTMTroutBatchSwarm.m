@@ -101,7 +101,7 @@
   [super buildObjects];
 
   [troutModelSwarm buildObjectsWith: nil
-                            andWith: 0.0]; 
+                            andWith: 1.0]; 
 
   return self;
 }  
