@@ -20,9 +20,8 @@
 #import "TimeManagerProtocol.h"
 #import "ZoneAllocMapper.h"
 #import "GraphDataObject.h"
-
+#import "YearShufflerP.h"
 #import "BreakoutReporter.h"
-
 #import "LogisticFunc.h"
 
 //#define INIT_FISH_REPORT
@@ -296,6 +295,20 @@ double checkParam;
   char **speciesPopFile;
   double ***speciesPopTable;
   char **speciesParameter;
+  BOOL shuffleYears;
+  BOOL shuffleYearReplace;
+  int shuffleYearSeed;
+  id <YearShuffler> yearShuffler;
+  char dataEndDate[12];
+  int startDay;
+  int startMonth;
+  int startYear;
+  int endDay;
+  int endMonth;
+  int endYear;
+  int numSimDays;
+  int simCounter;
+
 }
 
 // Stuff from instream 5.0
@@ -313,6 +326,7 @@ double checkParam;
 - (id <List>) getAgeSymbolList;
 - (id <List>) getSpeciesClassList;
 - (int) getNumberOfSpecies;
+- createYearShuffler;
 
 
 

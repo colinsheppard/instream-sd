@@ -63,6 +63,7 @@ OBJECTS=GraphDataObject.o \
 	InterpolationTable.o \
 	TimeSeriesInputManager.o\
 	SolarManager.o\
+	YearShuffler.o\
 	KDTree.o
 
 
@@ -133,4 +134,5 @@ UTMTroutModelSwarm.o : UTMTroutModelSwarm.[hm]
 HabitatManager.o : HabitatManager.[hm]
 HabitatSetup.o : HabitatSetup.[hm]
 HabitatSpace.o : HabitatSpace.[hm]
+YearShuffler.o : YearShufflerP.h YearShuffler.[hm]
 KDTree.o : KDTree.[hm]

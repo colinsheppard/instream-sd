@@ -199,6 +199,7 @@ char **speciesStocking;
           andWith: (double) aShadeColorMax
 {
   int genSeed;
+  time_t newYearTime = (time_t) 0;
 
   fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
@@ -294,6 +295,23 @@ char **speciesStocking;
   fishMortSymbolList = [List create: modelZone];
   reddMortSymbolList = [List create: modelZone];
 
+  if(shuffleYears == YES){
+     //
+     // Create the year shuffler and the data start and end times.
+     //
+     [self createYearShuffler];
+      newYearTime = [yearShuffler checkForNewYearAt: modelTime];
+
+      if (newYearTime != modelTime)
+      {
+         [timeManager setCurrentTime: newYearTime];
+         modelTime = newYearTime;
+      }
+  }else{
+      modelTime = runStartTime;
+      dataStartTime = runStartTime;
+      dataEndTime = runEndTime + 86400;
+  }
 
   //
   // Create the space in which the fish will live
@@ -377,6 +395,9 @@ char **speciesStocking;
   deadRedds     = [List create: modelZone];
 
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before speciesSymbolList \n");
+      fflush(0);
+
   //
   // Create and populate the speciesSymbolList needed by the breakout reporters
   //
@@ -411,6 +432,8 @@ char **speciesStocking;
      [lstNdx drop];  
   }
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
+      fflush(0);
   //
   // Breakout reporters... 
   //
@@ -427,6 +450,8 @@ char **speciesStocking;
   [QSort reverseOrderOf: liveFish];
   [self toggleFishForHabSurvUpdate];
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before createReproLog\n");
+      fflush(0);
 
   [self createReproLogistics];
 
@@ -462,6 +487,8 @@ char **speciesStocking;
   [self openReddSummaryFilePtr];
   [self openReddReportFilePtr];
  
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before stocking\n");
+      fflush(0);
 
   //
   // STOCKING
@@ -477,6 +504,70 @@ char **speciesStocking;
 
 } // buildObjects  
 
+
+///////////////////////////////////////////////
+//
+// createYearShuffler
+//
+///////////////////////////////////////////////
+- createYearShuffler
+{
+   startDay = [timeManager getDayOfMonthWithTimeT: runStartTime];
+   startMonth = [timeManager getMonthWithTimeT: runStartTime];
+   startYear = [timeManager getYearWithTimeT: runStartTime];
+
+   endDay = [timeManager getDayOfMonthWithTimeT: runEndTime];
+   endMonth = [timeManager getMonthWithTimeT: runEndTime];
+   endYear = [timeManager getYearWithTimeT: runEndTime];
+
+   if(shuffleYearSeed < 0.0)
+   {
+      fprintf(stderr, "ERROR: TroutModelSwarm >>>> createYearShuffler >>> shuffleYearSeed less than 0\n");
+      fflush(0);
+      exit(1);
+   }
+
+   yearShuffler = [YearShuffler   createBegin: modelZone 
+                                withStartTime: runStartTime
+                                  withEndTime: runEndTime
+                              withReplacement: shuffleYearReplace
+                              withRandGenSeed: shuffleYearSeed
+                              withTimeManager: timeManager];
+
+   yearShuffler = [yearShuffler createEnd];
+
+   if([[yearShuffler getListOfRandomizedYears] getCount] <= 1)
+   {
+       fprintf(stderr, "ERROR: TroutModelSwarm >>>> createYearShuffler >>>> Cannot use year shuffler for simulations of one year or less\n");
+       fflush(0);
+       exit(1);
+   }
+
+   //
+   // Now calculate dataStartTime and dataEndTime
+   //
+   {
+       int numSimYears = [[yearShuffler getListOfRandomizedYears] getCount];
+       int dataEndYear = [timeManager getYearWithTimeT: runStartTime] + numSimYears;
+       int dataEndMonth = startMonth;
+       int dataEndDay = startDay;
+
+       sprintf(dataEndDate, "%d/%d/%d", dataEndMonth, dataEndDay, dataEndYear);
+       dataStartTime = runStartTime;
+       dataEndTime = [timeManager getTimeTWithDate: dataEndDate
+                                          withHour: 12
+                                        withMinute: 0
+                                        withSecond: 0];
+
+       dataEndTime = dataEndTime + 86400;
+
+       fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> numSimYears %d\n", numSimYears);
+       fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> startYear %d endYear %d\n", startYear, endYear);
+       fflush(0);
+   }
+
+   return self;
+}
 
 /////////////////////////////////////////////////////////////
 //
