@@ -13,7 +13,7 @@ turbidityFile                     GreenRiverTurbidity.Data
 cellHabVarsFile                   TailraceCells.Data
 driftFoodFile			  FG-HrlyDrift_15E-12.Data
 reachLength                       1000
-cellHydraulicFile				Tailrace-Geom.Data
+cellHydraulicFile		  Tailrace-Hyd.csv
 
 habDownstreamJunctionNumber       2
 habUpstreamJunctionNumber         1
