@@ -741,7 +741,7 @@ return self;
 - createTimeSeriesInputManagers
 {
    flowInputManager = [TimeSeriesInputManager  createBegin: habitatZone
-                                              withDataType: "DAILY"
+                                              withDataType: "HOURLY"
                                              withInputFile: flowFile
                                            withTimeManager: timeManager
                                              withStartTime: dataStartTime
