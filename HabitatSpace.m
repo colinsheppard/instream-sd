@@ -146,37 +146,12 @@ Boston, MA 02111-1307, USA.
 {
    BOOL ERROR = NO;
 
-   if(habDriftConc  < 0.0)
-   {
-      ERROR = YES;
-   }          
-   if(habDriftRegenDist < 0.0)
-   {
+   if (habAnglePressJan < 0 || habAnglePressFeb	< 0 || habAnglePressMar	< 0 || habAnglePressApr	< 0 || habAnglePressMay	< 0 || habAnglePressJun	< 0 || habAnglePressJul	< 0 || habAnglePressAug	< 0 || habAnglePressSep	< 0 ||
+		   habAnglePressOct < 0 || habAnglePressNov < 0 || habAnglePressDec < 0){
       ERROR = YES;
    }
-   if(habMaxSpawnFlow < 0.0)
-   {
+   if (habAngleNightFactor < 0 || habDriftRegenDist < 0 || habFracFlowChangeForMovement	< 0 || habFracFlowChangeForMovement > 1 || habLatitude < 0 || habLatitude > 90 || habPreyEnergyDensity < 0 ||  habSearchProd  < 0 || habTwilightLength  < 0){
       ERROR = YES;
-   }
-   if(habPreyEnergyDensity < 0.0)
-   {
-      ERROR = YES;
-   }
-   if(habSearchProd < 0.0)
-   {
-      ERROR = YES;
-   }
-   if(habShearParamA == -99999999999.0)
-   {
-      ERROR = YES;
-   }
-   if(habShearParamB == -99999999999.0)
-   {
-      ERROR = YES;
-   }
-   if((habShelterSpeedFrac < 0) || habShelterSpeedFrac > 1.0)
-   {
-       ERROR = YES;
    }
 
    if(ERROR)
@@ -944,8 +919,8 @@ return self;
     [self readPolyCellDataFile];
     [self calcPolyCellsDistFromRE];
     [self buildKDTree];
-    //fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
-    //fflush(0);
+    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    fflush(0);
 
     if([[self getModel] getWriteCellCentroidReport]){
       [self outputCellCentroidRpt];
