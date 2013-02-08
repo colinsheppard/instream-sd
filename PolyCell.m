@@ -556,9 +556,10 @@ Boston, MA 02111-1307, USA.
 
    if(polyCellArea <= 0.0)
    {
-      fprintf(stderr, "ERROR: PolyCell >>>> calcPolyCellCentroid >>>> polyCellNumber = %d polyCellArea = %f\n", polyCellNumber, polyCellArea);
-      fflush(0);
-      exit(1);
+	   //fprintf(stderr, "WARNING: PolyCell Area less than zero, the coordinates are probably listed in counter-clockwise order. PolyCell >>>> calcPolyCellCentroid >>>> polyCellNumber = %d polyCellArea = %f\n", polyCellNumber, polyCellArea);
+	   //fflush(0);
+	   //exit(1);
+	   polyCellArea = -polyCellArea;
    }
 
    polyCenterX = 0.0;
