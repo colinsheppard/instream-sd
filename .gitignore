@@ -1,4 +1,4 @@
 *.o
 .libs
 *.exe
-*/*_Out*
+Tailrace/*.Out
