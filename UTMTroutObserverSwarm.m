@@ -484,6 +484,8 @@
                    setUTMRasterResolutionY:  rasterResolutionY 
                  setUTMRasterColorVariable:  rasterColorVariable];
 
+      fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> shadeColorMax = %s\n", shadeColorMax);
+      fflush(0);
    //[troutModelSwarm buildObjectsWith: utmColormap
    [troutModelSwarm buildObjectsWith: utmColorMaps
                              andWith: shadeColorMax];
