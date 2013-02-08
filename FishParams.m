@@ -296,30 +296,6 @@
 }
 
 
-- setSpeciesName: (char *) aSpeciesName
-{
-    speciesName = (char *) [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                  ofSize: (strlen(aSpeciesName) + 1) * sizeof(char)];
-
-    strncpy(speciesName, aSpeciesName, strlen(aSpeciesName) + 1);
-
-   //fprintf(stdout, "FishParams >>>> setSpeciesName >>>> strlen(aSpeciesName) = %ld\n", (long) strlen(aSpeciesName));
-   //fprintf(stdout, "FishParams >>>> setSpeciesName >>>> speciesName = %s\n", speciesName);
-   //fflush(0);
-
-    //exit(0);
-                             
-    return self;
-}
-
-
-- (char *) getSpeciesName
-{
-    return speciesName;
-}
-
-
-
 - (void) printSelf 
 {
 

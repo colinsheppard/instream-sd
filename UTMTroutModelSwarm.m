@@ -22,8 +22,14 @@
 id <Symbol> Female, Male;  // sex of fish
 id <Symbol> Age0, Age1, Age2, Age3Plus;
 
+id <Symbol> *mySpecies;
 id <Symbol> Feed, Hide;
 Class *MyTroutClass; 
+char **speciesName;
+char **speciesColor;
+char **speciesParameter;
+char **speciesPopFile;
+char **speciesStocking;
 
 @implementation UTMTroutModelSwarm
 
@@ -102,6 +108,9 @@ Class *MyTroutClass;
 /////////////////////////////////////////////////////////////
 - instantiateObjects 
 {
+       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects BEGIN\n"); 
+       fflush(0);
+   int numspecies;
    modelZone = [Zone create: globalZone];
 
   if(numberOfSpecies == 0)
@@ -114,8 +123,56 @@ Class *MyTroutClass;
   reachSymbolList = [List create: modelZone];
 
   [self readSpeciesSetupFile];
+
+       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 2, %d \n",numberOfSpecies); 
+       fflush(0);
+  //
+  // Create list of species symbols
+  //
+  mySpecies = (id *) [modelZone alloc: numberOfSpecies*sizeof(Symbol)];
+  for(numspecies = 0; numspecies < numberOfSpecies; numspecies++ )
+  {
+       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 3, %d \n",numspecies); 
+       fflush(0);
+     mySpecies[numspecies] = [Symbol create: modelZone setName: speciesName[numspecies] ];
+  }
+
+  speciesSymbolList = [List create: modelZone];
+  for(numspecies = 0; numspecies < numberOfSpecies; numspecies++ )
+  {
+    [speciesSymbolList addLast: mySpecies[numspecies] ];
+  }
+
+
+  fishMortSymbolList = [List create: modelZone];
+  reddMortSymbolList = [List create: modelZone];
+
+       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 3\n"); 
+       fflush(0);
+  [self getFishMortalitySymbolWithName: "DemonicIntrusion"];
+
+  fishParamsMap = [Map create: modelZone];
+
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
+
+  //
+  // To create additional age classes, add more symbols to this list.
+  // Then modify the code in getAgeSymbolForAge 
+  // that assigns symbols to fish.
+  // 
+  ageSymbolList = [List create: modelZone];
+
+  Age0     = [Symbol create: modelZone setName: "Age0"];
+  [ageSymbolList addLast: Age0];
+  Age1     = [Symbol create: modelZone setName: "Age1"];
+  [ageSymbolList addLast: Age1];
+  Age2     = [Symbol create: modelZone setName: "Age2"];
+  [ageSymbolList addLast: Age2];
+  Age3Plus = [Symbol create: modelZone setName: "Age3Plus"];
+  [ageSymbolList addLast: Age3Plus];
+
+  reachSymbolList = [List create: modelZone];
 
   fishCounter = 0;
 
@@ -257,7 +314,7 @@ Class *MyTroutClass;
                     setRasterColorVariable:   polyRasterColorVariable
                           setShadeColorMax:  shadeColorMax];
 
-  [habitatManager buildObjects];
+  [habitatManager finishBuildingTheHabitatSpaces];
   
   /*
    * for now ignore reporting stuff --colin
@@ -489,63 +546,36 @@ Class *MyTroutClass;
 /////////////////////////////////////////////////////
 - createFishParameters
 {
-   id <ListIndex> lstNdx;
-   SpeciesSetup* speciesSetup = (SpeciesSetup *) nil;
+   int speciesNdx;
 
-   int speciesNdx = 0;
-
-   fprintf(stdout, "UTMTroutModelSwarm >>>> createFishParameters >>>> BEGIN\n");
+   fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> BEGIN\n");
    fflush(0);
 
-   if((speciesSetupList == nil) || ([speciesSetupList getCount] == 0))
-   {
-       fprintf(stderr, "ERROR: UTMTroutModelSwarm >>> createFishParameters >>> check speciesSetupList\n");
-       fflush(0);
-       exit(1);
-   }
 
-   lstNdx = [speciesSetupList listBegin: scratchZone];
-
-   fishParamsMap = [Map create: modelZone];
-
-   while(([lstNdx getLoc] != End) && ((speciesSetup = (SpeciesSetup *) [lstNdx next]) != (SpeciesSetup *) nil))
+   for(speciesNdx = 0; speciesNdx < numberOfSpecies; speciesNdx++) 
    {
       FishParams* fishParams = [FishParams createBegin:  modelZone];
-      [ObjectLoader load: fishParams fromFileNamed: speciesSetup->fishParamFile];
+      [ObjectLoader load: fishParams fromFileNamed: speciesParameter[speciesNdx]];
  
       [fishParams setFishSpeciesIndex: speciesNdx]; 
+      [fishParams setFishSpecies: mySpecies[speciesNdx]]; 
 
-      speciesNdx++;    
-
-      [fishParams setFishSpecies: speciesSetup->speciesSymbol]; 
-
-      //
-      // Added during debug 6/16/08 skj
-      // 
-      {
-           char* objectName = (char *) [speciesSetup->speciesSymbol getName]; 
-           [fishParams setSpeciesName: objectName];
-           [fishParams setInstanceName: objectName];
-           [scratchZone free: objectName];
-      }
+      [fishParams setInstanceName: (char *) [mySpecies[speciesNdx] getName]];
+      fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> InstanceName: %s \n", (char *) [mySpecies[speciesNdx] getName]);
+	   fflush(0);
 
       fishParams = [fishParams createEnd];
-
-      speciesSetup->fishParams = fishParams;
 
       #ifdef DEBUG_TROUT_FISHPARAMS
          [fishParams printSelf];
       #endif
 
       [fishParamsMap at: [fishParams getFishSpecies] insert: fishParams]; 
-
    }
 
-   fprintf(stdout, "UTMTroutModelSwarm >>>> createFishParameters >>>> END\n");
+
+   fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> END\n");
    fflush(0);
-
-   [lstNdx drop];
-
    return self;
 
 }  // createFishParameters
@@ -1581,7 +1611,7 @@ Class *MyTroutClass;
           fprintf(stdout,"UTMTroutModelSwarm >>>> printZones >>>> while >>>> aClassName = %s level = %d\n", aClassName, level);
           fflush(0);
 
-          xprint(obj);
+	  //xprint(obj);
 
           if(strncmp(aClassName, "ZoneAllocMapper", 16) == 0)
           {
@@ -1715,10 +1745,10 @@ Class *MyTroutClass;
   [deadFish addLast: aFish];
   [killedFish addLast: aFish];
 
-  //[self updateMortalityCountWith: aFish];
 
   return self;
 }
+
 
 
 ////////////////////////////////////////////////////////////
@@ -2431,12 +2461,7 @@ Class *MyTroutClass;
 
   int checkNumSpecies = 0;
 
-  char speciesName[25];
-  int speciesIndex = 0;
-  char fishParamFile[50];
-  char initPopFile[50];
-  char fishColor[25];
-  char stocking[50];
+  int speciesIDX= 0;
 
   if(numberOfSpecies > 10)
   {
@@ -2451,6 +2476,12 @@ Class *MyTroutClass;
     fflush(0);
     exit(1);
   }
+  speciesName  = (char **) [modelZone alloc: numberOfSpecies*sizeof(char *)];
+  speciesParameter  = (char **) [modelZone alloc: numberOfSpecies*sizeof(char *)];
+  speciesPopFile = (char **) [modelZone alloc: numberOfSpecies*sizeof(char *)];
+  speciesColor = (char **) [modelZone alloc: numberOfSpecies*sizeof(char *)];
+  speciesStocking = (char **) [modelZone alloc: numberOfSpecies*sizeof(char *)];
+  
 
   speciesSetupList = [List create: modelZone];
 
@@ -2458,28 +2489,36 @@ Class *MyTroutClass;
   fgets(headerLine,300,speciesFP);  
   fgets(headerLine,300,speciesFP);  
 
-   while(fscanf(speciesFP,"%s%s%s%s%s",speciesName,
-                                       fishParamFile,
-                                       initPopFile,
-                                       fishColor,
-                                       stocking) != EOF)
-   {
+  for(speciesIDX=0;speciesIDX<numberOfSpecies;speciesIDX++) {
+      speciesName[speciesIDX] = (char *) [modelZone alloc: 200*sizeof(char)];
+      speciesParameter[speciesIDX] = (char *) [modelZone alloc: 200*sizeof(char)];
+      speciesPopFile[speciesIDX] = (char *) [modelZone alloc: 200*sizeof(char)];
+      speciesColor[speciesIDX] = (char *) [modelZone alloc: 200*sizeof(char)];
+      speciesStocking[speciesIDX] = (char *) [modelZone alloc: 200*sizeof(char)];
+
+      if(fscanf(speciesFP,"%s%s%s%s%s",speciesName[speciesIDX],
+                              speciesParameter[speciesIDX],
+                              speciesPopFile[speciesIDX],
+                              speciesColor[speciesIDX],
+			      speciesStocking[speciesIDX]) != EOF){
+         fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
+         fflush(0);
+
          SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
                                                                               ofSize: sizeof(SpeciesSetup)];
          speciesSetup->speciesSymbol = [Symbol create: modelZone
-                                              setName: speciesName];
-         speciesSetup->speciesIndex = speciesIndex;
-         strncpy(speciesSetup->fishParamFile, fishParamFile, 50);
-         strncpy(speciesSetup->initPopFile, initPopFile, 50);
-         strncpy(speciesSetup->fishColor, fishColor, 25);
-         strncpy(speciesSetup->stocking, stocking, 50);
-         speciesSetup->troutClass = [objc_get_class(speciesName) class];
+                                              setName: speciesName[speciesIDX]];
+         speciesSetup->speciesIndex = speciesIDX;
+         strncpy(speciesSetup->fishParamFile, speciesParameter[speciesIDX], 50);
+         strncpy(speciesSetup->initPopFile, speciesPopFile[speciesIDX], 50);
+         strncpy(speciesSetup->fishColor, speciesColor[speciesIDX], 25);
+         strncpy(speciesSetup->stocking, speciesStocking[speciesIDX], 50);
+         speciesSetup->troutClass = [objc_get_class(speciesName[speciesIDX]) class];
 
          [speciesSetupList addLast: (void *) speciesSetup];
 
-         speciesIndex++;
-         
          checkNumSpecies++;
+      }
    }
 
    if((checkNumSpecies != numberOfSpecies) || (checkNumSpecies == 0))

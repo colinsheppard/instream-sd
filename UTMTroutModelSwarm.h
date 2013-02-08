@@ -293,6 +293,9 @@ double checkParam;
   id <Map> spawnVelocityInterpolatorMap; //One for each species
   id <Map> captureLogisticMap; //One for each species
   id <BinomialDist> reddBinomialDist;
+  char **speciesPopFile;
+  double ***speciesPopTable;
+  char **speciesParameter;
 }
 
 // Stuff from instream 5.0
@@ -308,6 +311,10 @@ double checkParam;
 - (id <Symbol>) getSpeciesSymbolWithName: (char *) aName;
 - (id <List>) getSpeciesSymbolList;
 - (id <List>) getAgeSymbolList;
+- (id <List>) getSpeciesClassList;
+- (int) getNumberOfSpecies;
+
+
 
 + create: aZone;
 

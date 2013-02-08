@@ -49,9 +49,6 @@ char instanceName[50];
 int speciesIndex;
 id <Symbol> fishSpecies;
 
-char* speciesName;
-
-
 @public
 
 // THE FOLLOWING VARIABLES ARE INITIALIZED BY THE
@@ -249,9 +246,6 @@ double fishMovePenaltyTime;
 - (int) getFishSpeciesIndex;
 - setFishSpecies: (id <Symbol>) aFishSpecies;
 - (id <Symbol>) getFishSpecies;
-
-- setSpeciesName: (char *) aSpeciesName;
-- (char *) getSpeciesName;
 
 - (void) printSelf;
 
