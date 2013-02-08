@@ -388,7 +388,7 @@ Boston, MA 02111-1307, USA.
 // buildObjects
 //
 ///////////////////////////////////
-- buildObjects
+/*- buildObjects
 {
    fprintf(stdout, "HabitatManager >>>> buildObjects >>>> BEGIN\n");
    fflush(0);
@@ -398,7 +398,7 @@ Boston, MA 02111-1307, USA.
    fprintf(stdout, "HabitatManager >>>> buildObjects >>>> END\n");
    fflush(0);
    return self;
-}
+}*/
 
 
 
