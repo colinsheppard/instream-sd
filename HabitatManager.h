@@ -111,8 +111,6 @@ double shadeColorMax;
      setRasterColorVariable:  (char *) aRasterColorVariable
            setShadeColorMax:  (double) aShadeColorMax;
 
-- buildObjects;
-
 - updateHabitatManagerWithTime: (time_t) aTime
          andWithModelStartFlag: (BOOL) aStartFlag;
 
