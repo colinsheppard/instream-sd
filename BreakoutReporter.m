@@ -911,22 +911,22 @@ with model input.
                       [level5Ndx setLoc: Start];
                       while(([level5Ndx getLoc] != End) && ((level5Key = [level5Ndx next]) != nil))
                       {
-                          xprint(breakoutMap);
-                          xprint([breakoutMap at: level1Key]);
-                          xprint([[breakoutMap at: level1Key]
-                                               at: level2Key]);
-                          xprint([[[breakoutMap at: level1Key]
-                                               at: level2Key]
-                                               at: level3Key]);
-                          xprint([[[[breakoutMap at: level1Key]
-                                                 at: level2Key]
-                                                 at: level3Key]
-                                                 at: level4Key]);
-                          xprint([[[[[breakoutMap at: level1Key]
-                                                  at: level2Key]
-                                                  at: level3Key]
-                                                  at: level4Key]
-                                                  at: level5Key]);
+			      //xprint(breakoutMap);
+			      //xprint([breakoutMap at: level1Key]);
+			      //xprint([[breakoutMap at: level1Key]
+						   //at: level2Key]);
+						   //xprint([[[breakoutMap at: level1Key]
+									 //at: level2Key]
+									 //at: level3Key]);
+									 //xprint([[[[breakoutMap at: level1Key]
+												//at: level2Key]
+												//at: level3Key]
+												//at: level4Key]);
+												//xprint([[[[[breakoutMap at: level1Key]
+															//at: level2Key]
+															//at: level3Key]
+															//at: level4Key]
+															//at: level5Key]);
                       }                           
                    }
                 }

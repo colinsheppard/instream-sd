@@ -317,13 +317,13 @@ struct updateVar {
 
   if(scenarioCounter > numScenarios) scenarioCounter = 1;
 
-  fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> Class = %s\n", class_get_class_name(paramClass));
-  fflush(0);
-  xprint([[iterMap at: paramClass] at: anInstanceName]);
-  xprint([[[iterMap at: paramClass] at: anInstanceName] at: aProbe]);
+  //fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> Class = %s\n", class_get_class_name(paramClass));
+  //fflush(0);
+  //xprint([[iterMap at: paramClass] at: anInstanceName]);
+  //xprint([[[iterMap at: paramClass] at: anInstanceName] at: aProbe]);
 
-  fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> END\n");
+  //fflush(0);
 
   return self;
 
@@ -565,8 +565,8 @@ struct updateVar {
                    inClass: (Class) paramClass {
    struct updateVar *aScenarioCounter;
 
-   fprintf(stdout, "ScenarioIterator >>>> sendScenarioCountToParam >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "ScenarioIterator >>>> sendScenarioCountToParam >>>> BEGIN\n");
+   //fflush(0);
 
    aScenarioCounter = (struct updateVar *) [scenarioIterZone alloc: sizeof(struct updateVar)];
 
@@ -576,10 +576,10 @@ struct updateVar {
 
    [updateScenarioClassList addLast: (void *) aScenarioCounter];
 
-   xprint(aScenarioCounter->varProbe); 
+   //xprint(aScenarioCounter->varProbe); 
    
-   fprintf(stdout, "ScenarioIterator >>>> sendScenarioCountToParam >>>> END\n");
-   fflush(0);
+   //fprintf(stdout, "ScenarioIterator >>>> sendScenarioCountToParam >>>> END\n");
+   //fflush(0);
 
    return self;
 }
@@ -594,8 +594,8 @@ struct updateVar {
  
    struct updateVar *aReplicateCounter;
 
-   fprintf(stdout, "ScenarioIterator >>>> sendReplicateCountToParam >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "ScenarioIterator >>>> sendReplicateCountToParam >>>> BEGIN\n");
+   //fflush(0);
 
    aReplicateCounter = (struct updateVar *) [scenarioIterZone alloc: sizeof(struct updateVar)];
 
@@ -604,10 +604,10 @@ struct updateVar {
 
    [updateReplicateClassList addLast: (void *) aReplicateCounter];
 
-   xprint(aReplicateCounter->varProbe);
+   //xprint(aReplicateCounter->varProbe);
 
-   fprintf(stdout, "ScenarioIterator >>>> sendReplicateCountToParam >>>> END\n");
-   fflush(0);
+   //fprintf(stdout, "ScenarioIterator >>>> sendReplicateCountToParam >>>> END\n");
+   //fflush(0);
 
    return self;
 }
@@ -621,21 +621,21 @@ struct updateVar {
 {
   struct updateVar *anSCounter;
 
-  fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> BEGIN\n");
+  //fflush(0);
 
-  xprint(updateScenarioClassList);
-  xprint(scenarioNdx);
+  //xprint(updateScenarioClassList);
+  //xprint(scenarioNdx);
 
   [scenarioNdx setLoc: Start];
 
   while(([scenarioNdx getLoc] != End) && ((anSCounter = (struct updateVar *) [scenarioNdx next]) != (struct updateVar *) nil))
   {
-         fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> while >>>> varProbe = %p\n", anSCounter->varProbe);
-         fflush(0);
-         fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> while >>>> varProbe getProbedVar = %s\n", [anSCounter->varProbe getProbedVariable]);
-         fflush(0);
-         xprint(anSCounter->varProbe);
+	  //fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> while >>>> varProbe = %p\n", anSCounter->varProbe);
+	  //fflush(0);
+	  //fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> while >>>> varProbe getProbedVar = %s\n", [anSCounter->varProbe getProbedVariable]);
+	  //fflush(0);
+	  //xprint(anSCounter->varProbe);
 
           if(getClass(inObject) != anSCounter->updateClass) 
           {

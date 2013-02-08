@@ -275,7 +275,7 @@
                  instanceName = NONE;
               }
 
-              xprint(instanceName);
+	      //xprint(instanceName);
 
               if(instanceNameCount > 0)
               {
@@ -414,7 +414,7 @@
                         exit(1);
                     }
 
-                    xprint(instanceName);
+		    //xprint(instanceName);
                     //
                     // Added this test 10Jul2008 skj
                     //
@@ -495,8 +495,8 @@
    fprintf(stdout, "ExperBatchSwarm >>>> initializeModelFor >>>> BEGIN\n");
    fflush(0);
 
-   xprint(aSwarmObject);
-   xprint(anInstanceName);
+   //xprint(aSwarmObject);
+   //xprint(anInstanceName);
   
   // so the subSwarm knows which run it is for file output
   [subSwarm setModelNumberTo: [modelIterator getIteration]];
@@ -801,12 +801,12 @@
 /////////////////////////////////////////////////
 - buildModel 
 {
-  fprintf(stdout, "ExperBatchSwarm >>>> setupModel >>>> END\n");
+  fprintf(stdout, "ExperBatchSwarm >>>> buildModel >>>> BEGIN\n");
   fflush(0);
   [subSwarm buildObjects];
   [subSwarm buildActions];
   [subSwarm activateIn: nil];
-  fprintf(stdout, "ExperBatchSwarm >>>> setupModel >>>> END\n");
+  fprintf(stdout, "ExperBatchSwarm >>>> buildModel >>>> END\n");
   fflush(0);
   exit(0);
 

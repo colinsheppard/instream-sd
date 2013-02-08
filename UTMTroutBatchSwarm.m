@@ -73,8 +73,8 @@
                    setPolyRasterResolutionY:  rasterResolutionY 
                  setPolyRasterColorVariable:  rasterColorVariable];
 
-  fprintf(stderr,"modelSetupFile = %s \n", modelSetupFile);
-  fflush(stderr);
+  //fprintf(stdout,"modelSetupFile = %s \n", modelSetupFile);
+  //fflush(stdout);
 
 
   if(modelSetupFile != NULL)
