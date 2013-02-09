@@ -395,8 +395,8 @@ char **speciesStocking;
   deadRedds     = [List create: modelZone];
 
 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before speciesSymbolList \n");
-      fflush(0);
+      //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before speciesSymbolList \n");
+      //fflush(0);
 
   //
   // Create and populate the speciesSymbolList needed by the breakout reporters
@@ -432,8 +432,8 @@ char **speciesStocking;
      [lstNdx drop];  
   }
 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
-      fflush(0);
+      //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
+      //fflush(0);
   //
   // Breakout reporters... 
   //
@@ -445,9 +445,13 @@ char **speciesStocking;
       [self setFishColormap: theColormaps];
   }
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before createInitialFish\n");
+      fflush(0);
   [self createInitialFish]; 
   [QSort sortObjectsIn:  liveFish];
   [QSort reverseOrderOf: liveFish];
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before toggleFish\n");
+      fflush(0);
   [self toggleFishForHabSurvUpdate];
 
       fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before createReproLog\n");
@@ -914,20 +918,16 @@ char **speciesStocking;
    id <ListIndex> initPopLstNdx = nil;
    InitialFishRecord* initialFishRecord = (InitialFishRecord *) nil;
 
-   id <List> polyCellList = [habitatSpace getPolyCellList];
-
-   //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
-   //fflush(0);
+   id aHabitatSpace;
+   id <List> polyCellList = nil;
+   
+   
+   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
+   fflush(0);
 
    //
    // set up the distribution that will place the fishes on the grid
    //
-
-   randCellDist = [UniformIntegerDist create: modelZone
-                                setGenerator: randGen
-                               setIntegerMin: 0
-                                      setMax: [polyCellList getCount] - 1];
-
    lengthDist = [NormalDist create: modelZone 
                       setGenerator: randGen];
    //
@@ -959,6 +959,30 @@ char **speciesStocking;
       {
            continue;
       }
+      
+       aHabitatSpace = nil;
+       aHabitatSpace = [habitatManager getReachWithName: initialFishRecord->reach];
+        
+       if(aHabitatSpace == nil)
+       {
+            //
+            // Then skip it and move on
+            //
+            fprintf(stderr, "WARNING: TroutModelSwarm >>>> createInitialFish >>>> no habitat space with name %s\n", initialFishRecord->reach);
+            fflush(0);
+            continue;
+       }
+
+
+
+       polyCellList = [aHabitatSpace getPolyCellList];
+
+       randCellDist = [UniformIntegerDist create: modelZone
+                                    setGenerator: randGen
+                                   setIntegerMin: 0
+                                          setMax: [polyCellList getCount] - 1];
+   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> before lengthDist \n");
+   fflush(0);
 
       [lengthDist setMean: initialFishRecord->meanLength
                 setStdDev: initialFishRecord->stdDevLength];
@@ -976,6 +1000,8 @@ char **speciesStocking;
                continue;
           }
 
+   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> before newFish\n");
+   fflush(0);
           newFish = [self createNewFishWithFishParams: fishParams  
                                        withTroutClass: initialFishRecord->troutClass
                                                   Age: age
@@ -1030,6 +1056,8 @@ char **speciesStocking;
             
 
    }  // while
+   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> after loop\n");
+   fflush(0);
 
    if(!INIT_DATE_FOUND)
    {
@@ -1046,8 +1074,8 @@ char **speciesStocking;
 
   [initPopLstNdx drop];
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> END\n");
-  //fflush(0);
+  fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> END\n");
+  fflush(0);
 
   return self;
 
@@ -1179,12 +1207,13 @@ char **speciesStocking;
 
    id lengthNormalDist = nil; // this distribution goes out of scope
 
-   id <List> polyCellList = [habitatSpace getPolyCellList];
-
 
    int arraySize = [fishStockList getCount];
    time_t nextTimeArray[arraySize];
    int i = 0;
+
+   id aHabitatSpace;
+   id <List> polyCellList = nil;
 
    //fprintf(stdout, "UTMTroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
@@ -1195,10 +1224,6 @@ char **speciesStocking;
    //
    // set up the distribution that will place the fishes on the grid
    //
-   randCellDist = [UniformIntegerDist create: modelZone
-                                setGenerator: randGen
-                               setIntegerMin: 0
-                                      setMax: [polyCellList getCount] - 1];
 
    lengthNormalDist = [NormalDist create: modelZone 
                       setGenerator: randGen];
@@ -1217,6 +1242,27 @@ char **speciesStocking;
           {
 
                 int fishNdx;
+	       aHabitatSpace = nil;
+	       aHabitatSpace = [habitatManager getReachWithName: fishStockRecord->reach];
+		
+	       if(aHabitatSpace == nil)
+	       {
+		    //
+		    // Then skip it and move on
+		    //
+		    fprintf(stderr, "WARNING: TroutModelSwarm >>>> stock >>>> no habitat space with name %s\n", fishStockRecord->reach);
+		    fflush(0);
+		    continue;
+	       }
+
+
+
+	       polyCellList = [aHabitatSpace getPolyCellList];
+
+	       randCellDist = [UniformIntegerDist create: modelZone
+					    setGenerator: randGen
+					   setIntegerMin: 0
+						  setMax: [polyCellList getCount] - 1];
 
                 //fprintf(stdout, "%ld %s %d %d %d %f %f \n", 
                                       //fishStockRecord->fishStockTime,
@@ -1922,17 +1968,6 @@ char **speciesStocking;
   return self;
 }
 
-/////////////////////////////////////////////////////////////////
-//
-// getHabitatSpace
-//
-/////////////////////////////////////////////////////////////////
--(HabitatSpace *) getHabitatSpace 
-{
-  return habitatSpace;
-}
-
-
 //////////////////////////////////////////////////////////
 //
 // whenToStop
@@ -2463,7 +2498,7 @@ char **speciesStocking;
   [newFish setScenario: scenario];
   [newFish setReplicate: replicate];
   [newFish setTimeManager: timeManager];
-  [newFish setHabitatSpace: habitatSpace];
+  [newFish setHabitatManager: habitatManager];
 
   if([aFishParams getFishSpecies] == nil)
   {
@@ -2855,21 +2890,6 @@ char **speciesStocking;
 - (int) getModelHour
 {
     return [timeManager getHourWithTimeT: modelTime];
-}
-
-
-//////////////////////////////////////////
-//
-// getCurrentPhase
-//
-//////////////////////////////////////////
-- (int) getCurrentPhase
-{
-
-   int currentPhase = [habitatSpace getCurrentPhase];;
-   
-   return currentPhase;
-
 }
 
 
@@ -3862,6 +3882,8 @@ char **speciesStocking;
 /////////////////////////////////////////////////////
 - createBreakoutReporters
 {
+      fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> BEGIN\n");
+      fflush(0);
 
   BOOL fileOverWrite = TRUE;
   BOOL suppressBreakoutColumns = NO;
@@ -3887,6 +3909,8 @@ char **speciesStocking;
                                         withFileOverwrite: fileOverWrite];
 					//withColumnWidth: 25];
 
+      //fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> after create begin mortality \n");
+      //fflush(0);
 
   [fishMortalityReporter addColumnWithValueOfVariable: "scenario"
                                         fromObject: self
@@ -3923,6 +3947,8 @@ char **speciesStocking;
 
   fishMortalityReporter = [fishMortalityReporter createEnd];
 
+      //fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> after mortality rep\n");
+      //fflush(0);
 
   //
   // Live fish reporter
@@ -3979,6 +4005,8 @@ char **speciesStocking;
 
   liveFishReporter = [liveFishReporter createEnd];
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> END\n");
+      fflush(0);
   return self;
 }
 
@@ -4213,12 +4241,6 @@ char **speciesStocking;
  
   [ndx drop];
 
-
-  if(habitatSpace != nil)
-  {
-     [habitatSpace drop];
-     habitatSpace = nil;
-  }
 
   if(liveFishReporter != nil)
   {

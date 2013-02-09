@@ -57,6 +57,7 @@ struct InitialFishRecordStruct {
                                   int numberOfFish;
                                   double meanLength;
                                   double stdDevLength; 
+			          char reach[35];
                                };
 
 typedef struct InitialFishRecordStruct InitialFishRecord;
@@ -73,6 +74,7 @@ struct FishStockType {
                            int numberOfFishThisAge;
                            double meanLength;
                            double stdDevLength;
+			   char reach[35];
                        };
 
 typedef struct FishStockType FishStockStruct;
@@ -187,8 +189,6 @@ double shadeColorMax;
 
 id <List> speciesSymbolList;  // List of symbols corresp to species studied
   
-
-HabitatSpace* habitatSpace;        // discrete2d of Partitions
 
 /*
  * model parameters -- we don't necessarily need get or set methods
@@ -423,9 +423,6 @@ double checkParam;
 - (time_t) getModelTime;
 - (char *) getModelDate;
 - (int) getModelHour;
-- (int) getCurrentPhase;
-
-
 
 
 //
