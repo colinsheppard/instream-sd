@@ -45,22 +45,36 @@ struct SpeciesSetupStruct {
 
 typedef struct SpeciesSetupStruct SpeciesSetup;
 
+struct FishSetupStruct
+       {
+           int speciesNdx;
+           id <Symbol> mySpecies;
+           char date[11];
+           time_t initTime;
+           int age;
+           int number;
+           double meanLength;
+           double stdDevLength;
+           char reach[35];
+        };
 
-struct InitialFishRecordStruct {
-                                  Class troutClass;
-                                  id <Symbol> speciesSymbol;
-                                  int speciesIndex;
-                                  FishParams* fishParams;
-                                  char initDate[12];
-                                  time_t initTime;
-                                  int age; 
-                                  int numberOfFish;
-                                  double meanLength;
-                                  double stdDevLength; 
-			          char reach[35];
-                               };
+typedef struct FishSetupStruct TroutInitializationRecord; 
 
-typedef struct InitialFishRecordStruct InitialFishRecord;
+/*struct InitialFishRecordStruct {*/
+/*Class troutClass;*/
+/*id <Symbol> speciesSymbol;*/
+/*int speciesIndex;*/
+/*FishParams* fishParams;*/
+/*char initDate[12];*/
+/*time_t initTime;*/
+/*int age; */
+/*int numberOfFish;*/
+/*double meanLength;*/
+/*double stdDevLength; */
+/*char reach[35];*/
+/*};*/
+
+/*typedef struct InitialFishRecordStruct InitialFishRecord;*/
 
 
 struct FishStockType {
@@ -204,7 +218,6 @@ double minSpeciesMinPiscLength;
 id fishForHabSurvUpdate;
   
 id <List> speciesSetupList;
-id <List> initialFishRecordList;
   
 
 id <TimeManager> timeManager; // manages all the internal time conversions
@@ -290,7 +303,6 @@ double checkParam;
   id <Map> cmaxInterpolatorMap; //One for each species
   id <Map> spawnDepthInterpolatorMap; //One for each species
   id <Map> spawnVelocityInterpolatorMap; //One for each species
-  id <Map> captureLogisticMap; //One for each species
   id <BinomialDist> reddBinomialDist;
   char **speciesPopFile;
   double ***speciesPopTable;
@@ -308,10 +320,13 @@ double checkParam;
   int endYear;
   int numSimDays;
   int simCounter;
+  time_t popInitTime;
+  id <List> fishInitializationRecords;
 
 }
 
 // Stuff from instream 5.0
+- buildFishClass;
 - (UTMTrout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
                                   Species: (id <Symbol>) species
                                       Age: (int) age
@@ -327,6 +342,10 @@ double checkParam;
 - (id <List>) getSpeciesClassList;
 - (int) getNumberOfSpecies;
 - createYearShuffler;
+- readFishInitializationFiles;
+- createCMaxInterpolators;
+- createSpawnDepthInterpolators;
+- createSpawnVelocityInterpolators;
 
 
 
@@ -349,7 +368,6 @@ double checkParam;
 - activateIn: swarmContext;
 
 - createInitialFish;
-- readPopFiles;
 - createFishParameters;
 - findMinSpeciesPiscLength;
 

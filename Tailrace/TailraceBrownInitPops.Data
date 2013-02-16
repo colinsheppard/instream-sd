@@ -1,10 +1,10 @@
 Brown trout initial populations	Site:	Tailrace	Pop biomass:	160	kg
 Abundance and length distributions by age from UDWR data					
-InitDate	Age	Number	LengthMean	LengthSD	
-10/1/2000	0	103	12.8	1.2	
-10/1/2000	1	82	24.6	3.2	
-10/1/2000	2	51	39.3	2.9	
-10/1/2000	3	64	41.5	3.8	
-10/1/2000	4	34	44.6	2.6	
-10/1/2000	5	19	45.2	5.3	
-10/1/2000	6	11	47.4	1.5	
+InitDate	Age	Number	LengthMean	LengthSD	Reach
+10/1/2000	0	103	12.8	1.2	TailRace
+10/1/2000	1	82	24.6	3.2	TailRace
+10/1/2000	2	51	39.3	2.9	TailRace
+10/1/2000	3	64	41.5	3.8	TailRace
+10/1/2000	4	34	44.6	2.6	TailRace
+10/1/2000	5	19	45.2	5.3	TailRace
+10/1/2000	6	11	47.4	1.5	TailRace
