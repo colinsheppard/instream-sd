@@ -394,8 +394,6 @@ double checkParam;
 
 
 
-- (HabitatSpace *) getHabitatSpace;
-
 - addAFish: (UTMTrout *) aTrout;
 - (id <List>) getLiveFishList;
 - (id <List>) getDeadTroutList;

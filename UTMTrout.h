@@ -11,6 +11,7 @@
 
 #import "FishParams.h"
 #import "HabitatSpace.h"
+#import "HabitatManager.h"
 #import "FishCell.h"
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"
@@ -34,6 +35,7 @@
 
   id model;
   id habitatSpace;
+  id habitatManager;
   
 
   id <Symbol> species;
@@ -306,6 +308,7 @@ id toggledFishForHabSurvUpdate;
 - (FishCell *) getWorld;
 - setFishCell: (FishCell *) aCell;
 - setHabitatSpace: (HabitatSpace *) aHabSpace;
+- setHabitatManager: (HabitatManager *) aHabManager;
 
 - setSpeciesNdx: (int) anIndex;
 - (int) getSpeciesNdx;

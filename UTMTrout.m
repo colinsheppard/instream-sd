@@ -765,6 +765,17 @@
     return self;
 }
 
+////////////////////////////////////////////////
+//
+// setHabitatManager
+//
+///////////////////////////////////////////////
+- setHabitatManager: (HabitatManager *) aHabManager
+{
+    habitatManager = aHabManager;
+    return self;
+}
+
 
 
 

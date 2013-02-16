@@ -1547,6 +1547,7 @@ char **speciesStocking;
   time_t anHour = (time_t) 3600; 
 
   BOOL moveFish = NO;
+  id aHabitatSpace;
 
   fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> BEGIN\n");
   fflush(0);
@@ -1573,7 +1574,14 @@ char **speciesStocking;
   // updates hourly flow, and updates daily habitat variables if the
   // current time is midnight.
   //
-  moveFish = [habitatSpace shouldFishMoveAt: modelTime];
+  id <ListIndex> lstNdx = nil;
+  lstNdx = [reachList listBegin: scratchZone];
+
+  while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
+    moveFish = [aHabitatSpace shouldFishMoveAt: modelTime];
+    fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
+    fflush(0);
+  }
 
   //
   // Third, if it is midnight, call the method the updates
@@ -4055,8 +4063,15 @@ char **speciesStocking;
 ///////////////////////////////////////////
 - setShadeColorMax: (double) aShadeColorMax
 {
+    id <ListIndex> lstNdx = nil;
+    id aHabitatSpace;
+
     shadeColorMax = aShadeColorMax;
-    [habitatSpace setShadeColorMax: shadeColorMax];
+    lstNdx = [reachList listBegin: scratchZone];
+
+    while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
+      [aHabitatSpace setShadeColorMax: shadeColorMax];
+    }
     return self;
 }
 
