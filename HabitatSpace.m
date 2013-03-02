@@ -3050,8 +3050,10 @@ return self;
 
   [self calcWettedArea];
 
-  temperature = [temperatureInputManager getValueForTime: aModelTime_t];
-  turbidity = [turbidityInputManager getValueForTime: aModelTime_t];
+  if([timeManager getHourWithTimeT: aModelTime_t] == 0){
+    temperature = [temperatureInputManager getValueForTime: aModelTime_t];
+    turbidity = [turbidityInputManager getValueForTime: aModelTime_t];
+  }
 
   [self updateFlowChange];
 

@@ -175,9 +175,17 @@
       return self;
 }
 
-
-
-
+///////////////////////////////////
+//
+// getReachSymbol
+//
+// reachSymbol is set in setReach
+//
+//////////////////////////////////
+- (id <Symbol>) getReachSymbol
+{
+   return [habitatSpace getReachSymbol];
+}
 
 
 ///////////////////////////////////////////////////

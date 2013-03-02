@@ -1691,8 +1691,8 @@ char **speciesStocking;
   BOOL moveFish = NO;
   id aHabitatSpace;
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> BEGIN\n");
+  //fflush(0);
 
   //
   // First, advance the model clock by one hour
@@ -1709,9 +1709,6 @@ char **speciesStocking;
      numHoursSinceLastStep++;
   }
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before check for move\n");
-  fflush(0);
-
   //
   // Second, check to see if the fish should move. This habitat method
   // also updates model variables for whether it is daytime or night,
@@ -1723,12 +1720,10 @@ char **speciesStocking;
 
   while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
     moveFish = [aHabitatSpace shouldFishMoveAt: modelTime];
-    fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
-    fflush(0);
+    //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
+    //fflush(0);
   }
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before updatedFish\n");
-  fflush(0);
   //
   // Third, if it is midnight, call the method the updates
   // fish variables: age, time till next spawning period.
@@ -1739,9 +1734,6 @@ char **speciesStocking;
       [self updateReproFuncs];
   }
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before stock\n");
-  fflush(0);
-  
   //
   // Fourth, simulate stocking of hatchery fish, if it is time.
   //
@@ -1754,29 +1746,16 @@ char **speciesStocking;
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
   //
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before getTime: %d  \n", modelTime);
-  fflush(0);
   timeTillDaytimeStarts  = modelTime - [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: modelTime]
 						    withHour: (int) [solarManager getSunriseHour]
 						    withMinute: (int)  [solarManager getSunriseHour]*60
 						    withSecond: 0];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before actions, timeTillDaytimeStarts = %d \n",timeTillDaytimeStarts);
-  fflush(0);
   if((timeTillDaytimeStarts  >= (time_t) 0) && (timeTillDaytimeStarts < anHour))
   {
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before spawn\n");
-  fflush(0);
       [liveFish forEach: M(spawn)];
-
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd surv\n");
-  fflush(0);
       [reddList forEach: M(survive)];
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd devel\n");
-  fflush(0);
       [reddList forEach: M(develop)];
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd emerge\n");
-  fflush(0);
       [reddList forEach: M(emerge)];
       [self processEmptyReddList];
 
@@ -1799,12 +1778,10 @@ char **speciesStocking;
   // habitat update; habitat selection output is written after movement.
   //
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before moveFish: %s \n", (moveFish==YES)?"YES":"NO");
-  fflush(0);
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before moveFish: %s \n", (moveFish==YES)?"YES":"NO");
+  //fflush(0);
   if(moveFish == YES) 
   {
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before isFirstStep: %s \n", (isFirstStep==YES)?"YES":"NO");
-  fflush(0);
      if(isFirstStep == FALSE)
      {
         [liveFish forEach: M(updateNumHoursSinceLastStep:) : (void *) &numHoursSinceLastStep];
@@ -1817,16 +1794,10 @@ char **speciesStocking;
      // the fish moves
      //
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before updateDeath \n");
-  fflush(0);
      [self updateCauseOfDeath];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before removeKilled\n");
-  fflush(0);
      [self removeKilledFishFromLiveFishList];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> sort liveFish\n");
-  fflush(0);
      //
      // sort total population by dominance
      //
@@ -1836,8 +1807,6 @@ char **speciesStocking;
 
      //[self printFishPopSummaryFile];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> outputBreakout\n");
-  fflush(0);
      //
      // Breakout report update
      //
@@ -1848,8 +1817,6 @@ char **speciesStocking;
         //[habitatSpace printCellFishInfo];
      }
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> updateHabManWithTime\n");
-  fflush(0);
      // 
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
@@ -1857,14 +1824,8 @@ char **speciesStocking;
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> toggleFish\n");
-  fflush(0);
      [self toggleFishForHabSurvUpdate];
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> move\n");
-  fflush(0);
      [liveFish forEach: M(move)];
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> after move\n");
-  fflush(0);
 
      //[self printTroutDepthUseHisto];
      //[self printTroutVelocityUseHisto];
@@ -1886,18 +1847,18 @@ char **speciesStocking;
       isFirstStep = FALSE;
   }
 
-  fprintf(stdout,"ModelSwarm >>>> step >>>> scenario     = %d\n", scenario);
-  fprintf(stdout,"ModelSwarm >>>> step >>>> replicate    = %d\n", replicate);
-  fprintf(stdout,"ModelSwarm >>>> step >>>> date         = %s\n", [timeManager getDateWithTimeT: modelTime]);
-  fprintf(stdout,"ModelSwarm >>>> step >>>> hour         = %d\n", [timeManager getHourWithTimeT: modelTime]);
-  fprintf(stdout,"ModelSwarm >>>> step >>>> numberOfFish = %d\n\n", [liveFish getCount]);
+  //fprintf(stdout,"ModelSwarm >>>> step >>>> scenario     = %d\n", scenario);
+  //fprintf(stdout,"ModelSwarm >>>> step >>>> replicate    = %d\n", replicate);
+  //fprintf(stdout,"ModelSwarm >>>> step >>>> date         = %s\n", [timeManager getDateWithTimeT: modelTime]);
+  //fprintf(stdout,"ModelSwarm >>>> step >>>> hour         = %d\n", [timeManager getHourWithTimeT: modelTime]);
+  //fprintf(stdout,"ModelSwarm >>>> step >>>> numberOfFish = %d\n\n", [liveFish getCount]);
   //[self     printZone: modelZone 
        //withPrintLevel: 1];
 
   //fprintf(stdout,"ModelSwarm >>>> step >>>> checkParam = %f\n\n", checkParam);
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> END\n");
-  fflush(0);
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> END\n");
+  //fflush(0);
 
   return self;
 

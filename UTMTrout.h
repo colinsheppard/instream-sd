@@ -291,6 +291,7 @@ id toggledFishForHabSurvUpdate;
 - createEnd;
 
 
+- (id <Symbol>) getReachSymbol;
 
 //
 // SET METHODS

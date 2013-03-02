@@ -176,6 +176,10 @@
    //
    if(ERROR)
    {
+       //for(i=0; i<numRecords; i++){
+	  //fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> time %ld \n",inputRecord[i][0]);
+       //}
+       fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> starttime %ld endTime %ld \n",startTime,endTime);
        fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> No data with time %ld  Date %s\n with Hour %d\n with Minute %d\n with Second %d inputFileName = %s\n",
                                                                                   aTime,
                                                                                   [timeManager getDateWithTimeT: aTime],
@@ -808,9 +812,11 @@
                                                         withSecond: second];
           }
     
+	  if(input > 970356400 && input < 970359900){
+	    fprintf(stdout,"start %d end %d input %d data %f \n", startTime, endTime, anInputTime, inputData);
+	    fflush(0);
+	  }
 
-	  //fprintf(stdout,"start %d end %d input %d \n", startTime, endTime, anInputTime);
-	  //fflush(0);
           if((startTime <= anInputTime) && (anInputTime <= endTime))
           {
               numRecords++;
