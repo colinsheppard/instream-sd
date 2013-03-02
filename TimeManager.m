@@ -225,6 +225,9 @@
        char* dateDay;
        char* dateYear;
 
+       //fprintf(stdout,"TimeManager >>> getTimeTWithDate >>> BEGIN\n");
+       //fflush(stdout);
+
        strncpy(date, aFormattedDate, length);
        
        dateMonth = strtok(date, "/");
@@ -236,6 +239,7 @@
        timeStruct.tm_mon = atoi(dateMonth) - 1; 
        timeStruct.tm_mday = atoi(dateDay);  
        timeStruct.tm_year = atoi(dateYear) - 1900; 
+
 
         //strptime(aFormattedDate ,format, &timeStruct);
 
@@ -270,9 +274,9 @@
            aTimeT = aTimeT + 86400;
         }
 
-        //printf("aFormattedDate = %s \n", aFormattedDate);
-        //printf("aTimeT = %d \n", (int) aTimeT);
-        //printf("aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
+        //fprintf(stdout,"aFormattedDate = %s \n", aFormattedDate);
+        //fprintf(stdout,"aTimeT = %d \n", (int) aTimeT);
+	//fprintf(stdout,"aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
         //fflush(stdout);
 
 
@@ -285,6 +289,8 @@
     exit(1);
  }
 
+       //fprintf(stdout,"TimeManager >>> getTimeTWithDate >>> END\n");
+       //fflush(stdout);
  return aTimeT;
 }
 

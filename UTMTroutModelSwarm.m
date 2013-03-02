@@ -180,6 +180,7 @@ char **speciesStocking;
   [habitatManager instantiateObjects];
   [habitatManager setSiteLatitude: siteLatitude];
   [habitatManager createSolarManager];
+  solarManager = [habitatManager getSolarManager];
   [habitatManager setModel: self];
   [habitatManager readReachSetupFile: "Reach.Setup"];
   [habitatManager setNumberOfSpecies: numberOfSpecies];
@@ -457,19 +458,12 @@ char **speciesStocking;
       [self setFishColormap: theColormaps];
   }
 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before createInitialFish\n");
-      fflush(0);
   fishInitializationRecords = [List create: modelZone];
   popInitTime = [timeManager getTimeTWithDate: popInitDate];
   [self createInitialFish]; 
   [QSort sortObjectsIn:  liveFish];
   [QSort reverseOrderOf: liveFish];
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before toggleFish\n");
-      fflush(0);
   [self toggleFishForHabSurvUpdate];
-
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before createReproLog\n");
-      fflush(0);
 
   [self createReproLogistics];
 
@@ -505,9 +499,6 @@ char **speciesStocking;
   [self openReddSummaryFilePtr];
   [self openReddReportFilePtr];
  
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before stocking\n");
-      fflush(0);
-
   //
   // STOCKING
   //
@@ -515,8 +506,8 @@ char **speciesStocking;
   fishStockList = [List create: modelZone];
   [self readFishStockingRecords];
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> END\n");
+  //fflush(0);
 
   return self;
 
@@ -579,9 +570,9 @@ char **speciesStocking;
 
        dataEndTime = dataEndTime + 86400;
 
-       fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> numSimYears %d\n", numSimYears);
-       fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> startYear %d endYear %d\n", startYear, endYear);
-       fflush(0);
+       //fprintf(stdout, "UTMTroutModelSwarm >>>> createYearShuffler >>>> numSimYears %d\n", numSimYears);
+       //fprintf(stdout, "UTMTroutModelSwarm >>>> createYearShuffler >>>> startYear %d endYear %d\n", startYear, endYear);
+       //fflush(0);
    }
 
    return self;
@@ -657,8 +648,8 @@ char **speciesStocking;
 {
    int speciesNdx;
 
-   fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> BEGIN\n");
+   //fflush(0);
 
 
    for(speciesNdx = 0; speciesNdx < numberOfSpecies; speciesNdx++) 
@@ -670,8 +661,6 @@ char **speciesStocking;
       [fishParams setFishSpecies: mySpecies[speciesNdx]]; 
 
       [fishParams setInstanceName: (char *) [mySpecies[speciesNdx] getName]];
-      fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> InstanceName: %s \n", (char *) [mySpecies[speciesNdx] getName]);
-	   fflush(0);
 
       fishParams = [fishParams createEnd];
 
@@ -683,8 +672,8 @@ char **speciesStocking;
    }
 
 
-   fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> END\n");
-   fflush(0);
+   //fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> END\n");
+   //fflush(0);
    return self;
 
 }  // createFishParameters
@@ -701,8 +690,8 @@ char **speciesStocking;
   id <MapIndex> mapNdx = nil;
   FishParams* fishParams = nil;
 
-  fprintf(stdout, "TroutModelSwarm >>>> findMinSpeciesPiscLength >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> findMinSpeciesPiscLength >>>> BEGIN\n");
+  //fflush(0);
 
   mapNdx = [fishParamsMap mapBegin: scratchZone];
 
@@ -716,11 +705,11 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  fprintf(stdout, "TroutModelSwarm >>>> minSpeciesMinPiscLength = %f\n", minSpeciesMinPiscLength);
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> minSpeciesMinPiscLength = %f\n", minSpeciesMinPiscLength);
+  //fflush(0);
 
-  fprintf(stdout, "TroutModelSwarm >>>> findMinSpeciesPiscLength >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> findMinSpeciesPiscLength >>>> END\n");
+  //fflush(0);
 
   return self;
 }
@@ -741,8 +730,8 @@ char **speciesStocking;
   FishParams* fishParams = (FishParams *) nil;
   double biggestFishLength = [[liveFish getFirst] getFishLength];
 
-  fprintf(stdout, "TroutModelSwarm >>>> createReproLogistics >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> BEGIN\n");
+  //fflush(0);
   reproLogisticFuncMap = [Map create: modelZone];
 
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != (FishParams *) nil))
@@ -774,9 +763,9 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> biggestFishLength = %f\n", biggestFishLength);
-  fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> biggestFishLength = %f\n", biggestFishLength);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> END\n");
+  //fflush(0);
 
   return self;
 }
@@ -863,11 +852,9 @@ char **speciesStocking;
   id <MapIndex> clrMapNdx = [theColormaps mapBegin: scratchZone];
   id <Colormap> aColorMap = nil;
 
-  
-
-  fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> BEGIN\n");
-  fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> BEGIN\n");
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
+  //fflush(0);
 
   while(([clrMapNdx getLoc] != End) && ((aColorMap = [clrMapNdx next]) != nil))
   {
@@ -879,8 +866,8 @@ char **speciesStocking;
 
   FISH_COLOR++;
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
+  //fflush(0);
 
   lstNdx = [speciesSetupList listBegin: scratchZone];
   while (([lstNdx getLoc] != End) && ((speciesSetup = (SpeciesSetup *) [lstNdx next]) != (SpeciesSetup *) nil)) 
@@ -906,8 +893,8 @@ char **speciesStocking;
   [lstNdx drop];
   [clrMapNdx drop];
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> END\n");
+  //fflush(0);
 
   return self;
 }
@@ -936,8 +923,8 @@ char **speciesStocking;
    id <List> polyCellList = nil;
    
    
-   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
-   fflush(0);
+   //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
+   //fflush(0);
 
    //
    // set up the distribution that will place the fishes on the grid
@@ -995,8 +982,6 @@ char **speciesStocking;
                                     setGenerator: randGen
                                    setIntegerMin: 0
                                           setMax: [polyCellList getCount] - 1];
-   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> before lengthDist \n");
-   fflush(0);
 
       [lengthDist setMean: initialFishRecord->meanLength
                 setStdDev: initialFishRecord->stdDevLength];
@@ -1014,8 +999,6 @@ char **speciesStocking;
                continue;
           }
 
-	  fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> before newFish: \n");
-	  fflush(0);
 	  newFish = [self createNewFishWithSpeciesIndex: initialFishRecord->speciesNdx  
                                                    Species: initialFishRecord->mySpecies 
                                                        Age: age
@@ -1053,27 +1036,16 @@ char **speciesStocking;
                {
                  continue;
                }
-            }
+          }
 
-            if(counter >= MAX_COUNT)
-            {
+          if(counter >= MAX_COUNT){
                   fprintf(stderr, "ERROR >>>> UTMTroutModelSwarm >>>> createInitialFish >>>> Failed to put fish at nonzero depth cell after %d attempts\n",counter);
                   fflush(0);
                   exit(1);
-            }
+          }
 
-         }  //for
-
-
-
-         //
-         // cleanup
-         //
-            
-
+        }  //for
    }  // while
-   fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> after loop\n");
-   fflush(0);
 
    if(!INIT_DATE_FOUND)
    {
@@ -1090,8 +1062,8 @@ char **speciesStocking;
 
   [initPopLstNdx drop];
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> END\n");
-  fflush(0);
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> END\n");
+  //fflush(0);
 
   return self;
 
@@ -1391,7 +1363,7 @@ char **speciesStocking;
 
    }
            
-   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
+   //fprintf(stdout, "UTMTroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
 
    return self;
@@ -1524,19 +1496,19 @@ char **speciesStocking;
            fishRecord->stdDevLength = stdDevLength;
            strcpy(fishRecord->reach, reach);
            
-	   fprintf(stdout, "UTMTroutModelSwarm >>>> checking fish records >>>>>\n");
-	   fprintf(stdout, "speciesNdx = %d speciesName = %s date = %s initTime = %ld age = %d number = %d meanLength = %f stdDevLength = %f reach = %s popInitTime = %ld \n",
-			   fishRecord->speciesNdx,
-			   [fishRecord->mySpecies getName],
-			   fishRecord->date,
-			   (long) fishRecord->initTime,
-			   fishRecord->age,
-			   fishRecord->number,
-			   fishRecord->meanLength,
-			   fishRecord->stdDevLength,
-			   fishRecord->reach,
-			   (long) popInitTime);
-	   fflush(0);
+	   //fprintf(stdout, "UTMTroutModelSwarm >>>> checking fish records >>>>>\n");
+	   //fprintf(stdout, "speciesNdx = %d speciesName = %s date = %s initTime = %ld age = %d number = %d meanLength = %f stdDevLength = %f reach = %s popInitTime = %ld \n",
+			   //fishRecord->speciesNdx,
+			   //[fishRecord->mySpecies getName],
+			   //fishRecord->date,
+			   //(long) fishRecord->initTime,
+			   //fishRecord->age,
+			   //fishRecord->number,
+			   //fishRecord->meanLength,
+			   //fishRecord->stdDevLength,
+			   //fishRecord->reach,
+			   //(long) popInitTime);
+	   //fflush(0);
 
           if(strcmp(prevReach, reach) == 0)
           {
@@ -1737,6 +1709,8 @@ char **speciesStocking;
      numHoursSinceLastStep++;
   }
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before check for move\n");
+  fflush(0);
 
   //
   // Second, check to see if the fish should move. This habitat method
@@ -1753,6 +1727,8 @@ char **speciesStocking;
     fflush(0);
   }
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before updatedFish\n");
+  fflush(0);
   //
   // Third, if it is midnight, call the method the updates
   // fish variables: age, time till next spawning period.
@@ -1763,6 +1739,8 @@ char **speciesStocking;
       [self updateReproFuncs];
   }
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before stock\n");
+  fflush(0);
   
   //
   // Fourth, simulate stocking of hatchery fish, if it is time.
@@ -1776,17 +1754,29 @@ char **speciesStocking;
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
   //
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before getTime: %d  \n", modelTime);
+  fflush(0);
   timeTillDaytimeStarts  = modelTime - [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: modelTime]
-						    withHour: (int) [SolarManager getSunriseHour]
-						    withMinute: (int)  [SolarManager getSunriseHour]*60
+						    withHour: (int) [solarManager getSunriseHour]
+						    withMinute: (int)  [solarManager getSunriseHour]*60
 						    withSecond: 0];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before actions, timeTillDaytimeStarts = %d \n",timeTillDaytimeStarts);
+  fflush(0);
   if((timeTillDaytimeStarts  >= (time_t) 0) && (timeTillDaytimeStarts < anHour))
   {
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before spawn\n");
+  fflush(0);
       [liveFish forEach: M(spawn)];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd surv\n");
+  fflush(0);
       [reddList forEach: M(survive)];
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd devel\n");
+  fflush(0);
       [reddList forEach: M(develop)];
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before redd emerge\n");
+  fflush(0);
       [reddList forEach: M(emerge)];
       [self processEmptyReddList];
 
@@ -1809,8 +1799,12 @@ char **speciesStocking;
   // habitat update; habitat selection output is written after movement.
   //
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before moveFish: %s \n", (moveFish==YES)?"YES":"NO");
+  fflush(0);
   if(moveFish == YES) 
   {
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before isFirstStep: %s \n", (isFirstStep==YES)?"YES":"NO");
+  fflush(0);
      if(isFirstStep == FALSE)
      {
         [liveFish forEach: M(updateNumHoursSinceLastStep:) : (void *) &numHoursSinceLastStep];
@@ -1823,10 +1817,16 @@ char **speciesStocking;
      // the fish moves
      //
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before updateDeath \n");
+  fflush(0);
      [self updateCauseOfDeath];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before removeKilled\n");
+  fflush(0);
      [self removeKilledFishFromLiveFishList];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> sort liveFish\n");
+  fflush(0);
      //
      // sort total population by dominance
      //
@@ -1836,6 +1836,8 @@ char **speciesStocking;
 
      //[self printFishPopSummaryFile];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> outputBreakout\n");
+  fflush(0);
      //
      // Breakout report update
      //
@@ -1846,6 +1848,8 @@ char **speciesStocking;
         //[habitatSpace printCellFishInfo];
      }
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> updateHabManWithTime\n");
+  fflush(0);
      // 
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
@@ -1853,8 +1857,14 @@ char **speciesStocking;
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> toggleFish\n");
+  fflush(0);
      [self toggleFishForHabSurvUpdate];
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> move\n");
+  fflush(0);
      [liveFish forEach: M(move)];
+  fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> after move\n");
+  fflush(0);
 
      //[self printTroutDepthUseHisto];
      //[self printTroutVelocityUseHisto];
@@ -2356,7 +2366,7 @@ char **speciesStocking;
     id reachSymbol = nil;
     char* reachName = NULL;
 
-    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
+    fprintf(stdout, "UTMTroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
     fflush(0);
 
     lstNdx = [reachSymbolList listBegin: scratchZone]; 
@@ -2388,7 +2398,7 @@ char **speciesStocking;
     }
 
 
-    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
+    fprintf(stdout, "UTMTroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
     fflush(0);
 
 
@@ -2544,8 +2554,8 @@ char **speciesStocking;
   id <InterpolationTable> aSpawnDepthInterpolator = nil;
   id <InterpolationTable> aSpawnVelocityInterpolator = nil;
 
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
+  //fflush(0);
 
   //
   // The newFish color is currently being set in the observer swarm
@@ -2554,9 +2564,6 @@ char **speciesStocking;
   newFish = [MyTroutClass[speciesNdx] createBegin: modelZone];
 
   [newFish setFishParams: [fishParamsMap at: species]];
-
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set properties\n");
-  fflush(0);
 
   //
   // set properties of the new Trout
@@ -2576,8 +2583,6 @@ char **speciesStocking;
   ageSymbol = [self getAgeSymbolForAge: age];
    
   [newFish setAgeSymbol: ageSymbol];
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set length\n");
-  fflush(0);
 
   [newFish setFishLength: fishLength];
   [newFish setFishCondition: 1.0];
@@ -2590,25 +2595,15 @@ char **speciesStocking;
   {
      [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
   }
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set timeman\n");
-  fflush(0);
 
   [newFish setTimeManager: timeManager];
   [newFish setModel: (id <UTMTroutModelSwarm>) self];
   [newFish setRandGen: randGen];
 
   aCMaxInterpolator = [cmaxInterpolatorMap at: species];
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set spawnInterp\n");
-  fflush(0);
   aSpawnDepthInterpolator = [spawnDepthInterpolatorMap at: species];
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set Velocinterps \n");
-  fflush(0);
   aSpawnVelocityInterpolator = [spawnVelocityInterpolatorMap at: species];
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set Logitinterps \n");
-  fflush(0);
   
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before set interps \n");
-  fflush(0);
   [newFish setCMaxInterpolator: aCMaxInterpolator];
   [newFish setSpawnDepthInterpolator: aSpawnDepthInterpolator];
   [newFish setSpawnVelocityInterpolator: aSpawnVelocityInterpolator];
@@ -2618,8 +2613,8 @@ char **speciesStocking;
 
   newFish = [newFish createEnd];
 
-  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
+  //fflush(0);
         
   return newFish;
 }
@@ -2687,7 +2682,7 @@ char **speciesStocking;
     id nextDeadFish = nil;
     id causeOfDeath = nil;
 
-    //fprintf(stdout, "TroutModelSwarm >>>> updateCauseOfDeath >>>> BEGIN\n");
+    //fprintf(stdout, "UTMTroutModelSwarm >>>> updateCauseOfDeath >>>> BEGIN\n");
     //fflush(0);
 
     if([killedFish getCount] > 0)
@@ -2751,7 +2746,7 @@ char **speciesStocking;
 
     } //if
 
-    //fprintf(stdout, "TroutModelSwarm >>>> updateCauseOfDeath >>>> END\n");
+    //fprintf(stdout, "UTMTroutModelSwarm >>>> updateCauseOfDeath >>>> END\n");
     //fflush(0);
 
     return self;
@@ -2935,7 +2930,7 @@ char **speciesStocking;
                               speciesPopFile[speciesIDX],
                               speciesColor[speciesIDX],
 			      speciesStocking[speciesIDX]) != EOF){
-         fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
+         fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
          fflush(0);
 
          SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
@@ -3940,7 +3935,7 @@ char **speciesStocking;
    }
    else
    {
-      fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> method invoked before instantiateObjects\n");
+      fprintf(stderr, "UTMTroutModelSwarm >>>> getSpeciesSymbolWithName >>>> method invoked before instantiateObjects\n");
       fflush(0);
       exit(1);
    }
@@ -3965,7 +3960,7 @@ char **speciesStocking;
 
    if(!speciesNameFound)
    {
-       fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> no species symbol for name %s\n", aName);
+       fprintf(stderr, "UTMTroutModelSwarm >>>> getSpeciesSymbolWithName >>>> no species symbol for name %s\n", aName);
        fflush(0);
        exit(1);
    } 
@@ -4325,7 +4320,7 @@ char **speciesStocking;
 ////////////////////////////////////////////
 - outputBreakoutReport
 {
-   //fprintf(stdout, "TroutModelSwarm >>>> outputBreakoutReport >>>> BEGIN\n");
+   //fprintf(stdout, "UTMTroutModelSwarm >>>> outputBreakoutReport >>>> BEGIN\n");
    //fflush(0);
 
    [liveFishReporter updateByReplacement];
@@ -4349,7 +4344,7 @@ char **speciesStocking;
    //[moveFishReporter updateByReplacement];
    //[moveFishReporter output];
 
-   //fprintf(stdout, "TroutModelSwarm >>>> outputBreakoutReport >>>> END\n");
+   //fprintf(stdout, "UTMTroutModelSwarm >>>> outputBreakoutReport >>>> END\n");
    //fflush(0);
 
    return self;
@@ -4382,7 +4377,7 @@ char **speciesStocking;
 ///////////////////////////////////////////////////////
 - switchColorRepFor: aHabitatSpace
 {
-    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> BEGIN\n");
+    fprintf(stdout, "UTMTroutModelSwarm >>>> switchColorRepFor >>>> BEGIN\n");
     fflush(0);
 
     if(observerSwarm == nil)
@@ -4394,7 +4389,7 @@ char **speciesStocking;
     [observerSwarm switchColorRepFor: aHabitatSpace];  
 
 
-    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> END\n");
+    fprintf(stdout, "UTMTroutModelSwarm >>>> switchColorRepFor >>>> END\n");
     fflush(0);
 
     return self;

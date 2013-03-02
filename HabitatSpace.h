@@ -124,6 +124,7 @@ long int maxYCoordinate;
   char* turbidityFile;
   char* hydraulicsFile;
   char* cellHabVarsFile;
+  char* driftFoodFile;
 
   id <TimeSeriesInputManager> flowInputManager;
   id <TimeSeriesInputManager> temperatureInputManager;
@@ -440,6 +441,7 @@ long int maxYCoordinate;
 - setFlowFile: (char *) aFile;
 - setTemperatureFile: (char *) aFile;
 - setTurbidityFile: (char *) aFile;
+- setDriftFoodFile: (char *) aFile;
 - setCellHabVarsFile: (char *) aFile;
 - createTimeSeriesInputManagers;
 
@@ -490,6 +492,8 @@ long int maxYCoordinate;
 
 - (double) getHabMaxSpawnFlow;
 
+- (double) getNumberOfDaylightHours;
+- (double) getNumberOfNightHours;
 - (double) getDayLength;
 - (int) getCurrentPhase;
 - calcDayLength: (time_t) aTime_t;

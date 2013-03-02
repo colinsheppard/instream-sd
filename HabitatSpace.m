@@ -89,6 +89,7 @@ Boston, MA 02111-1307, USA.
   obj->temperatureFile = (char *) [obj->habitatZone alloc: 50*sizeof(char)];
 
   obj->turbidityFile = (char *) [obj->habitatZone alloc: 50*sizeof(char)];
+  obj->driftFoodFile = (char *) [obj->habitatZone alloc: 50*sizeof(char)];
 
   obj->polyCellGeomFile = (char *) [obj->habitatZone alloc: 50*sizeof(char)];
 
@@ -720,6 +721,17 @@ return self;
   return self;
 }
 
+/////////////////////////////////////////////////////////////////
+//
+// setDriftFoodFile
+//
+//////////////////////////////////////////////////////////////
+- setDriftFoodFile: (char*) aFile 
+{
+  strncpy(driftFoodFile, aFile, (size_t) 50);
+  return self;
+}
+
 
 
 ///////////////////////////////////////////////////
@@ -770,6 +782,16 @@ return self;
                                                   withCheckData: NO];
 
     turbidityInputManager = [turbidityInputManager createEnd];
+
+   driftFoodInputManager = [TimeSeriesInputManager  createBegin: habitatZone
+                                                   withDataType: "HOURLY"
+                                                  withInputFile: driftFoodFile
+                                                withTimeManager: timeManager
+                                                  withStartTime: dataStartTime
+                                                    withEndTime: dataEndTime
+                                                  withCheckData: NO];
+
+   driftFoodInputManager = [driftFoodInputManager createEnd];
 
     return self;
 }
@@ -2389,6 +2411,27 @@ return self;
   return habShelterSpeedFrac;
 }
 
+//////////////////////////////////
+//
+// getNumberOfDaylightHours
+//
+//////////////////////////////////
+- (double) getNumberOfDaylightHours
+{
+    return numberOfDaylightHours;
+}
+
+
+///////////////////////////////
+//
+// getNumberOfNightHours
+//
+///////////////////////////////
+- (double) getNumberOfNightHours
+{
+    return numberOfNightHours;
+}
+
 ////////////////////////////////////////////////
 //
 // getDayLength
@@ -2497,8 +2540,8 @@ return self;
 
    dayNightPhaseSwitch = FALSE;
 
-   //fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> BEGIN\n");
-   //fflush(0);
+   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> BEGIN\n");
+   fflush(0);
 
    currentHourlyFlow = [flowInputManager getValueForTime: theCurrentTime];
    habDriftConc      = [driftFoodInputManager getValueForTime: theCurrentTime];
@@ -2527,6 +2570,8 @@ return self;
 
         [self updateMeanCellDepthAndVelocity: dailyMeanFlow]; 
    }
+   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> before Initialize stuff\n");
+   fflush(0);
 
    //
    // Initialize stuff for the start of the simulation, assuming the
@@ -2587,6 +2632,8 @@ return self;
         }
     }         
    
+   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> before getFlowChangeForMove");
+   fflush(0);
     //
     // Now, see if movement is triggered by a flow change
     //  
@@ -2599,6 +2646,9 @@ return self;
     {
        flowAtLastMove = currentHourlyFlow; 
     }
+
+   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> END\n");
+   fflush(0);
 
     return (dayNightPhaseSwitch || flowMove || simStartMove);
 }
@@ -4341,6 +4391,9 @@ return self;
     [habitatZone free: turbidityFile];
     turbidityFile = NULL;
 
+    [habitatZone free: driftFoodFile];
+    driftFoodFile = NULL;
+
     [habitatZone free: polyCellGeomFile];
     polyCellGeomFile = NULL;
 
@@ -4402,6 +4455,9 @@ return self;
 
     [turbidityInputManager drop];
     turbidityInputManager = nil;
+
+    [driftFoodInputManager drop];
+    driftFoodInputManager = nil;
 
     [polyCellListNdx drop];
     polyCellListNdx = nil;

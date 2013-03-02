@@ -1363,13 +1363,13 @@ Boston, MA 02111-1307, USA.
   id fishOldCell=nil;
 
   fishOldCell = [aFish getCell];
+  //fprintf(stdout, "FishCell >>>> addFish >>>> fishOldCell: %s \n",(fishOldCell!=nil)?"found":"not found");
+  //fflush(0);
 
   if(fishOldCell != nil) [fishOldCell removeFish: aFish];
    
   [fishIContain addLast: aFish];
   [aFish setCell: self];
-
-  [aFish setReach: reach];
 
   numberOfFish = [fishIContain getCount];
 

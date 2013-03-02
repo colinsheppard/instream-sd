@@ -180,6 +180,15 @@ Boston, MA 02111-1307, USA.
 }
 
 
+- setDriftFoodFile: (char *) aDriftFoodFile
+{
+   strcpy(driftFoodFile, aDriftFoodFile);
+   fprintf(stdout,"HabitatSetup >>>> DriftFoodFile = %s \n", driftFoodFile);
+   fflush(0);
+   return self;
+}
+
+
 - setCellHabVarsFile: (char *) aCellDataFile
 {
    strcpy(cellHabVarsFile, aCellDataFile);
@@ -247,6 +256,12 @@ Boston, MA 02111-1307, USA.
 - (char *) getTurbidityFile
 {
    return turbidityFile;
+
+}
+
+- (char *) getDriftFoodFile
+{
+   return driftFoodFile;
 
 }
 

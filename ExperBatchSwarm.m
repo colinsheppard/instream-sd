@@ -808,7 +808,6 @@
   [subSwarm activateIn: nil];
   fprintf(stdout, "ExperBatchSwarm >>>> buildModel >>>> END\n");
   fflush(0);
-  exit(0);
 
   return self;
 }  

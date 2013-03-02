@@ -81,6 +81,9 @@ double shadeColorMax;
 
 }
 
+// New for 5.0
+- (id <SolarManager>) getSolarManager;
+
 + createBegin: aZone;
 - createEnd;
 

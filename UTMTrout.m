@@ -750,6 +750,7 @@
 - setFishCell: (FishCell *) aCell
 {
     fishCell = aCell;
+    habitatSpace = [aCell getSpace];
     return self;
 }
 
@@ -1518,14 +1519,20 @@
 //////////////////////////////////////////////////////////////////////
 - move
 {
+	//fprintf(stdout, "UTMTrout >>>> move >>>> BEGIN\n");
+	//fflush(0);
   if(causeOfDeath) 
   {
        return self;
   }
 
 
+  //fprintf(stdout, "UTMTrout >>>> move >>>> before calcDist\n");
+  //fflush(0);
   [self calcMaxMoveDistance];
 
+  //fprintf(stdout, "UTMTrout >>>> move >>>> before get Time Stuff\n");
+  //fflush(0);
   numberOfDaylightHours = [fishCell getNumberOfDaylightHours];
   numberOfNightHours = [fishCell getNumberOfNightHours];
 
@@ -1571,9 +1578,10 @@
   fflush(0);
   */
 
-
   [self moveToMaximizeExpectedMaturity]; 
 
+  //fprintf(stdout, "UTMTrout >>>> move >>>> END\n");
+  //fflush(0);
   return self;
 }
 
@@ -1845,8 +1853,8 @@
 	cell, but it is much cleaner and safer this way! 
 */
 
-  //fprintf(stdout, "Trout >>>> moveTo >>>> BEGIN\n");
-  //fflush(0);
+	//fprintf(stdout, "Trout >>>> moveTo >>>> BEGIN\n");
+	//fflush(0);
 
 	
   // FOR NOW ...
@@ -1857,27 +1865,26 @@
   netEnergyForBestCell = [self calcNetEnergyAt: bestDest
                                   withActivity: fishActivity];
 
-  /*
-  fprintf(stdout, "\n");
-  fprintf(stdout, "TROUT >>>> moveTo >>>> netEnergyForBestCell = %f\n", netEnergyForBestCell);
-  fprintf(stdout, "TROUT >>>> moveTo >>>> tempNetEnergyIfFeed = %f\n", tempNetEnergyIfFeed);
-  fprintf(stdout, "TROUT >>>> moveTo >>>> tempNetEnergyIfHide = %f\n", tempNetEnergyIfHide);
-  fprintf(stdout, "TROUT >>>> moveTo >>>> tempBestERMForFeed = %f\n", tempBestERMForFeed);
-  fprintf(stdout, "TROUT >>>> moveTo >>>> tempBestERMForHide = %f\n", tempBestERMForHide);
-  if(fishActivity == FEED)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishActivity = FEED\n");
-  if(fishActivity == HIDE)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishActivity = HIDE\n");
-  if(fishFeedingStrategy == DRIFT)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = DRIFT\n");
-  if(fishFeedingStrategy == SEARCH)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = SEARCH\n");
-  if(fishFeedingStrategy == HIDE)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = HIDE\n");
-  fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = %d\n", cellFeedingStrategy);
-  fprintf(stdout, "\n");
-  fflush(0);
-  */
+  //fprintf(stdout, "\n");
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> netEnergyForBestCell = %f\n", netEnergyForBestCell);
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> tempNetEnergyIfFeed = %f\n", tempNetEnergyIfFeed);
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> tempNetEnergyIfHide = %f\n", tempNetEnergyIfHide);
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> tempBestERMForFeed = %f\n", tempBestERMForFeed);
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> tempBestERMForHide = %f\n", tempBestERMForHide);
+  //if(fishActivity == FEED)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishActivity = FEED\n");
+  //if(fishActivity == HIDE)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishActivity = HIDE\n");
+  //if(fishFeedingStrategy == DRIFT)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = DRIFT\n");
+  //if(fishFeedingStrategy == SEARCH)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = SEARCH\n");
+  //if(fishFeedingStrategy == HIDE)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = HIDE\n");
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> cellFeedingStrategy = %d\n", cellFeedingStrategy);
+  //fprintf(stdout, "\n");
+  //fflush(0);
+  
 
 
 
@@ -1911,16 +1918,16 @@
                                  withSwimSpeed: [self getSwimSpeedAt: bestDest forStrategy: fishFeedingStrategy] ];
 
   
-  /*
-  if(fishFeedingStrategy == DRIFT)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = DRIFT\n");
-  if(fishFeedingStrategy == SEARCH)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = SEARCH\n");
-  if(fishFeedingStrategy == HIDE)
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = HIDE\n");
-  fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = %d\n", fishFeedingStrategy);
-  fflush(0);
-  */
+  
+  //if(fishFeedingStrategy == DRIFT)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = DRIFT\n");
+  //if(fishFeedingStrategy == SEARCH)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = SEARCH\n");
+  //if(fishFeedingStrategy == HIDE)
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = HIDE\n");
+  //fprintf(stdout, "TROUT >>>> moveTo >>>> fishFeedingStrategy = %d\n", fishFeedingStrategy);
+  //fflush(0);
+  
 
 
 
@@ -2022,7 +2029,6 @@
        fishActivitySymbol = feedSymbol;
     }
 
-
     //
     // New distance moved vars
     //
@@ -2048,8 +2054,8 @@
 
    CellNumber = [bestDest getPolyCellNumber];
 
-  //fprintf(stdout, "Trout >>>> moveTo >>>> END\n");
-  //fflush(0);
+   //fprintf(stdout, "Trout >>>> moveTo >>>> END\n");
+   //fflush(0);
 
   return self;
 

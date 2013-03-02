@@ -284,6 +284,7 @@
 - (double) getTurbidity;
 
 - calcDayLength: (time_t) aTime_t;
+
 - (double) getNumberOfDaylightHours;
 - (double) getNumberOfNightHours;
 - (double) getDaytimeStartHour;

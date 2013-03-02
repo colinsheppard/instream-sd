@@ -47,6 +47,7 @@ Boston, MA 02111-1307, USA.
   char flowFile[50];
   char temperatureFile[50];
   char turbidityFile[50];
+  char driftFoodFile[50];
   char cellHabVarsFile[50];
 
   id <List> listOfPolyInputData;
@@ -70,6 +71,7 @@ Boston, MA 02111-1307, USA.
 - setFlowFile: (char *) aFlowFile;
 - setTemperatureFile: (char *) aTemperatureFile;
 - setTurbidityFile: (char *) aTemperatureFile;
+- setDriftFoodFile: (char *) aDriftFoodFile;
 - setCellHabVarsFile: (char *) aCellDataFile;
 
 
@@ -85,6 +87,7 @@ Boston, MA 02111-1307, USA.
 - (char *) getFlowFile;
 - (char *) getTemperatureFile;
 - (char *) getTurbidityFile;
+- (char *) getDriftFoodFile;
 - (char *) getCellHabVarsFile;
 
 - (id <List>) getListOfPolyInputData;

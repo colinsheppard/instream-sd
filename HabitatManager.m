@@ -248,6 +248,9 @@ Boston, MA 02111-1307, USA.
     if(strcmp(reachVarName, "turbidityFile") == 0){
        [habitatSetup setTurbidityFile: reachVar];
     }
+    if(strcmp(reachVarName, "driftFoodFile") == 0){
+       [habitatSetup setDriftFoodFile: reachVar];
+    }
     if(strcmp(reachVarName, "barrierX") == 0){
        fprintf(stderr, "ERROR: HabitatManager >>>> readReachSetupFile >>>> Reach.Setup  Barriers are invalid in this version of instream, remove parameter 'barrierX' from Reach.Setup\n");
        fflush(0);
@@ -401,6 +404,9 @@ Boston, MA 02111-1307, USA.
 }*/
 
 
+- (id <SolarManager>) getSolarManager {
+  return solarManager;
+}
 
 /////////////////////////////////////////////////
 //
@@ -563,6 +569,8 @@ Boston, MA 02111-1307, USA.
      habitatSpace = [HabitatSpace createBegin: aZone];
      [habitatSpace setModel: model];
      [habitatSpace setNumberOfSpecies: numberOfSpecies];
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before load space\n");
+  fflush(0); 
      [ObjectLoader load: habitatSpace fromFileNamed: [habSetup getHabParamFile]];
 
      [habitatSpace setReachName: [habSetup getReachName]];
@@ -574,13 +582,22 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setFishParamsMap: fishParamsMap];
      [habitatSpace setSolarManager: solarManager];
 
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before buildObj \n");
+  fflush(0); 
      [habitatSpace buildObjects];
 
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set files\n");
+  fflush(0); 
      [habitatSpace setPolyCellGeomFile: [habSetup getCellGeomFile]];
      [habitatSpace setHydraulicFile: [habSetup getHydraulicFile]];
      [habitatSpace setFlowFile: [habSetup getFlowFile]];
      [habitatSpace setTemperatureFile: [habSetup getTemperatureFile]];
      [habitatSpace setTurbidityFile: [habSetup getTurbidityFile]];
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set drift\n");
+  fflush(0); 
+     [habitatSpace setDriftFoodFile: [habSetup getDriftFoodFile]];
+  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> after set drift \n");
+  fflush(0); 
      [habitatSpace setCellHabVarsFile: [habSetup getCellHabVarsFile]];
      [habitatSpace setListOfPolyInputData: [habSetup getListOfPolyInputData]];
    
