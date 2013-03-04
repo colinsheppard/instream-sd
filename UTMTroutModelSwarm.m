@@ -616,11 +616,15 @@ char **speciesStocking;
     setUTMRasterResolutionY:  (int) aUTMRasterResolutionY
   setUTMRasterColorVariable:  (char *) aUTMRasterColorVariable
 {
+	//fprintf(stdout, "TroutMOdelSwarm >>>> setUTMRasterVars >>>> BEGIN\n");
+	//fflush(0);
     utmRasterResolution  = aUTMRasterResolution;
     utmRasterResolutionX = aUTMRasterResolutionX;
     utmRasterResolutionY = aUTMRasterResolutionY;
     strncpy(utmRasterColorVariable, aUTMRasterColorVariable, 35);
 
+    //fprintf(stdout, "TroutMOdelSwarm >>>> setUTMRasterVars >>>> END\n");
+    //fflush(0);
     return self;
 }
 

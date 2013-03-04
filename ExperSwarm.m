@@ -542,7 +542,6 @@
 {
   fprintf(stdout, "EXPERSWARM >>>> buildObjects \n");
   fflush(0);
-  exit(0);
 
   [super buildObjects];
 

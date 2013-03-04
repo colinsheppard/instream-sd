@@ -257,6 +257,10 @@
 
   troutModelSwarm = [UTMTroutModelSwarm create: self];
 
+  [troutModelSwarm setPolyRasterResolutionX:  rasterResolutionX
+                   setPolyRasterResolutionY:  rasterResolutionY 
+                 setPolyRasterColorVariable:  rasterColorVariable];
+
   [troutModelSwarm setObserverSwarm: self];
   
   //fprintf(stdout,"modelSetupFile = %s \n", modelSetupFile);
@@ -315,6 +319,8 @@
 
   //utmColormap = [Colormap create: obsZone];
 
+  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before velocity\n");
+  //fflush(0);
 
   {
      strncpy(toggleColorVariable, "velocity", 9);
@@ -350,8 +356,9 @@
                             Blue: aBlueFrac];
 
      }
-     //exit(0);
   }
+  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before depth\n");
+  //fflush(0);
   {
      strncpy(toggleColorVariable, "depth", 6);
 
@@ -408,6 +415,8 @@
       exit(1);
   }
 
+  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before colormaps\n");
+  //fflush(0);
   [depthColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
   [depthColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
   [depthColormap setColor: TAG_FISH_COLOR ToName: "green"];
@@ -476,6 +485,8 @@
   
 
   
+  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before rasterres\n");
+  //fflush(0);
    //
    //build model Objects and set the fish color in the ModelSwarm
    //
@@ -484,8 +495,8 @@
                    setUTMRasterResolutionY:  rasterResolutionY 
                  setUTMRasterColorVariable:  rasterColorVariable];
 
-      fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> shadeColorMax = %s\n", shadeColorMax);
-      fflush(0);
+   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> shadeColorMax = %d\n", shadeColorMax);
+   fflush(0);
    //[troutModelSwarm buildObjectsWith: utmColormap
    [troutModelSwarm buildObjectsWith: utmColorMaps
                              andWith: shadeColorMax];
@@ -512,6 +523,8 @@
 
    [utmWorldRaster pack];				  // draw the window.
 
+  fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before polydisp\n");
+  fflush(0);
 
    polyCellDisplay = [Object2dDisplay createBegin: obsZone];
    [polyCellDisplay setDisplayWidget: utmWorldRaster];

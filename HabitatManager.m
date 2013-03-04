@@ -646,7 +646,7 @@ Boston, MA 02111-1307, USA.
      //[habitatSpace setSpaceDimensions];
 
      [habitatSpace setTimeManager: timeManager];
-  fprintf(stdout, "HabitatManager >>>> afterSetTimeMan \n");
+  fprintf(stdout, "HabitatManager >>>> before setPolyRast X=%d Y=%d\n",polyRasterResolutionX,polyRasterResolutionY);
   fflush(0);
 
      //

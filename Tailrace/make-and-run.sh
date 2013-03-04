@@ -3,4 +3,4 @@
 cd ..
 make
 cd Tailrace
-../instreamSD2D.exe -b
+../instreamSD2D.exe 
