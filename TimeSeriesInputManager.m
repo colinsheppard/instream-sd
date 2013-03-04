@@ -812,7 +812,7 @@
                                                         withSecond: second];
           }
     
-	  if(input > 970356400 && input < 970359900){
+	  if(anInputTime > 970356400 && anInputTime < 970359900){
 	    fprintf(stdout,"start %d end %d input %d data %f \n", startTime, endTime, anInputTime, inputData);
 	    fflush(0);
 	  }
@@ -945,8 +945,6 @@
   return self;
     
 }
-
-
 
 /////////////////////////////////////////////////////
 //

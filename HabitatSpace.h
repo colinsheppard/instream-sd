@@ -509,6 +509,7 @@ long int maxYCoordinate;
 
 - printCellDepthReport;
 - printCellVelocityReport;
+- (double) getChangeInDailyFlow;
 
 - printHabitatReport;
 - printCellAreaDepthVelocityRpt;

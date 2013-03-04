@@ -231,7 +231,7 @@
         exit(1);
     }
 
-    strncpy(speciesName, [fishParams getSpeciesName], 35);
+    strncpy(speciesName, [fishParams getInstanceName], 35);
     return self;
 }
 
@@ -555,7 +555,7 @@
 
     newFish = [model createNewFishWithFishParams: fishParams  
                            //withTroutClass: [objc_get_class([[fishParams getFishSpecies] getName]) class] 
-                           withTroutClass: [objc_get_class([fishParams getSpeciesName]) class] 
+                           withTroutClass: [objc_get_class([fishParams getInstanceName]) class] 
                                       Age: 0
                                    Length: length];
 

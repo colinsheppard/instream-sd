@@ -2521,6 +2521,17 @@ return self;
 
 }
 
+///////////////////////////////////////////////////////////
+//
+// getChangeInDailyFlow
+//
+//////////////////////////////////////////////////////////
+- (double) getChangeInDailyFlow 
+{
+  return changeInDailyFlow;
+}
+
+
 /////////////////////////////////////////////////
 //
 // shouldFishMoveAt
@@ -2540,8 +2551,8 @@ return self;
 
    dayNightPhaseSwitch = FALSE;
 
-   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "HABITATSPACE >>>> shouldFishMoveAt >>>> BEGIN\n");
+   //fflush(0);
 
    currentHourlyFlow = [flowInputManager getValueForTime: theCurrentTime];
    habDriftConc      = [driftFoodInputManager getValueForTime: theCurrentTime];
@@ -2570,8 +2581,6 @@ return self;
 
         [self updateMeanCellDepthAndVelocity: dailyMeanFlow]; 
    }
-   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> before Initialize stuff\n");
-   fflush(0);
 
    //
    // Initialize stuff for the start of the simulation, assuming the
@@ -2632,8 +2641,6 @@ return self;
         }
     }         
    
-   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> before getFlowChangeForMove");
-   fflush(0);
     //
     // Now, see if movement is triggered by a flow change
     //  
@@ -2647,8 +2654,8 @@ return self;
        flowAtLastMove = currentHourlyFlow; 
     }
 
-   fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> END\n");
-   fflush(0);
+   //fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> END\n");
+   //fflush(0);
 
     return (dayNightPhaseSwitch || flowMove || simStartMove);
 }
@@ -3020,8 +3027,8 @@ return self;
 -   updateHabitatWithTime: (time_t) aModelTime_t
     andWithModelStartFlag: (BOOL) aStartFlag
 {
-  // fprintf(stdout, "HabitatSpace >>>> updateHabitatWithTime >>>> BEGIN\n");
-  // fflush(0);
+	//fprintf(stdout, "HabitatSpace >>>> updateHabitatWithTime >>>> BEGIN\n");
+	//fflush(0);
    
   modelTime_t = aModelTime_t;
 

@@ -1016,9 +1016,13 @@
       spawnCell = fishCell;
   }
 
+  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> before add fish\n");
+  //fflush(0);
   [spawnCell addFish: self]; 
   fishCell = spawnCell;
 
+  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> before create redd in cell\n");
+  //fflush(0);
   [self createAReddInCell: spawnCell];
 
   timeLastSpawned = [self getCurrentTimeT];

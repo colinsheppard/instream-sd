@@ -1709,6 +1709,8 @@ char **speciesStocking;
      numHoursSinceLastStep++;
   }
 
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before shouldfishmoveat \n");
+  //fflush(0);
   //
   // Second, check to see if the fish should move. This habitat method
   // also updates model variables for whether it is daytime or night,
@@ -1730,6 +1732,8 @@ char **speciesStocking;
   //
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before update fish repro func\n");
+  //fflush(0);
       [self updateFish];      //increments fish age if date is 1/1
       [self updateReproFuncs];
   }
@@ -1739,6 +1743,8 @@ char **speciesStocking;
   //
   if(nextFishStockTime <= modelTime)
   {
+  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before stock\n");
+  //fflush(0);
       [self stock];
   }
 
@@ -1784,6 +1790,8 @@ char **speciesStocking;
   {
      if(isFirstStep == FALSE)
      {
+      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before fish update die grow\n");
+      //fflush(0);
         [liveFish forEach: M(updateNumHoursSinceLastStep:) : (void *) &numHoursSinceLastStep];
         [liveFish forEach: M(die)];
         [liveFish forEach: M(grow)];
@@ -1812,6 +1820,8 @@ char **speciesStocking;
      //
      if(isFirstStep == FALSE)
      {
+      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before breakout report\n");
+      //fflush(0);
         [self outputBreakoutReport];
 	// Comment the following for now, breakout reporting will need to be fixed later --colin
         //[habitatSpace printCellFishInfo];
@@ -1821,9 +1831,13 @@ char **speciesStocking;
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
      //
+      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before update hab manager\n");
+      //fflush(0);
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
+      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before toggle and move\n");
+      //fflush(0);
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
 
@@ -1847,11 +1861,12 @@ char **speciesStocking;
       isFirstStep = FALSE;
   }
 
-  //fprintf(stdout,"ModelSwarm >>>> step >>>> scenario     = %d\n", scenario);
-  //fprintf(stdout,"ModelSwarm >>>> step >>>> replicate    = %d\n", replicate);
-  //fprintf(stdout,"ModelSwarm >>>> step >>>> date         = %s\n", [timeManager getDateWithTimeT: modelTime]);
-  //fprintf(stdout,"ModelSwarm >>>> step >>>> hour         = %d\n", [timeManager getHourWithTimeT: modelTime]);
-  //fprintf(stdout,"ModelSwarm >>>> step >>>> numberOfFish = %d\n\n", [liveFish getCount]);
+  if([timeManager getHourWithTimeT: modelTime] == 0){
+	  fprintf(stdout,"ModelSwarm >>>> step >>>> scenario,replicate	= %d, %d \n", scenario,replicate);
+	  fprintf(stdout,"ModelSwarm >>>> step >>>> date         = %s\n", [timeManager getDateWithTimeT: modelTime]);
+	  //fprintf(stdout,"ModelSwarm >>>> step >>>> hour         = %d\n", [timeManager getHourWithTimeT: modelTime]);
+	  fprintf(stdout,"ModelSwarm >>>> step >>>> numberOfFish = %d\n\n", [liveFish getCount]);
+  }
   //[self     printZone: modelZone 
        //withPrintLevel: 1];
 
