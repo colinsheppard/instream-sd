@@ -1085,6 +1085,7 @@ char **speciesStocking;
 
    char header1[HCOMMENTLENGTH];
    char date[15];
+   char aReach[35];
    int age=0;
    int numOfFish=0;
    double meanLength=0.0;
@@ -1112,11 +1113,12 @@ char **speciesStocking;
        fgets(header1,HCOMMENTLENGTH,stockFilePtr);
        fgets(header1,HCOMMENTLENGTH,stockFilePtr);
 
-       while((fscanf(stockFilePtr, "%s%d%d%lf%lf", date,
+       while((fscanf(stockFilePtr, "%s%d%d%lf%lf%s", date,
                                                    &age,
                                                    &numOfFish,
                                                    &meanLength,
-                                                   &stdDevLength)) != EOF)
+                                                   &stdDevLength,
+						   aReach)) != EOF)
        {
  
             FishStockStruct* fishStockRecord;
@@ -1147,6 +1149,7 @@ char **speciesStocking;
               fishStockRecord->stdDevLength = stdDevLength;
               fishStockRecord->troutClass = speciesSetup->troutClass;
               fishStockRecord->fishParams = speciesSetup->fishParams;
+	      strncpy(fishStockRecord->reach, aReach, 35);
 
               /*
               fprintf(stdout, "%s %d %d %f %f\n", date, age, numOfFish, meanLength, stdDevLength);
