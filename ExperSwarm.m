@@ -755,7 +755,6 @@
             }
         }
         [ndx drop];
-        exit(1);
     }
 
     [instanceNamesUsed removeAll];

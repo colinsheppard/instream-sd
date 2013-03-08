@@ -122,20 +122,11 @@ char **speciesStocking;
 
   reachSymbolList = [List create: modelZone];
 
+  mySpecies = (id *) [modelZone alloc: numberOfSpecies*sizeof(Symbol)];
   [self readSpeciesSetupFile];
 
        fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 2, %d \n",numberOfSpecies); 
        fflush(0);
-  //
-  // Create list of species symbols
-  //
-  mySpecies = (id *) [modelZone alloc: numberOfSpecies*sizeof(Symbol)];
-  for(numspecies = 0; numspecies < numberOfSpecies; numspecies++ )
-  {
-       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 3, %d \n",numspecies); 
-       fflush(0);
-     mySpecies[numspecies] = [Symbol create: modelZone setName: speciesName[numspecies] ];
-  }
 
   speciesSymbolList = [List create: modelZone];
   for(numspecies = 0; numspecies < numberOfSpecies; numspecies++ )
@@ -461,10 +452,16 @@ char **speciesStocking;
   fishInitializationRecords = [List create: modelZone];
   popInitTime = [timeManager getTimeTWithDate: popInitDate];
   [self createInitialFish]; 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before sort stuff\n");
+      fflush(0);
   [QSort sortObjectsIn:  liveFish];
   [QSort reverseOrderOf: liveFish];
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before toggle fish\n");
+      fflush(0);
   [self toggleFishForHabSurvUpdate];
 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before create repro logit\n");
+      fflush(0);
   [self createReproLogistics];
 
   //
@@ -498,7 +495,8 @@ char **speciesStocking;
   //
   [self openReddSummaryFilePtr];
   [self openReddReportFilePtr];
- 
+      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before create repro logit\n");
+      fflush(0);
   //
   // STOCKING
   //
@@ -870,14 +868,11 @@ char **speciesStocking;
 
   FISH_COLOR++;
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
-  //fflush(0);
 
   lstNdx = [speciesSetupList listBegin: scratchZone];
   while (([lstNdx getLoc] != End) && ((speciesSetup = (SpeciesSetup *) [lstNdx next]) != (SpeciesSetup *) nil)) 
   {
-      int* fishColor = (int *) [ZoneAllocMapper allocBlockIn: modelZone
-                                                      ofSize: sizeof(int)];
+      long* fishColor = [modelZone alloc: sizeof(long)];
       [clrMapNdx setLoc: Start];
      
       while(([clrMapNdx getLoc] != End) && ((aColorMap = [clrMapNdx next]) != nil))
@@ -892,6 +887,8 @@ char **speciesStocking;
 
       [fishColorMap at: speciesSetup->speciesSymbol 
                 insert: (void *) fishColor];
+      fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d, SPECIES = %s, return=%d \n", fishColor,[speciesSetup->speciesSymbol getName],*((long *)[fishColorMap at: speciesSetup->speciesSymbol]));
+      fflush(0);
   }
 
   [lstNdx drop];
@@ -946,6 +943,8 @@ char **speciesStocking;
 
    while(([initPopLstNdx getLoc] != End) && ((initialFishRecord = (TroutInitializationRecord *) [initPopLstNdx next]) != (TroutInitializationRecord *) nil)) 
    {
+	  fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
+	  fflush(0);
       //
       //Begin species loop
       //
@@ -1003,6 +1002,8 @@ char **speciesStocking;
                continue;
           }
 
+	  //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> create fish %s age %d length %f \n",[initialFishRecord->mySpecies getName],age,length );
+	  //fflush(0);
 	  newFish = [self createNewFishWithSpeciesIndex: initialFishRecord->speciesNdx  
                                                    Species: initialFishRecord->mySpecies 
                                                        Age: age
@@ -2574,9 +2575,10 @@ char **speciesStocking;
 
   [newFish calcStarvPaAndPb];
 
-  if(fishColorMap != nil)
-  {
-     [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
+  if(fishColorMap != nil){
+	  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
+	  //fflush(0);
+	  [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
   }
 
   [newFish setTimeManager: timeManager];
@@ -2852,7 +2854,7 @@ char **speciesStocking;
   
   if(fishColorMap != nil)
   {
-      [newFish setFishColor: *((int *) [fishColorMap at: [newFish getSpecies]])];
+      [newFish setFishColor: *((long *) [fishColorMap at: [newFish getSpecies]])];
   }
  
 
@@ -2874,6 +2876,9 @@ char **speciesStocking;
   int checkNumSpecies = 0;
 
   int speciesIDX= 0;
+
+  fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> BEGIN\n");
+  fflush(0);
 
   if(numberOfSpecies > 10)
   {
@@ -2913,13 +2918,14 @@ char **speciesStocking;
                               speciesPopFile[speciesIDX],
                               speciesColor[speciesIDX],
 			      speciesStocking[speciesIDX]) != EOF){
-         fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
-         fflush(0);
+	      //fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
+	      //fflush(0);
 
          SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
                                                                               ofSize: sizeof(SpeciesSetup)];
          speciesSetup->speciesSymbol = [Symbol create: modelZone
                                               setName: speciesName[speciesIDX]];
+	 mySpecies[speciesIDX] = speciesSetup->speciesSymbol;
          speciesSetup->speciesIndex = speciesIDX;
          strncpy(speciesSetup->fishParamFile, speciesParameter[speciesIDX], 50);
          strncpy(speciesSetup->initPopFile, speciesPopFile[speciesIDX], 50);
@@ -2930,6 +2936,8 @@ char **speciesStocking;
          [speciesSetupList addLast: (void *) speciesSetup];
 
          checkNumSpecies++;
+	 //fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> speciesSymbol %s \n", [speciesSetup->speciesSymbol getName]);
+	 //fflush(0);
       }
    }
 
