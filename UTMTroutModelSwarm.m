@@ -452,16 +452,9 @@ char **speciesStocking;
   fishInitializationRecords = [List create: modelZone];
   popInitTime = [timeManager getTimeTWithDate: popInitDate];
   [self createInitialFish]; 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before sort stuff\n");
-      fflush(0);
   [QSort sortObjectsIn:  liveFish];
   [QSort reverseOrderOf: liveFish];
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before toggle fish\n");
-      fflush(0);
-  [self toggleFishForHabSurvUpdate];
 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before create repro logit\n");
-      fflush(0);
   [self createReproLogistics];
 
   //
@@ -495,8 +488,6 @@ char **speciesStocking;
   //
   [self openReddSummaryFilePtr];
   [self openReddReportFilePtr];
-      fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before create repro logit\n");
-      fflush(0);
   //
   // STOCKING
   //
@@ -504,8 +495,8 @@ char **speciesStocking;
   fishStockList = [List create: modelZone];
   [self readFishStockingRecords];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> END\n");
-  //fflush(0);
+  fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> END\n");
+  fflush(0);
 
   return self;
 
@@ -1629,8 +1620,8 @@ char **speciesStocking;
   [super buildActions];
 
 
-  //fprintf(stderr,"MODEL SWARM >>>> buildActions begin\n");
-  //fflush(0);
+  fprintf(stderr,"MODEL SWARM >>>> buildActions begin\n");
+  fflush(0);
 
   //
   // There is now only one "Action", step, which does all of the real work.
@@ -1648,8 +1639,8 @@ char **speciesStocking;
 
  [modelSchedule at: 0 createAction: modelActions];
 
-  //fprintf(stderr,"MODEL SWARM >>>> buildActions returning\n");
-  //fflush(0);
+ fprintf(stderr,"MODEL SWARM >>>> buildActions returning\n");
+ fflush(0);
 
 
   return self;
@@ -1943,6 +1934,18 @@ char **speciesStocking;
    return self;
 }
 
+/////////////////////////////////////////////////////////
+//
+// toggleCellsColorRepIn
+//
+//////////////////////////////////////////////////////////
+- toggleCellsColorRepIn: aHabitatSpace
+{
+      [habitatManager setShadeColorMax: shadeColorMax
+                       inHabitatSpace:  aHabitatSpace];
+      [habitatManager toggleCellsColorRepIn: aHabitatSpace];
+      return self;
+}
 
 ///////////////////////////////////////
 //
@@ -4348,16 +4351,11 @@ char **speciesStocking;
 //
 ///////////////////////////////////////////
 - setShadeColorMax: (double) aShadeColorMax
+          inHabitatSpace: aHabitatSpace
 {
-    id <ListIndex> lstNdx = nil;
-    id aHabitatSpace;
-
     shadeColorMax = aShadeColorMax;
-    lstNdx = [reachList listBegin: scratchZone];
-
-    while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
-      [aHabitatSpace setShadeColorMax: shadeColorMax];
-    }
+    [habitatManager setShadeColorMax: shadeColorMax
+                      inHabitatSpace: aHabitatSpace];
     return self;
 }
 
@@ -4384,6 +4382,10 @@ char **speciesStocking;
     fflush(0);
 
     return self;
+}
+
+- (HabitatManager *) getHabitatManager{
+  return habitatManager;
 }
 
 /////////////////////////////////////

@@ -87,6 +87,16 @@
   int maxShadeDepth;
   int maxShadeVelocity;
 
+// From instream 5.0
+  id <List> habCellDisplayList;       // display the trout
+  id <Map> habitatRasterMap;
+  id <List> habitatRasterList;	       // 2d display widgets
+  id <Map> habColormapMap;
+  id <Map> habCellDisplayMap;
+  int polyRasterX;
+  int polyRasterY;
+  double shadeColorMax;
+
 
 @public
   int modelNumber;
@@ -102,8 +112,8 @@
 
 - objectSetup;
 - buildObjects;
-- switchColorRep;
-- redrawRaster;
+- switchColorRepFor: aHabitatSpace;
+- redrawRasterFor: aHabitatSpace;
 - buildActions;
 
 - activateIn: swarmContext;

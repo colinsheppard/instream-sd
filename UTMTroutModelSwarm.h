@@ -348,6 +348,8 @@ id <SolarManager> solarManager;
 - createCMaxInterpolators;
 - createSpawnDepthInterpolators;
 - createSpawnVelocityInterpolators;
+- (HabitatManager *) getHabitatManager;
+- toggleCellsColorRepIn: aHabitatSpace;
 
 
 
@@ -520,7 +522,7 @@ id <SolarManager> solarManager;
 - createBreakoutReporters;
 - outputBreakoutReport;
 
-- setShadeColorMax: (double) aShadeColorMax;
+- setShadeColorMax: (double) aShadeColorMax inHabitatSpace: aHabitatSpace;
 - switchColorRepFor: aHabitatSpace;
 - redrawRaster;
 

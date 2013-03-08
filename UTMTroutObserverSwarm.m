@@ -298,8 +298,6 @@
   char reachName[50];
   int ndx;
 
-  int shadeColorMax; 
-
   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
 
@@ -495,53 +493,158 @@
                    setUTMRasterResolutionY:  rasterResolutionY 
                  setUTMRasterColorVariable:  rasterColorVariable];
 
-   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> shadeColorMax = %d\n", shadeColorMax);
-   fflush(0);
    //[troutModelSwarm buildObjectsWith: utmColormap
    [troutModelSwarm buildObjectsWith: utmColorMaps
                              andWith: shadeColorMax];
 
-   habitatSpace = [troutModelSwarm getHabitatSpace];
+  [self buildFishProbes];
+
+  //
+  // Build the rasters, display objects, etc from the 
+  // HabitatManager 
+  // 
+  {
+       int numberOfSpaces = -1;
+       int spaceCount;
+       id habitatManager = nil;
+       id <List> habSpaceList;
+
+       habitatManager = [troutModelSwarm getHabitatManager];    
+       numberOfSpaces = [habitatManager getNumberOfHabitatSpaces];
+       habSpaceList = [habitatManager getHabitatSpaceList];
+       
+       habitatRasterList = [List create: obsZone];
+       habCellDisplayList = [List create: obsZone];
+
+       fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> building space display objects >>>> BEGIN\n");
+       fflush(0);
+
+       for(spaceCount = 0; spaceCount < numberOfSpaces; spaceCount++)
+       {
+            id <ZoomRaster> polyWorldRaster = nil;
+            id habitatSpace = [habSpaceList atOffset: spaceCount];
+             
+            polyWorldRaster = [ZoomRaster createBegin: obsZone];
+            [polyWorldRaster setWindowGeometryRecordName: [habitatSpace getReachName]];
+            polyWorldRaster = [polyWorldRaster createEnd];
+            [polyWorldRaster enableDestroyNotification: self
+	                 notificationMethod: @selector (polyRasterDeath:)];
+
+              [habitatRasterMap at: habitatSpace
+                            insert: polyWorldRaster];
+              [habitatRasterList addLast: polyWorldRaster];
+
+             if(strncmp(rasterColorVariable, "velocity", 8) == 0)
+             {
+                strncpy(toggleColorVariable, "velocity", 9);
+                [polyWorldRaster setColormap: velocityColormap];
+
+                [habColormapMap   at: polyWorldRaster
+                              insert:velocityColormap];
+                currentRepresentation = Velocity;
+             }
+             else if(strncmp(rasterColorVariable, "depth", 5) == 0)
+             {
+                strncpy(toggleColorVariable, "depth", 6);
+                [polyWorldRaster setColormap: depthColormap];
+
+                [habColormapMap   at: polyWorldRaster
+                              insert: depthColormap];
+
+                currentRepresentation = Depth;
+             }
+             else
+             {
+                 fprintf(stderr, "ERROR: TroutObserverSwarm >>>> buildObjects >>>> rasterColorVariable = %s\n", rasterColorVariable);
+                 fflush(0);
+                 exit(1);
+             }
+
+
+            polyRasterX = [habitatSpace getPolyPixelsX];
+            polyRasterY = [habitatSpace getPolyPixelsY];
+
+            //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> polyRasterX = %d\n", polyRasterX);
+            //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> polyRasterY = %d\n", polyRasterY);
+            //fflush(0);
+
+            [polyWorldRaster setWidth: polyRasterX/rasterResolutionX Height: polyRasterY/rasterResolutionY];
+
+            [polyWorldRaster setWindowTitle: [habitatSpace getReachName]];
+
+            [polyWorldRaster pack];				  // draw the window.
+
+            polyCellDisplay = [Object2dDisplay createBegin: obsZone];
+            [polyCellDisplay setDisplayWidget: polyWorldRaster];
+            [polyCellDisplay setDiscrete2dToDisplay: habitatSpace];
+            [polyCellDisplay setObjectCollection: 
+		            [habitatSpace getPolyCellList]];
+            [polyCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
+            polyCellDisplay = [polyCellDisplay createEnd];
+
+            [polyWorldRaster setButton: ButtonLeft
+		               Client: habitatSpace 
+		              Message: M(probePolyCellAtX:Y:)];
+
+            [polyWorldRaster setButton: ButtonRight
+	                       Client: habitatSpace 
+	                      Message: M(probeFishAtX:Y:)];
+
+            [habCellDisplayMap at: habitatSpace
+                           insert: polyCellDisplay];
+
+         } //for
+
+         fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> building space display objects >>>> END\n");
+         fflush(0);
+
+   } // Build Display Objects
+   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getHabSpace \n");
+   //fflush(0);
+   //habitatSpace = [troutModelSwarm getHabitatSpace];
             
-   utmWorldRaster = [ZoomRaster createBegin: obsZone];
-   SET_WINDOW_GEOMETRY_RECORD_NAME (utmWorldRaster);
-   utmWorldRaster = [utmWorldRaster createEnd];
-   [utmWorldRaster enableDestroyNotification: self
-                          notificationMethod: @selector (worldRasterDeath:)];
+   //utmWorldRaster = [ZoomRaster createBegin: obsZone];
+   //SET_WINDOW_GEOMETRY_RECORD_NAME (utmWorldRaster);
+   //utmWorldRaster = [utmWorldRaster createEnd];
+   //[utmWorldRaster enableDestroyNotification: self
+                          //notificationMethod: @selector (worldRasterDeath:)];
 
-   [utmWorldRaster setColormap: utmColormap];
+   //[utmWorldRaster setColormap: utmColormap];
 
-   rasterX = [habitatSpace getPixelsX];
-   rasterY = [habitatSpace getPixelsY];
-   rasterSize = (rasterX >= rasterY ? rasterX : rasterY )/rasterResolution;
-   [utmWorldRaster setZoomFactor: rasterZoomFactor];
+   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getPixels \n");
+   //fflush(0);
+   //rasterX = [habitatSpace getPixelsX];
+   //rasterY = [habitatSpace getPixelsY];
+   //rasterSize = (rasterX >= rasterY ? rasterX : rasterY )/rasterResolution;
+   //[utmWorldRaster setZoomFactor: rasterZoomFactor];
  
-   [utmWorldRaster setWidth: rasterX/rasterResolutionX Height: rasterY/rasterResolutionY];
+   //[utmWorldRaster setWidth: rasterX/rasterResolutionX Height: rasterY/rasterResolutionY];
  
-   strncpy(reachName, [habitatSpace getReachName], 50);
-   [utmWorldRaster setWindowTitle: reachName];
+   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getReachName\n");
+   //fflush(0);
+   //strncpy(reachName, [habitatSpace getReachName], 50);
+   //[utmWorldRaster setWindowTitle: reachName];
 
-   [utmWorldRaster pack];				  // draw the window.
+   //[utmWorldRaster pack];				  // draw the window.
 
-  fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before polydisp\n");
-  fflush(0);
+  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before polydisp\n");
+  //fflush(0);
 
-   polyCellDisplay = [Object2dDisplay createBegin: obsZone];
-   [polyCellDisplay setDisplayWidget: utmWorldRaster];
-   [polyCellDisplay setDiscrete2dToDisplay: habitatSpace];
-   [polyCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
-   [polyCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
-   polyCellDisplay = [polyCellDisplay createEnd];
+   //polyCellDisplay = [Object2dDisplay createBegin: obsZone];
+   //[polyCellDisplay setDisplayWidget: utmWorldRaster];
+   //[polyCellDisplay setDiscrete2dToDisplay: habitatSpace];
+   //[polyCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
+   //[polyCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
+   //polyCellDisplay = [polyCellDisplay createEnd];
 
-   [utmWorldRaster setButton: ButtonLeft
-                      Client: habitatSpace 
-                     Message: M(probePolyCellAtX:Y:)];
+   //[utmWorldRaster setButton: ButtonLeft
+                      //Client: habitatSpace 
+                     //Message: M(probePolyCellAtX:Y:)];
      
-   [utmWorldRaster setButton: ButtonRight
-                      Client: habitatSpace 
-                     Message: M(probeFishAtX:Y:)];
+   //[utmWorldRaster setButton: ButtonRight
+                      //Client: habitatSpace 
+                     //Message: M(probeFishAtX:Y:)];
 
-   [self buildFishProbes];
 
    //
    // The graph sequences are generated in the 
@@ -575,116 +678,52 @@
 // switchColorRep
 //
 ///////////////////////////////////
-- switchColorRep
+- switchColorRepFor: aHabitatSpace
 {
-  //int ndx;
-  int shadeColorMax;
+  id <ZoomRaster> habitatRaster = nil;
+  id <Colormap> habitatColormap;
 
-  //fprintf(stdout, "UTMTroutOPbserverSwarm >>>> switchColorRep BEGIN\n");
-  //fflush(0);
+  fprintf(stdout, "TroutObserverSwarm >>>> switchColorRep >>>> BEGIN\n");
+  fflush(0);
 
-  /*
-  for(ndx = 0; ndx < CELL_COLOR_MAX; ndx++)
-  {
-     [utmColormap unsetColor: ndx];
-  } 
-  */
-  
-  if(strncmp(toggleColorVariable, "velocity", 8) == 0)
-  {
-     strncpy(toggleColorVariable, "depth", 6);
+       habitatRaster = [habitatRasterMap at: aHabitatSpace];
+       habitatColormap = [habColormapMap  at: habitatRaster];
 
-     if(maxShadeDepth <= 0.0)
-     {
-         fprintf(stderr, "ERROR: UTMTroutObserverSwarm >>>> maxShadeDepth is <= 0.0 >>>> check Observer.Setup\n");
-         fflush(0);
-         exit(1);
-     }
-     else if(maxShadeDepth < CELL_COLOR_MAX)
-     {
-         shadeColorMax = (int) (maxShadeDepth + 0.5);
-     }
-     else 
-     {
-        shadeColorMax = CELL_COLOR_MAX;
-     }
- 
-     /*
-     for(ndx = 0; ndx < shadeColorMax; ndx++)
-     {
-           double aRedFrac = 0.0;
-           double aGreenFrac = (double) (shadeColorMax - 1.0 - ndx)/((double) shadeColorMax - 1.0);
-           double aBlueFrac =  1.0;
+      if(habitatColormap == depthColormap)
+      {
+            [habitatRaster setColormap: velocityColormap];
+            [habColormapMap at: habitatRaster replace: velocityColormap];
+            if(maxShadeVelocity <= 0)
+            {
+                fprintf(stderr, "ERROR: TroutObserverSwarm >>>> maxShadeVelocity is <= 0 >>>> check Observer.Setup\n");
+                fflush(0);
+                exit(1);
+            }
+            else shadeColorMax = (double) maxShadeVelocity;
+      }
+      else if(habitatColormap == velocityColormap)
+      {
+            [habitatRaster setColormap: depthColormap];
+            [habColormapMap at: habitatRaster replace: depthColormap];
 
-           [utmColormap setColor: ndx 
-                           ToRed: aRedFrac
-                           Green: aGreenFrac
-                            Blue: aBlueFrac];
-
-     }
-     */
-
-     [troutModelSwarm setShadeColorMax: shadeColorMax]; 
-  }
-  else if(strncmp(toggleColorVariable, "depth", 5) == 0)
-  {
-     strncpy(toggleColorVariable, "velocity", 9);
-
-     if(maxShadeVelocity <= 0.0)
-     {
-         fprintf(stderr, "ERROR: UTMTroutObserverSwarm >>>> maxShadeVelocity is <= 0.0 >>>> check Observer.Setup\n");
-         fflush(0);
-         exit(1);
-     }
-     else if(maxShadeVelocity < CELL_COLOR_MAX)
-     {
-         shadeColorMax = (int) (maxShadeVelocity + 0.5);
-     }
-     else 
-     {
-        shadeColorMax = CELL_COLOR_MAX;
-     }
- 
-     /*
-     for(ndx = 0; ndx < shadeColorMax; ndx++)
-     {
-           double aRedFrac = 1.0;
-           double aGreenFrac = (double) (shadeColorMax - 1.0 - ndx)/((double) shadeColorMax - 1.0);
-           double aBlueFrac = 0.0;
-
-           [utmColormap setColor: ndx 
-                           ToRed: aRedFrac
-                           Green: aGreenFrac
-                            Blue: aBlueFrac];
-
-     }
-     */
-     [troutModelSwarm setShadeColorMax: shadeColorMax]; 
-  }
-
-
-  if(currentRepresentation == Velocity)
-  {
-     currentRepresentation = Depth;
-     utmColormap = [utmColorMaps at: Depth];
-     [utmWorldRaster setColormap: utmColormap];
-  }
-  else if(currentRepresentation == Depth)
-  {
-     currentRepresentation = Velocity;
-     utmColormap = [utmColorMaps at: Velocity];
-     [utmWorldRaster setColormap: utmColormap];
-  }
-
-
-  [self redrawRaster];
-
-  //fprintf(stdout, "UTMTroutOPbserverSwarm >>>> switchColorRep END\n");
-  //fflush(0);
+            if(maxShadeDepth <= 0)
+            {
+                fprintf(stderr, "ERROR: TroutObserverSwarm >>>> maxShadeVelocity is <= 0 >>>> check Observer.Setup\n");
+                fflush(0);
+                exit(1);
+            }
+            else shadeColorMax = (double) maxShadeDepth;
+      }
+      
+      [troutModelSwarm setShadeColorMax: shadeColorMax inHabitatSpace: aHabitatSpace]; 
+      [troutModelSwarm toggleCellsColorRepIn: aHabitatSpace];
+      [self redrawRasterFor: aHabitatSpace];
+    
+  fprintf(stdout, "TroutObserverSwarm >>>> switchColorRep END\n");
+  fflush(0);
 
   return self;
 }
-
 
 
 ////////////////////////////////////
@@ -692,37 +731,21 @@
 // redrawRaster
 //
 //////////////////////////////////
-- redrawRaster
+- redrawRasterFor: aHabitatSpace
 {
-  id habitatSpace = [troutModelSwarm getHabitatSpace];
-  [utmWorldRaster erase];
+   fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> BEGIN\n");
+   fflush(0);
 
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> redrawRaster >>>> currentPhase = %d\n", [habitatSpace getCurrentPhase]);
-  //fflush(0);
- 
-  if([habitatSpace getCurrentPhase] == 0)
-  {
-      [utmWorldRaster fillRectangleX0: 0 
-                                Y0: 0 
-                                X1: rasterX/rasterResolutionX 
-                                Y1: rasterY/rasterResolutionY 
-                             Color: NIGHTTIMERASTER];
-  }
-  else
-  {
-      [utmWorldRaster fillRectangleX0: 0 
-                                Y0: 0 
-                                X1: rasterX/rasterResolutionX 
-                                Y1: rasterY/rasterResolutionY 
-                             Color: DAYTIMERASTER];
+       [[habitatRasterMap at: aHabitatSpace] erase];
+       [[habCellDisplayMap at: aHabitatSpace] display];
+       [[habitatRasterMap at: aHabitatSpace] drawSelf];
 
-  }
+    fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> END\n");
+    fflush(0);
 
-  [polyCellDisplay display];
-  [utmWorldRaster drawSelf];
-
-  return self;
+    return self;
 }
+
 
 ////////////////////////////////////
 //
@@ -731,17 +754,27 @@
 //////////////////////////////////
 - _update_ 
 {
-  //if(utmWorldRaster) 
-  //{
-    [self redrawRaster];
-    //[utmWorldRaster erase];
-    //[polyCellDisplay display];
-    //[utmWorldRaster drawSelf];
-  //}
   if(mortalityGraph) 
   {
      [mortalityGraph step];
   }
+   if(habitatRasterMap)
+   {
+        id habitatManager = [troutModelSwarm getHabitatManager];    
+        id habSpaceList = [habitatManager getHabitatSpaceList];
+        id habitatSpace = nil;
+        id <ListIndex> listNdx = [habSpaceList listBegin: scratchZone];
+
+        while(([listNdx getLoc] != End) && ((habitatSpace = [listNdx next]) != nil))
+        {
+             [[habitatRasterMap at: habitatSpace] erase];
+             [[habCellDisplayMap at: habitatSpace] display];
+             [[habitatRasterMap at: habitatSpace] drawSelf];
+        }
+
+        [listNdx drop];
+
+    } //if habitatRasterMap
 
 
   return self;
