@@ -23,6 +23,7 @@
 #import "YearShufflerP.h"
 #import "BreakoutReporter.h"
 #import "LogisticFunc.h"
+#import "TroutMortalityCount.h"
 
 //#define INIT_FISH_REPORT
 //#define REDD_REPORT            // If Commented out will lose 
@@ -324,7 +325,8 @@ id <SolarManager> solarManager;
   int simCounter;
   time_t popInitTime;
   id <List> fishInitializationRecords;
-
+  id <List> listOfMortalityCounts;
+  id <ListIndex> mortalityCountLstNdx;
 }
 
 // Stuff from instream 5.0
@@ -350,6 +352,8 @@ id <SolarManager> solarManager;
 - createSpawnVelocityInterpolators;
 - (HabitatManager *) getHabitatManager;
 - toggleCellsColorRepIn: aHabitatSpace;
+- (id <List>) getListOfMortalityCounts;
+- updateMortalityCountWith: aDeadFish;
 
 
 

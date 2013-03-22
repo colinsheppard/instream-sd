@@ -57,8 +57,6 @@
   id <Zone> obsZone;
   id <ProbeMap> obsProbeMap;
 
-  id <EZGraph> mortalityGraph;
-
   //
   // UTM
   //
@@ -96,6 +94,14 @@
   int polyRasterX;
   int polyRasterY;
   double shadeColorMax;
+  id <EZBin> populationHisto;
+  id <EZBin> velocityHisto;
+  id <EZBin> depthHisto;
+  
+
+  id <EZGraph> mortAgeClassGraph;
+  id <EZBin> mortAgeClassHist;
+  id <EZGraph> mortalityGraph;
 
 
 @public

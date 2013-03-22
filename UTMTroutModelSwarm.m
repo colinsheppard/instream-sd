@@ -140,7 +140,9 @@ char **speciesStocking;
 
        fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 3\n"); 
        fflush(0);
+  listOfMortalityCounts = [List create: modelZone];
   [self getFishMortalitySymbolWithName: "DemonicIntrusion"];
+
 
   fishParamsMap = [Map create: modelZone];
 
@@ -565,6 +567,40 @@ char **speciesStocking;
    }
 
    return self;
+}
+
+///////////////////////////////////////////////
+//
+// updateMortalityCountWith
+//
+///////////////////////////////////////////////
+- updateMortalityCountWith: aDeadFish
+{
+   TroutMortalityCount* mortalityCount = nil;
+   id <Symbol> causeOfDeath = [aDeadFish getCauseOfDeath];
+   BOOL ERROR = YES;
+
+   [mortalityCountLstNdx setLoc: Start];
+    while(([mortalityCountLstNdx getLoc] != End) && ((mortalityCount = [mortalityCountLstNdx next]) != nil)){
+         if(causeOfDeath == [mortalityCount getMortality]){
+             [mortalityCount incrementNumDead];
+             ERROR = NO;
+             break;
+         }
+    }
+
+    if(ERROR){
+        fprintf(stderr, "TroutModelSwarm >>>> updateMortalityCountWith >>>> mortality source not found in object TroutMortalityCount\n");
+        fflush(0);
+        exit(1);
+    }
+
+   return self;
+}
+
+- (id <List>) getListOfMortalityCounts
+{
+   return listOfMortalityCounts;
 }
 
 /////////////////////////////////////////////////////////////
@@ -2246,6 +2282,7 @@ char **speciesStocking;
 - (id <Symbol>) getFishMortalitySymbolWithName: (char *) aName
 {
 
+    TroutMortalityCount* mortalityCount = nil;
     id <ListIndex> lstNdx;
     id aSymbol = nil;
     id mortSymbol = nil;
@@ -2285,6 +2322,16 @@ char **speciesStocking;
     {
         mortSymbol = [Symbol create: modelZone setName: aName];
         [fishMortSymbolList addLast: mortSymbol];
+
+        mortalityCount = [TroutMortalityCount createBegin: modelZone
+                                       withMortality: mortSymbol];
+        [listOfMortalityCounts addLast: mortalityCount];
+
+        if(mortalityCountLstNdx != nil)
+        {
+            [mortalityCountLstNdx drop];
+        }
+        mortalityCountLstNdx = [listOfMortalityCounts listBegin: modelZone];
     }
 
     return mortSymbol;

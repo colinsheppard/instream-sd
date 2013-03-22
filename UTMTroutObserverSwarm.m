@@ -301,6 +301,10 @@
   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
 
+  habitatRasterMap  = [Map create: obsZone];
+  habColormapMap  = [Map create: obsZone];
+  habCellDisplayMap = [Map create: obsZone];
+
   utmColorMaps = [Map create: obsZone];
   Depth = [Symbol create: obsZone
                  setName: "Depth"];
@@ -560,7 +564,6 @@
                  exit(1);
              }
 
-
             polyRasterX = [habitatSpace getPolyPixelsX];
             polyRasterY = [habitatSpace getPolyPixelsY];
 
@@ -598,72 +601,76 @@
          fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> building space display objects >>>> END\n");
          fflush(0);
 
-   } // Build Display Objects
-   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getHabSpace \n");
-   //fflush(0);
-   //habitatSpace = [troutModelSwarm getHabitatSpace];
-            
-   //utmWorldRaster = [ZoomRaster createBegin: obsZone];
-   //SET_WINDOW_GEOMETRY_RECORD_NAME (utmWorldRaster);
-   //utmWorldRaster = [utmWorldRaster createEnd];
-   //[utmWorldRaster enableDestroyNotification: self
-                          //notificationMethod: @selector (worldRasterDeath:)];
+   } 
 
-   //[utmWorldRaster setColormap: utmColormap];
-
-   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getPixels \n");
-   //fflush(0);
-   //rasterX = [habitatSpace getPixelsX];
-   //rasterY = [habitatSpace getPixelsY];
-   //rasterSize = (rasterX >= rasterY ? rasterX : rasterY )/rasterResolution;
-   //[utmWorldRaster setZoomFactor: rasterZoomFactor];
- 
-   //[utmWorldRaster setWidth: rasterX/rasterResolutionX Height: rasterY/rasterResolutionY];
- 
-   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before getReachName\n");
-   //fflush(0);
-   //strncpy(reachName, [habitatSpace getReachName], 50);
-   //[utmWorldRaster setWindowTitle: reachName];
-
-   //[utmWorldRaster pack];				  // draw the window.
-
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before polydisp\n");
-  //fflush(0);
-
-   //polyCellDisplay = [Object2dDisplay createBegin: obsZone];
-   //[polyCellDisplay setDisplayWidget: utmWorldRaster];
-   //[polyCellDisplay setDiscrete2dToDisplay: habitatSpace];
-   //[polyCellDisplay setObjectCollection: [habitatSpace getPolyCellList]];
-   //[polyCellDisplay setDisplayMessage: M(drawSelfOn:)];   // draw method
-   //polyCellDisplay = [polyCellDisplay createEnd];
-
-   //[utmWorldRaster setButton: ButtonLeft
-                      //Client: habitatSpace 
-                     //Message: M(probePolyCellAtX:Y:)];
-     
-   //[utmWorldRaster setButton: ButtonRight
-                      //Client: habitatSpace 
-                     //Message: M(probeFishAtX:Y:)];
+  populationHisto = [EZBin createBegin: obsZone];
+  SET_WINDOW_GEOMETRY_RECORD_NAME (populationHisto);
+  [populationHisto setTitle: "Population in each Age"];
+  [populationHisto setAxisLabelsX: "Age" Y: "# of Fish"];
+  [populationHisto setBinCount: 5];
+  [populationHisto setLowerBound: 0];
+  [populationHisto setUpperBound: 5];
+  [populationHisto setCollection: [troutModelSwarm getLiveFishList]];
+  [populationHisto setProbedSelector: M(getAge)];
+  populationHisto = [populationHisto createEnd];
+  [populationHisto enableDestroyNotification: self
+                notificationMethod: @selector (_populationHistoDeath_:)];
 
 
-   //
-   // The graph sequences are generated in the 
-   // ModelSwarm method -- createGraphSeq
-   //
-   mortalityGraph = [EZGraph createBegin: self];
-   SET_WINDOW_GEOMETRY_RECORD_NAME (mortalityGraph); 
-   [mortalityGraph setTitle: "Mortality"];
-   [mortalityGraph setAxisLabelsX: "Time" Y: "NumberDead"];
-   mortalityGraph = [mortalityGraph createEnd];
- 
-   [troutModelSwarm setMortalityGraph: mortalityGraph];
+  mortalityGraph = [EZGraph createBegin: self];
+  SET_WINDOW_GEOMETRY_RECORD_NAME (mortalityGraph); 
+  [mortalityGraph setTitle: "Mortality"];
+  [mortalityGraph setAxisLabelsX: "Time" Y: "Number dead"];
+  mortalityGraph = [mortalityGraph createEnd];
 
-   [mortalityGraph enableDestroyNotification: self
-                          notificationMethod: @selector (_mortalityGraphDeath:)];
+  //
+  // Now create the graph sequences
+  //
+  {
+      id <List> listOfMortalityCounts = [troutModelSwarm getListOfMortalityCounts];
+      id <ListIndex> lstNdx = nil;
+      id mortalityCount = nil;
+
+      if(listOfMortalityCounts == nil) 
+      {
+          fprintf(stderr, "ERROR: TroutObserverSwarm >>>> buildObjects >>>> listOfMortalityCounts is nil\n");
+          fflush(0);
+          exit(1);
+      }
+  
+      lstNdx = [listOfMortalityCounts listBegin: scratchZone];
+
+      [lstNdx setLoc: Start];
+
+      while(([lstNdx getLoc] != End) && ((mortalityCount = [lstNdx next]) != nil)) 
+      {
+            [mortalityGraph createSequence: [[mortalityCount getMortality] getName]
+                              withFeedFrom: mortalityCount
+                               andSelector: M(getNumDead)];
+      }
+
+      [lstNdx drop];
+  }
+
+  [mortalityGraph enableDestroyNotification: self
+               notificationMethod: @selector (_mortalityGraphDeath:)];
 
 
-   CREATE_ARCHIVED_PROBE_DISPLAY (habitatSpace);
-   
+
+  //
+  // One for each habitat space
+  //
+  if(troutModelSwarm)
+  {
+      id <List> aHabitatSpaceList = [[troutModelSwarm getHabitatManager] getHabitatSpaceList]; 
+      int habitatSpaceCount = [aHabitatSpaceList getCount];
+      int i;
+
+      for(i = 0; i < habitatSpaceCount; i++)
+      {
+          CREATE_ARCHIVED_PROBE_DISPLAY([aHabitatSpaceList atOffset: i]);
+      }
+  }
 
    fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> END\n");
    fflush(0);
@@ -686,8 +693,8 @@
   fprintf(stdout, "TroutObserverSwarm >>>> switchColorRep >>>> BEGIN\n");
   fflush(0);
 
-       habitatRaster = [habitatRasterMap at: aHabitatSpace];
-       habitatColormap = [habColormapMap  at: habitatRaster];
+      habitatRaster = [habitatRasterMap at: aHabitatSpace];
+      habitatColormap = [habColormapMap  at: habitatRaster];
 
       if(habitatColormap == depthColormap)
       {

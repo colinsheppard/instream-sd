@@ -64,6 +64,7 @@ OBJECTS=GraphDataObject.o \
 	TimeSeriesInputManager.o\
 	SolarManager.o\
 	YearShuffler.o\
+	TroutMortalityCount.o\
 	KDTree.o
 
 
@@ -136,3 +137,4 @@ HabitatSetup.o : HabitatSetup.[hm]
 HabitatSpace.o : HabitatSpace.[hm]
 YearShuffler.o : YearShufflerP.h YearShuffler.[hm]
 KDTree.o : KDTree.[hm]
+TroutMortalityCount.o : TroutMortalityCount.[hm]
