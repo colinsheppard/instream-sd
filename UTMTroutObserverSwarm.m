@@ -743,9 +743,32 @@
    fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> BEGIN\n");
    fflush(0);
 
-       [[habitatRasterMap at: aHabitatSpace] erase];
+   id theRaster = [habitatRasterMap at: aHabitatSpace];
+  // fprintf(stdout, "UTMTroutObserverSwarm >>>> redrawRaster >>>> currentPhase = %d\n", [aHabitatSpace getCurrentPhase]);
+  //fflush(0);
+ 
+
+   [theRaster erase];
+
+   if([aHabitatSpace getCurrentPhase] == 0)
+   {
+      [theRaster fillRectangleX0: 0 
+                              Y0: 0 
+                              X1: [theRaster getWidth] 
+                              Y1: [theRaster getHeight] 
+                           Color: NIGHTTIMERASTER];
+   }
+  else
+   {
+      [theRaster fillRectangleX0: 0 
+                              Y0: 0 
+                              X1: [theRaster getWidth] 
+                              Y1: [theRaster getHeight] 
+                           Color: DAYTIMERASTER];
+
+   }
        [[habCellDisplayMap at: aHabitatSpace] display];
-       [[habitatRasterMap at: aHabitatSpace] drawSelf];
+       [theRaster drawSelf];
 
     fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> END\n");
     fflush(0);
@@ -774,9 +797,10 @@
 
         while(([listNdx getLoc] != End) && ((habitatSpace = [listNdx next]) != nil))
         {
-             [[habitatRasterMap at: habitatSpace] erase];
-             [[habCellDisplayMap at: habitatSpace] display];
-             [[habitatRasterMap at: habitatSpace] drawSelf];
+             // [[habitatRasterMap at: habitatSpace] erase];
+             // [[habCellDisplayMap at: habitatSpace] display];
+             // [[habitatRasterMap at: habitatSpace] drawSelf];
+			 [self redrawRasterFor: habitatSpace];
         }
 
         [listNdx drop];
