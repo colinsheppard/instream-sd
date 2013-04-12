@@ -44,11 +44,9 @@
   int utmRasterSize;
   int utmRasterX;
   int utmRasterY;
-  int rasterResolution;
   int rasterResolutionX;
   int rasterResolutionY;
   char* rasterColorVariable;
-  int rasterZoomFactor;
   int    rasterOutputFrequency;
   int    displayFrequency;				// one parameter: update freq
   char*  takeRasterPictures;

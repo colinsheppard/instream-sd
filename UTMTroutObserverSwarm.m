@@ -294,8 +294,6 @@
 ///////////////////////////////////////////////////////
 - buildObjects
 {
-  id habitatSpace = nil;
-  char reachName[50];
   int ndx;
 
   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
@@ -492,10 +490,9 @@
    //
    //build model Objects and set the fish color in the ModelSwarm
    //
-   [troutModelSwarm setUTMRasterResolution:  rasterResolution
-                   setUTMRasterResolutionX:  rasterResolutionX
-                   setUTMRasterResolutionY:  rasterResolutionY 
-                 setUTMRasterColorVariable:  rasterColorVariable];
+   [troutModelSwarm setUTMRasterResolutionX: rasterResolutionX
+                    setUTMRasterResolutionY:  rasterResolutionY 
+                  setUTMRasterColorVariable:  rasterColorVariable];
 
    //[troutModelSwarm buildObjectsWith: utmColormap
    [troutModelSwarm buildObjectsWith: utmColorMaps
@@ -740,8 +737,8 @@
 //////////////////////////////////
 - redrawRasterFor: aHabitatSpace
 {
-   fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> BEGIN\n");
-   fflush(0);
+   // fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> BEGIN\n");
+   // fflush(0);
 
    id theRaster = [habitatRasterMap at: aHabitatSpace];
   // fprintf(stdout, "UTMTroutObserverSwarm >>>> redrawRaster >>>> currentPhase = %d\n", [aHabitatSpace getCurrentPhase]);
@@ -770,8 +767,8 @@
        [[habCellDisplayMap at: aHabitatSpace] display];
        [theRaster drawSelf];
 
-    fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> END\n");
-    fflush(0);
+    // fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> END\n");
+    // fflush(0);
 
     return self;
 }

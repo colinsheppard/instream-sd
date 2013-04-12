@@ -366,8 +366,7 @@ id <SolarManager> solarManager;
 - buildObjectsWith: theColormaps
           andWith: (double) aShadeColorMax;
 
--    setUTMRasterResolution:  (int) aUTMRasterResolution
-    setUTMRasterResolutionX:  (int) aUTMRasterResolutionX
+-    setUTMRasterResolutionX:  (int) aUTMRasterResolutionX
     setUTMRasterResolutionY:  (int) aUTMRasterResolutionY
   setUTMRasterColorVariable:  (char *) aUTMRasterColorVariable;
 

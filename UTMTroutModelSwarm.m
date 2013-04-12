@@ -636,14 +636,12 @@ char **speciesStocking;
 // setUTMRasterVars
 //
 ////////////////////////////////////////////////////////
--    setUTMRasterResolution:  (int) aUTMRasterResolution
-    setUTMRasterResolutionX:  (int) aUTMRasterResolutionX
+-    setUTMRasterResolutionX: (int) aUTMRasterResolutionX
     setUTMRasterResolutionY:  (int) aUTMRasterResolutionY
   setUTMRasterColorVariable:  (char *) aUTMRasterColorVariable
 {
 	//fprintf(stdout, "TroutMOdelSwarm >>>> setUTMRasterVars >>>> BEGIN\n");
 	//fflush(0);
-    utmRasterResolution  = aUTMRasterResolution;
     utmRasterResolutionX = aUTMRasterResolutionX;
     utmRasterResolutionY = aUTMRasterResolutionY;
     strncpy(utmRasterColorVariable, aUTMRasterColorVariable, 35);
@@ -2607,8 +2605,6 @@ char **speciesStocking;
 
   //((UTMTrout *)newFish)->randGen = randGen;
 
-  ((UTMTrout *)newFish)->rasterResolutionX = polyRasterResolutionX;
-  ((UTMTrout *)newFish)->rasterResolutionY = polyRasterResolutionY;
 
   [newFish setSpecies: species];
   [newFish setSpeciesNdx: speciesNdx];
@@ -2825,10 +2821,6 @@ char **speciesStocking;
 
   ((UTMTrout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
 
-
-  ((UTMTrout *)newFish)->rasterResolution  = utmRasterResolution;
-  ((UTMTrout *)newFish)->rasterResolutionX = utmRasterResolutionX;
-  ((UTMTrout *)newFish)->rasterResolutionY = utmRasterResolutionY;
 
   [newFish setFishParams: aFishParams];
   [newFish setModel: self];

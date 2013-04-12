@@ -233,10 +233,6 @@ id toggledFishForHabSurvUpdate;
   id dieDist;
   id spawnDist;
 
-  int rasterResolution;
-  int rasterResolutionX;
-  int rasterResolutionY;
-
 
 
   //

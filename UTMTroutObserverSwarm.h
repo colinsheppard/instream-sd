@@ -63,12 +63,10 @@
   int   rasterSize;
   int   rasterX;
   int   rasterY;
-  int   rasterResolution;
   int   rasterResolutionX;
   int   rasterResolutionY;
   char* rasterColorVariable;
-  int   rasterZoomFactor;
-
+  
   char toggleColorVariable[10];
 
   id <Colormap> utmColormap;			// allocate colours
