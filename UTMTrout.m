@@ -311,14 +311,24 @@
 - drawSelfOn: (id <Raster>) aRaster atX: (int) anX Y: (int) aY 
 {
   //fprintf(stdout, "Trout >>>> drawSelfOn >>>> BEGIN\n");
+  //fprintf(stdout, "Trout >>>> drawSelfOn >>>> myColor = %ld\n", (long) myColor);
   //fflush(0);
 
-  [aRaster ellipseX0: anX - 2 
-                  Y0: aY - 2 
-                  X1: anX + 2 
-                  Y1: aY + 2 
-               Width: 2 
+  if (age > 0)
+  {
+  [aRaster fillRectangleX0: anX - (1 * age) 
+                  Y0: aY - age 
+                  X1: anX + (1 * age) 
+                  Y1: aY + age
+           //    Width: 3 
                Color: myColor];  
+  }
+  else
+  {
+  [aRaster drawPointX: anX 
+                  Y: aY 
+              Color: myColor];  
+  }
 
   //fprintf(stdout, "Trout >>>> drawSelfOn >>>> END\n");
   //fflush(0);

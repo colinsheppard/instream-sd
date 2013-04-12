@@ -4,8 +4,8 @@
 # following text input!
 #
 rasterResolution  40
-rasterResolutionX  100
-rasterResolutionY  100
+rasterResolutionX  60
+rasterResolutionY  60
 rasterZoomFactor  1
 
 rasterOutputFrequency   1
