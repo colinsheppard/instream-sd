@@ -2089,6 +2089,7 @@ char **speciesStocking;
   [deadFish addLast: aFish];
   [killedFish addLast: aFish];
 
+  [self updateMortalityCountWith: aFish];
 
   return self;
 }
