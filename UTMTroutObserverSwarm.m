@@ -834,6 +834,44 @@
 
 
 
+//////////////////////////////////////////////////////////
+//
+// updateTkEvents
+//
+// called from the model swarm when tagFish is invoked.
+//
+/////////////////////////////////////////////////////////
+- updateTkEventsFor: aHabitatSpace
+{
+    id <Raster> habitatRaster = nil;
+
+   //fprintf(stdout, "TroutObserverSwarm >>>> updateTkEvents >>>> BEGIN\n");
+   //fflush(0); 
+
+
+   if(experSwarm == nil)
+   {
+       fprintf(stderr, "ERROR: TroutObserverSwarm >>>> updateTkEvents >>>> experSwarm is nil\n");
+       fflush(0);
+       exit(1);
+   }
+
+
+   habitatRaster = [habitatRasterMap at: aHabitatSpace] ;
+   [habitatRaster erase];
+   [[habCellDisplayMap at: aHabitatSpace] display];
+   [habitatRaster drawSelf];
+
+   [experSwarm updateTkEvents];
+
+   //fprintf(stdout, "TroutObserverSwarm >>>> updateTkEvents >>>> END\n");
+   //fflush(0); 
+
+   return self;
+}
+
+
+
 - activateIn:  swarmContext
 {
   [super activateIn: swarmContext];

@@ -39,6 +39,9 @@
   int    rasterOutputFrequency;
   int    displayFrequency;				// one parameter: update freq
   char*  takeRasterPictures;
+  int   rasterResolutionX;
+  int   rasterResolutionY;
+  char* rasterColorVariable;
 
 //
 //END VARIABLES INITIALIZED BY Observer.Setup
@@ -63,9 +66,6 @@
   int   rasterSize;
   int   rasterX;
   int   rasterY;
-  int   rasterResolutionX;
-  int   rasterResolutionY;
-  char* rasterColorVariable;
   
   char toggleColorVariable[10];
 
@@ -119,6 +119,7 @@
 - switchColorRepFor: aHabitatSpace;
 - redrawRasterFor: aHabitatSpace;
 - buildActions;
+- updateTkEventsFor: aHabitatSpace;
 
 - activateIn: swarmContext;
 - _update_;
