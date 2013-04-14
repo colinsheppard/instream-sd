@@ -12,8 +12,8 @@ habParamFile                     TailraceHabitat.Params
 runStartDate                     10/1/2000
 runEndDate                       9/30/2007
 
-fishOutputFile                   Tailrace_Fish.Out
-fishMortalityFile                Tailrace_DeadFish.Out
+fishOutputFile                   Tailrace_LiveFishOut.csv
+fishMortalityFile                Tailrace_DeadFishOut.csv
 reddMortalityFile                TailraceDeadRedds.Out
 reddOutputFile                   TailraceRedds.Out
 popInitDate                      10/1/2000
