@@ -72,8 +72,8 @@ Boston, MA 02111-1307, USA.
 //////////////////////////////////////////
 - toggleColorRep: (double) aShadeColorMax
 {
-   fprintf(stdout, "FishCell >>>> toggleColorRep >>>> BEGIN\n");
-   fflush(0);
+   // fprintf(stdout, "FishCell >>>> toggleColorRep >>>> BEGIN\n");
+   // fflush(0);
 
    if(strncmp(rasterColorVariable, "depth",5) == 0)
    {
@@ -92,8 +92,8 @@ Boston, MA 02111-1307, USA.
 
    shadeColorMax = aShadeColorMax;
 
-   fprintf(stdout, "FishCell >>>> toggleColorRep >>>> END\n");
-   fflush(0);
+   // fprintf(stdout, "FishCell >>>> toggleColorRep >>>> END\n");
+   // fflush(0);
 
    return self;
 }

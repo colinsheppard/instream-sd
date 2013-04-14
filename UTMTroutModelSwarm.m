@@ -1895,10 +1895,8 @@ char **speciesStocking;
   }
 
   if([timeManager getHourWithTimeT: modelTime] == 0){
-	  fprintf(stdout,"ModelSwarm >>>> step >>>> scenario,replicate	= %d, %d \n", scenario,replicate);
-	  fprintf(stdout,"ModelSwarm >>>> step >>>> date         = %s\n", [timeManager getDateWithTimeT: modelTime]);
-	  //fprintf(stdout,"ModelSwarm >>>> step >>>> hour         = %d\n", [timeManager getHourWithTimeT: modelTime]);
-	  fprintf(stdout,"ModelSwarm >>>> step >>>> numberOfFish = %d\n\n", [liveFish getCount]);
+	  fprintf(stdout,"Scenario %d, Replicate %d, Number of live fish at start of %s: %d\n", 
+		scenario,replicate, [timeManager getDateWithTimeT: modelTime],[liveFish getCount]);
   }
   //[self     printZone: modelZone 
        //withPrintLevel: 1];
