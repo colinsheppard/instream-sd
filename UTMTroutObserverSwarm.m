@@ -299,6 +299,13 @@
   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
 
+  if((rasterResolutionX <= 0) || (rasterResolutionY <= 0))
+  {
+     fprintf(stderr, "TroutObserverSwarm >>>> buildObjects >>>> one of the rasterResolution parameters is <= zero\n");
+     fflush(0);
+     exit(1);
+  }
+
   habitatRasterMap  = [Map create: obsZone];
   habColormapMap  = [Map create: obsZone];
   habCellDisplayMap = [Map create: obsZone];
@@ -333,23 +340,15 @@
          fflush(0);
          exit(1);
      }
-     else if(maxShadeVelocity < CELL_COLOR_MAX)
-     {
-         shadeColorMax = (int) (maxShadeVelocity + 0.5);
-     }
-     else 
-     {
-        shadeColorMax = CELL_COLOR_MAX;
-     }
+     else shadeColorMax = (double) maxShadeVelocity;
  
-     for(ndx = 0; ndx < shadeColorMax; ndx++)
+     for(ndx = 0; ndx < CELL_COLOR_MAX; ndx++)
      {
            double aRedFrac = 1.0;
-           double aGreenFrac = (double) (shadeColorMax - 1.0 - ndx)/((double) shadeColorMax - 1.0);
+           double aGreenFrac = (double) (CELL_COLOR_MAX - 1.0 - ndx)/((double) CELL_COLOR_MAX - 1.0);
            double aBlueFrac = 0.0;
 
 
-           //[utmColormap setColor: ndx 
            [velocityColormap setColor: ndx 
                            ToRed: aRedFrac
                            Green: aGreenFrac
@@ -371,22 +370,14 @@
          fflush(0);
          exit(1);
      }
-     else if(maxShadeDepth < CELL_COLOR_MAX)
-     {
-         shadeColorMax = (int) (maxShadeDepth + 0.5);
-     }
-     else 
-     {
-        shadeColorMax = CELL_COLOR_MAX;
-     }
+	 else shadeColorMax = (double) maxShadeDepth;
  
-     for(ndx = 0; ndx < shadeColorMax; ndx++)
+     for(ndx = 0; ndx < CELL_COLOR_MAX; ndx++)
      {
            double aRedFrac = 0.0;
-           double aGreenFrac = (double) (shadeColorMax - 1.0 - ndx)/((double) shadeColorMax - 1.0);
+           double aGreenFrac = (double) (CELL_COLOR_MAX - 1.0 - ndx)/((double) CELL_COLOR_MAX - 1.0);
            double aBlueFrac =  1.0;
 
-           //[utmColormap setColor: ndx 
            [depthColormap setColor: ndx 
                            ToRed: aRedFrac
                            Green: aGreenFrac
