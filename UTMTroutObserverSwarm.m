@@ -409,72 +409,19 @@
   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before colormaps\n");
   //fflush(0);
   [depthColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
-  [depthColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
-  [depthColormap setColor: TAG_FISH_COLOR ToName: "green"];
+  [depthColormap setColor: TAG_CELL_COLOR ToName: tagCellColor];
+  [depthColormap setColor: TAG_FISH_COLOR ToName: tagFishColor];
   [depthColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
   //[depthColormap setColor: NIGHTTIMERASTER ToName: "gray5"];
   [depthColormap setColor: NIGHTTIMERASTER ToName: "MidnightBlue"];
 
   [velocityColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
-  [velocityColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
-  [velocityColormap setColor: TAG_FISH_COLOR ToName: "green"];
+  [velocityColormap setColor: TAG_CELL_COLOR ToName: tagCellColor];
+  [velocityColormap setColor: TAG_FISH_COLOR ToName: tagFishColor];
   [velocityColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
   //[velocityColormap setColor: NIGHTTIMERASTER ToName: "gray5"];
   [velocityColormap setColor: NIGHTTIMERASTER ToName: "MidnightBlue"];
   
-  /*
-  [utmColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
-  [utmColormap setColor: TAG_CELL_COLOR ToName: "LightCyan"];
-  [utmColormap setColor: TAG_FISH_COLOR ToName: "green"];
-  [utmColormap setColor: DAYTIMERASTER ToName: "LightBlue1"];
-  [utmColormap setColor: NIGHTTIMERASTER ToName: "gray5"];
-  */
-  
-
-  /*
-  [utmColormap setColor: TAG_CELL_COLOR ToName: "aquamarine"];
-  [utmColormap setColor: POLYINTERIORCOLOR ToName: "yellow"];
-  [utmColormap setColor: POLYBOUNDARYCOLOR ToName: "LightCyan"];
-  */
-
-  /*
-  for( ndx = CELL_COLOR_DRY; ndx < (CELL_COLOR_DRY + CELL_COLOR_WET); ndx++)
-  {
-
-        double aBlueRatio =  (double) (ndx - CELL_COLOR_DRY)/((double) CELL_COLOR_WET - 1.0);
-        double aBlueFrac = (double) (1.0 + (2.0 * aBlueRatio));
-        double aRedGreenFrac = (double) ((3.0 - aBlueFrac)/2.0);
-      
-        [backwaterColormap setColor: ndx 
-                     ToRed: aRedGreenFrac
-                     Green: aRedGreenFrac 
-                      Blue: aBlueFrac];
-
-
-  }
-  */
-
-
-  /*
-  utmColormap = [Colormap create: globalZone];
-
-  for (ndx = 0; ndx <= CELL_COLOR_MAX; ndx++)  
-  {
-     [utmColormap setColor: ndx 
-                     ToRed: (CELL_COLOR_START + 
-                            ((double)ndx * 
-                            ((1.0-CELL_COLOR_START)/((double)CELL_COLOR_MAX))))
-                     Green: (CELL_COLOR_START + 
-                            ((double)ndx * 
-                            ((1.0-CELL_COLOR_START)/((double)CELL_COLOR_MAX))))
-                      Blue: (CELL_COLOR_START + 
-                            ((double)ndx * 
-                            ((1.0-CELL_COLOR_START)/((double)CELL_COLOR_MAX))))];
-  }
-  */
-
-  
-
   
   //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before rasterres\n");
   //fflush(0);

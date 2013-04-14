@@ -32,9 +32,6 @@ velocityAvailabilityFileName     velocityAvailability.Out
 fishDepthUseFileName            DepthUse.Out
 fishVelocityUseFileName         VelocityUse.Out
 
-tagFishColor                   LimeGreen
-
-
 habSetupFile           Reach.Setup
 
 siteLatitude                 40.9

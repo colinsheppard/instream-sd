@@ -886,7 +886,7 @@ char **speciesStocking;
   while(([clrMapNdx getLoc] != End) && ((aColorMap = [clrMapNdx next]) != nil))
   {
      [aColorMap setColor: FISH_COLOR 
-                  ToName: tagFishColor];
+                  ToName: "white"];
   }
 
   fishColorMap = [Map create: modelZone];

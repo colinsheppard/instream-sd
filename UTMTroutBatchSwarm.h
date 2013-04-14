@@ -51,6 +51,10 @@
   int    displayFrequency;				// one parameter: update freq
   char*  takeRasterPictures;
 
+  char* tagFishColor;
+  char* tagCellColor;
+  char* dryCellColor;
+
   int maxShadeDepth;
   int maxShadeVelocity;
 

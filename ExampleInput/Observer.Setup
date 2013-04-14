@@ -9,11 +9,15 @@ rasterResolutionY  60
 rasterOutputFrequency   1
 modelNumber       1
 
-displayFrequency                 1
-takeRasterPictures              NO
+displayFrequency            1
+takeRasterPictures          NO
 
-rasterColorVariable          depth
+rasterColorVariable         depth
 maxShadeVelocity 	        150
-maxShadeDepth 	                400
+maxShadeDepth 	            400
+
+tagFishColor                LimeGreen
+tagCellColor                DeepPink1
+dryCellColor                white
 
 @end

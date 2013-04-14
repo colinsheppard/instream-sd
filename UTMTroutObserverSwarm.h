@@ -80,6 +80,10 @@
   id <ZoomRaster> utmWorldRaster;		// 2d display widget
   id <Object2dDisplay> polyCellDisplay;	        // display the trout
 
+  char* tagFishColor;
+  char* tagCellColor;
+  char* dryCellColor;
+
   int maxShadeDepth;
   int maxShadeVelocity;
 
