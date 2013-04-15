@@ -29,7 +29,7 @@ Boston, MA 02111-1307, USA.
 #include <time.h>
 #include <objectbase.h>
 
-@protocol UTMTroutModelSwarm
+@protocol TroutModelSwarm
 
 - (time_t)getModelTime;
 - addToEmptyReddList: aRedd;
@@ -111,4 +111,4 @@ Boston, MA 02111-1307, USA.
 - (BOOL) getWriteCellCentroidReport;
 @end
 
-@class UTMTroutModelSwarm;
+@class TroutModelSwarm;

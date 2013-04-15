@@ -67,7 +67,7 @@
   fflush(0);
 
   obsZone = [Zone create: [self getZone]];
-  troutModelSwarm = [UTMTroutModelSwarm create: obsZone];
+  troutModelSwarm = [TroutModelSwarm create: obsZone];
 
   [troutModelSwarm setPolyRasterResolutionX:  rasterResolutionX
                    setPolyRasterResolutionY:  rasterResolutionY 

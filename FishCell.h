@@ -37,7 +37,7 @@ Boston, MA 02111-1307, USA.
 
 #import "globals.h"
 #import "TimeManagerProtocol.h"
-#import "UTMTroutModelSwarmP.h"
+#import "TroutModelSwarmP.h"
 #import "SurvMGRProtocol.h"
 #import "InterpolationTableP.h"
 
@@ -48,7 +48,7 @@ Boston, MA 02111-1307, USA.
 {
   id space;  // space of which Im a member
   id reach;  // The reach in which I belong; actually the space
-  id <UTMTroutModelSwarm> model;
+  id <TroutModelSwarm> model;
 
   id <TimeManager> timeManager;
 
@@ -128,7 +128,7 @@ Boston, MA 02111-1307, USA.
 
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
-- setModel: (id <UTMTroutModelSwarm>) aModel;
+- setModel: (id <TroutModelSwarm>) aModel;
 - setRandGen: aRandGen;
 - getRandGen;
 

@@ -31,14 +31,14 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "HabitatSetup.h"
 #import "HabitatSpace.h"
-#import "UTMTroutModelSwarmP.h"
+#import "TroutModelSwarmP.h"
 #import "globals.h"
 #import "PolyInputData.h"
 
 @interface HabitatManager: SwarmObject
 {
 
-id <UTMTroutModelSwarm> model;
+id <TroutModelSwarm> model;
 id <Zone> habManagerZone;
 double siteLatitude;
 

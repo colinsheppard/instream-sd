@@ -29,7 +29,7 @@ Boston, MA 02111-1307, USA.
 
 #import "HabitatSpace.h"
 #import "UTMTrout.h"
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 #import "UTMRedd.h"
 #import "BreakoutReporter.h"
 #import "FishCell.h"
@@ -803,9 +803,9 @@ Boston, MA 02111-1307, USA.
 // setModel
 //
 /////////////////////////////////////////////
-- setModel: (id <UTMTroutModelSwarm>) aModel
+- setModel: (id <TroutModelSwarm>) aModel
 {
-    model = (id <UTMTroutModelSwarm>) aModel;
+    model = (id <TroutModelSwarm>) aModel;
     return self;
 }
 

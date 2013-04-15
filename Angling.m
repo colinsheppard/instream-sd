@@ -10,7 +10,7 @@
 #import "Angling.h"
 #import "UTMTrout.h"
 #import "FishCell.h"
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 
 @implementation Angling
 

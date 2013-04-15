@@ -47,7 +47,7 @@ OBJECTS=GraphDataObject.o \
 	BreakoutMessageProbe.o \
 \
 	UTMTroutObserverSwarm.o \
-	UTMTroutModelSwarm.o \
+	TroutModelSwarm.o \
         HabitatManager.o \
         HabitatSetup.o \
 	HabitatSpace.o \
@@ -129,7 +129,7 @@ InterpolationTable.o : InterpolationTable.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
 UTMTroutObserverSwarm.o  : UTMTroutObserverSwarm.[hm]
-UTMTroutModelSwarm.o : UTMTroutModelSwarm.[hm]
+TroutModelSwarm.o : TroutModelSwarm.[hm]
 HabitatManager.o : HabitatManager.[hm]
 HabitatSetup.o : HabitatSetup.[hm]
 HabitatSpace.o : HabitatSpace.[hm]

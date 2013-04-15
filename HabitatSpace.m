@@ -250,7 +250,7 @@ Boston, MA 02111-1307, USA.
 // setModel
 //
 //////////////////////////////////////////////////////////////
-- setModel: (id <UTMTroutModelSwarm>) aModelSwarm 
+- setModel: (id <TroutModelSwarm>) aModelSwarm 
 {
   modelSwarm = aModelSwarm;
   return self;
@@ -353,7 +353,7 @@ return self;
 // getModel
 //
 ///////////////////////////////////////////////////////////
-- (id <UTMTroutModelSwarm>) getModel 
+- (id <TroutModelSwarm>) getModel 
 {
   return modelSwarm;
 }

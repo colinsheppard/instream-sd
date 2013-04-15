@@ -36,7 +36,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeSeriesInputManagerP.h"
 #import "math.h"
 #import "InterpolationTableP.h"
-#import "UTMTroutModelSwarmP.h"
+#import "TroutModelSwarmP.h"
 #import "PolyInputData.h"
 //#import "PolyInterpolatorFactory.h"
 
@@ -46,7 +46,7 @@ Boston, MA 02111-1307, USA.
 
 @interface HabitatSpace : Discrete2d 
 {
-  id <UTMTroutModelSwarm> modelSwarm;
+  id <TroutModelSwarm> modelSwarm;
   id <Zone> habitatZone;
 
   char* reachName;
@@ -322,8 +322,8 @@ long int maxYCoordinate;
 - buildObjects;
 - finishBuildObjects;
 
-- setModel: (id <UTMTroutModelSwarm>) aModelSwarm;
-- (id <UTMTroutModelSwarm>) getModel;
+- setModel: (id <TroutModelSwarm>) aModelSwarm;
+- (id <TroutModelSwarm>) getModel;
 
 - setReachName: (char *) aReachName;
 - setInstanceName: (char *) anInstanceName;

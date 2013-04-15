@@ -17,7 +17,7 @@
 #import <simtools/ObjectLoader.h>
 #import <simtools.h>
 #import <objectbase/Swarm.h>
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 #import "globals.h"
 
 @interface UTMTroutObserverSwarm: Swarm
@@ -54,7 +54,7 @@
   id displaySchedule;
   id outputSchedule;
 
-  UTMTroutModelSwarm* troutModelSwarm;	  	// the Swarm we're observing
+  TroutModelSwarm* troutModelSwarm;	  	// the Swarm we're observing
   char* modelSetupFile;                        // the default is Model.Setup
                                                 // this variable can be set 
   id <Zone> obsZone;

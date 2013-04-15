@@ -17,7 +17,7 @@
 #import <analysis.h>
 #import <simtools/ObjectLoader.h>
 #import <simtools.h>
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 #import "globals.h"
 
 @interface UTMTroutBatchSwarm: Swarm
@@ -32,7 +32,7 @@
 
   id outputSchedule;
 
-  UTMTroutModelSwarm *troutModelSwarm;	  	// the Swarm we're observing
+  TroutModelSwarm *troutModelSwarm;	  	// the Swarm we're observing
   id <Zone> obsZone;
 
 

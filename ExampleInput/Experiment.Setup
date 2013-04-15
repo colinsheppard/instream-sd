@@ -6,12 +6,12 @@ numberOfScenarios	1
 numberOfReplicates	1
 	
 sendScenarioCountToParam:	scenario
-inClass:	UTMTroutModelSwarm
+inClass:	TroutModelSwarm
 	
 sendReplicateCountToParam:	replicate
-inClass:	UTMTroutModelSwarm
+inClass:	TroutModelSwarm
 	
-ClassName	UTMTroutModelSwarm
+ClassName	TroutModelSwarm
 InstanceName	NONE
 ParamName	appendFiles
 ValueType	BOOL
@@ -36,7 +36,7 @@ Value	FlamingGorgePHHourlyFlow.Data
 #Value	FG-Steady-100-Flow.Data
 #Value	FG-Steady-133-Flow.Data
 	
-#ClassName	UTMTroutModelSwarm
+#ClassName	TroutModelSwarm
 #InstanceName	NONE
 #ParamName	fishOutputFile
 #ValueType	filename

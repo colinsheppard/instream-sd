@@ -17,7 +17,7 @@
 #import "UTMTroutObserverSwarm.h"
 #import "FishParams.h"
 #import "FishCell.h"
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 
 id <Symbol> Female, Male;  // sex of fish
 id <Symbol> Age0, Age1, Age2, Age3Plus;
@@ -31,7 +31,7 @@ char **speciesParameter;
 char **speciesPopFile;
 char **speciesStocking;
 
-@implementation UTMTroutModelSwarm
+@implementation TroutModelSwarm
 
 
 ///////////////////////
@@ -41,7 +41,7 @@ char **speciesStocking;
 //////////////////////
 + create: aZone 
 {
-  UTMTroutModelSwarm * troutModelSwarm;
+  TroutModelSwarm * troutModelSwarm;
 
   troutModelSwarm = [super create: aZone];
 
@@ -108,14 +108,14 @@ char **speciesStocking;
 /////////////////////////////////////////////////////////////
 - instantiateObjects 
 {
-       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects BEGIN\n"); 
+       fprintf(stdout, "TroutModelSwarm >>>> instantiateObjects BEGIN\n"); 
        fflush(0);
    int numspecies;
    modelZone = [Zone create: globalZone];
 
   if(numberOfSpecies == 0)
   {
-       fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> instantiateObjects numberOfSpecies is ZERO!\n"); 
+       fprintf(stderr, "ERROR: TroutModelSwarm >>>> instantiateObjects numberOfSpecies is ZERO!\n"); 
        fflush(0);
        exit(1);
   }
@@ -125,7 +125,7 @@ char **speciesStocking;
   mySpecies = (id *) [modelZone alloc: numberOfSpecies*sizeof(Symbol)];
   [self readSpeciesSetupFile];
 
-       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 2, %d \n",numberOfSpecies); 
+       fprintf(stdout, "TroutModelSwarm >>>> instantiateObjects 2, %d \n",numberOfSpecies); 
        fflush(0);
 
   speciesSymbolList = [List create: modelZone];
@@ -138,7 +138,7 @@ char **speciesStocking;
   fishMortSymbolList = [List create: modelZone];
   reddMortSymbolList = [List create: modelZone];
 
-       fprintf(stdout, "UTMTroutModelSwarm >>>> instantiateObjects 3\n"); 
+       fprintf(stdout, "TroutModelSwarm >>>> instantiateObjects 3\n"); 
        fflush(0);
   listOfMortalityCounts = [List create: modelZone];
   [self getFishMortalitySymbolWithName: "DemonicIntrusion"];
@@ -193,7 +193,7 @@ char **speciesStocking;
   int genSeed;
   time_t newYearTime = (time_t) 0;
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> BEGIN\n");
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
 
   shadeColorMax = aShadeColorMax;
@@ -260,7 +260,7 @@ char **speciesStocking;
     
   if(runStartTime > runEndTime)
   {
-      fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> buildObjects >>>> Check runStartDate and runEndDate in Model.Setup\n");
+      fprintf(stderr, "ERROR: TroutModelSwarm >>>> buildObjects >>>> Check runStartDate and runEndDate in Model.Setup\n");
       fflush(0);
       exit(1);
   }
@@ -388,7 +388,7 @@ char **speciesStocking;
   deadRedds     = [List create: modelZone];
 
 
-      //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before speciesSymbolList \n");
+      //fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> before speciesSymbolList \n");
       //fflush(0);
 
   //
@@ -436,7 +436,7 @@ char **speciesStocking;
   [self createSpawnDepthInterpolators];
   [self createSpawnVelocityInterpolators];
 
-      //fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
+      //fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
       //fflush(0);
   //
   // Breakout reporters... 
@@ -495,7 +495,7 @@ char **speciesStocking;
   fishStockList = [List create: modelZone];
   [self readFishStockingRecords];
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> buildObjects >>>> END\n");
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> END\n");
   fflush(0);
 
   return self;
@@ -559,8 +559,8 @@ char **speciesStocking;
 
        dataEndTime = dataEndTime + 86400;
 
-       //fprintf(stdout, "UTMTroutModelSwarm >>>> createYearShuffler >>>> numSimYears %d\n", numSimYears);
-       //fprintf(stdout, "UTMTroutModelSwarm >>>> createYearShuffler >>>> startYear %d endYear %d\n", startYear, endYear);
+       //fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> numSimYears %d\n", numSimYears);
+       //fprintf(stdout, "TroutModelSwarm >>>> createYearShuffler >>>> startYear %d endYear %d\n", startYear, endYear);
        //fflush(0);
    }
 
@@ -715,7 +715,7 @@ char **speciesStocking;
   id <MapIndex> mapNdx = nil;
   FishParams* fishParams = nil;
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> findMinSpeciesPiscLength >>>> BEGIN\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> findMinSpeciesPiscLength >>>> BEGIN\n");
   //fflush(0);
 
   mapNdx = [fishParamsMap mapBegin: scratchZone];
@@ -730,10 +730,10 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> minSpeciesMinPiscLength = %f\n", minSpeciesMinPiscLength);
+  //fprintf(stdout, "TroutModelSwarm >>>> minSpeciesMinPiscLength = %f\n", minSpeciesMinPiscLength);
   //fflush(0);
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> findMinSpeciesPiscLength >>>> END\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> findMinSpeciesPiscLength >>>> END\n");
   //fflush(0);
 
   return self;
@@ -755,7 +755,7 @@ char **speciesStocking;
   FishParams* fishParams = (FishParams *) nil;
   double biggestFishLength = [[liveFish getFirst] getFishLength];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> BEGIN\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> createReproLogistics >>>> BEGIN\n");
   //fflush(0);
   reproLogisticFuncMap = [Map create: modelZone];
 
@@ -788,8 +788,8 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> biggestFishLength = %f\n", biggestFishLength);
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> createReproLogistics >>>> END\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> createReproLogistics >>>> biggestFishLength = %f\n", biggestFishLength);
+  //fprintf(stdout, "TroutModelSwarm >>>> createReproLogistics >>>> END\n");
   //fflush(0);
 
   return self;
@@ -813,7 +813,7 @@ char **speciesStocking;
      biggestFishLength = [[liveFish getFirst] getFishLength];
   }
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> updateReproFuncs BEGIN\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs BEGIN\n");
   //fflush(0);
 
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != (FishParams *) nil))
@@ -837,8 +837,8 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> updateReproFuncs biggestFishLength = %f\n", biggestFishLength);
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> updateReproFuncs END\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs biggestFishLength = %f\n", biggestFishLength);
+  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs END\n");
   //fflush(0);
 
   return self;
@@ -877,8 +877,8 @@ char **speciesStocking;
   id <MapIndex> clrMapNdx = [theColormaps mapBegin: scratchZone];
   id <Colormap> aColorMap = nil;
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> BEGIN\n");
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
+  //fprintf(stdout, "TroutModelSwarm >>>> setFishColorMap >>>> BEGIN\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d\n", FISH_COLOR);
   //fflush(0);
 
   while(([clrMapNdx getLoc] != End) && ((aColorMap = [clrMapNdx next]) != nil))
@@ -910,7 +910,7 @@ char **speciesStocking;
 
       [fishColorMap at: speciesSetup->speciesSymbol 
                 insert: (void *) fishColor];
-      // fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %ld, SPECIES = %s, return=%ld \n", fishColor,[speciesSetup->speciesSymbol getName],*((long *)[fishColorMap at: speciesSetup->speciesSymbol]));
+      // fprintf(stdout, "TroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %ld, SPECIES = %s, return=%ld \n", fishColor,[speciesSetup->speciesSymbol getName],*((long *)[fishColorMap at: speciesSetup->speciesSymbol]));
       // fflush(0);
 	  
   }
@@ -918,7 +918,7 @@ char **speciesStocking;
   [lstNdx drop];
   [clrMapNdx drop];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> END\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> setFishColorMap >>>> END\n");
   //fflush(0);
 
   return self;
@@ -948,7 +948,7 @@ char **speciesStocking;
    id <List> polyCellList = nil;
    
    
-   //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish BEGIN\n");
+   //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish BEGIN\n");
    //fflush(0);
 
    //
@@ -967,7 +967,7 @@ char **speciesStocking;
 
    while(([initPopLstNdx getLoc] != End) && ((initialFishRecord = (TroutInitializationRecord *) [initPopLstNdx next]) != (TroutInitializationRecord *) nil)) 
    {
-	  fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
 	  fflush(0);
       //
       //Begin species loop
@@ -1026,7 +1026,7 @@ char **speciesStocking;
                continue;
           }
 
-	  //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> create fish %s age %d length %f \n",[initialFishRecord->mySpecies getName],age,length );
+	  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> create fish %s age %d length %f \n",[initialFishRecord->mySpecies getName],age,length );
 	  //fflush(0);
 	  newFish = [self createNewFishWithSpeciesIndex: initialFishRecord->speciesNdx  
                                                    Species: initialFishRecord->mySpecies 
@@ -1068,7 +1068,7 @@ char **speciesStocking;
           }
 
           if(counter >= MAX_COUNT){
-                  fprintf(stderr, "ERROR >>>> UTMTroutModelSwarm >>>> createInitialFish >>>> Failed to put fish at nonzero depth cell after %d attempts\n",counter);
+                  fprintf(stderr, "ERROR >>>> TroutModelSwarm >>>> createInitialFish >>>> Failed to put fish at nonzero depth cell after %d attempts\n",counter);
                   fflush(0);
                   exit(1);
           }
@@ -1078,7 +1078,7 @@ char **speciesStocking;
 
    if(!INIT_DATE_FOUND)
    {
-        fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> createInitialFish >>>> No fish were initialized; check the fish initialization\n" 
+        fprintf(stderr, "ERROR: TroutModelSwarm >>>> createInitialFish >>>> No fish were initialized; check the fish initialization\n" 
                                    "       dates in the \"Init Fish\" and the \"Model Setup\" or \n"
                                    "       \"Experiment Setup\" files\n");
         fflush(0);
@@ -1091,7 +1091,7 @@ char **speciesStocking;
 
   [initPopLstNdx drop];
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> createInitialFish >>>> END\n");
+  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> END\n");
   //fflush(0);
 
   return self;
@@ -1132,7 +1132,7 @@ char **speciesStocking;
       
        if((stockFilePtr = fopen(speciesSetup->stocking, "r")) == NULL) 
        {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishStockingRecords cannot open file %s \n", speciesSetup->stocking);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishStockingRecords cannot open file %s \n", speciesSetup->stocking);
              fflush(0);
              exit(1);
        }
@@ -1235,7 +1235,7 @@ char **speciesStocking;
    id aHabitatSpace;
    id <List> polyCellList = nil;
 
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> stock >>>> END\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
 
 
@@ -1395,7 +1395,7 @@ char **speciesStocking;
 
    }
            
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> stock >>>> END\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
 
    return self;
@@ -1430,14 +1430,14 @@ char **speciesStocking;
 
   BOOL POPINITDATEOK = NO;
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> BEGIN\n");
+  fprintf(stdout,"TroutModelSwarm >>>> readFishInitializationFiles >>>> BEGIN\n");
   fflush(0);
 
   for(numSpeciesNdx=0; numSpeciesNdx<numberOfSpecies; numSpeciesNdx++)
   {
       if((speciesPopFP = fopen(speciesPopFile[numSpeciesNdx], "r")) == NULL) 
       {
-          fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> Error opening %s \n", speciesPopFile[numSpeciesNdx]);
+          fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> Error opening %s \n", speciesPopFile[numSpeciesNdx]);
           fflush(0);
           exit(1);
       }
@@ -1455,7 +1455,7 @@ char **speciesStocking;
 	token =  strtok(inputString,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where date expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where date expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1463,7 +1463,7 @@ char **speciesStocking;
 	token =  strtok(NULL,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where age expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where age expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1471,7 +1471,7 @@ char **speciesStocking;
 	token =  strtok(NULL,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where number expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where number expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1479,7 +1479,7 @@ char **speciesStocking;
 	token =  strtok(NULL,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where mean length expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where mean length expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1487,7 +1487,7 @@ char **speciesStocking;
 	token =  strtok(NULL,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where std. dev. length expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where std. dev. length expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1495,7 +1495,7 @@ char **speciesStocking;
 	token =  strtok(NULL,delimiters);
   	[HabitatSpace unQuote: token];
 	if(token==NULL){
-	  fprintf(stdout, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where reach expected\n", inputString);
+	  fprintf(stdout, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> inputString: %s missing value where reach expected\n", inputString);
           fflush(0);
 	  exit(1);
 	}
@@ -1528,7 +1528,7 @@ char **speciesStocking;
            fishRecord->stdDevLength = stdDevLength;
            strcpy(fishRecord->reach, reach);
            
-	   //fprintf(stdout, "UTMTroutModelSwarm >>>> checking fish records >>>>>\n");
+	   //fprintf(stdout, "TroutModelSwarm >>>> checking fish records >>>>>\n");
 	   //fprintf(stdout, "speciesNdx = %d speciesName = %s date = %s initTime = %ld age = %d number = %d meanLength = %f stdDevLength = %f reach = %s popInitTime = %ld \n",
 			   //fishRecord->speciesNdx,
 			   //[fishRecord->mySpecies getName],
@@ -1548,7 +1548,7 @@ char **speciesStocking;
               {
                   if(prevAge >= age) 
                   {
-                     fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> Check %s and ensure that fish ages are in increasing order\n",speciesPopFile[numSpeciesNdx]);
+                     fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> Check %s and ensure that fish ages are in increasing order\n",speciesPopFile[numSpeciesNdx]);
                      fflush(0);
                      exit(1);
                   }
@@ -1572,7 +1572,7 @@ char **speciesStocking;
 
       if(POPINITDATEOK == NO)
       {
-           fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> popInitDate not found\n");
+           fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> popInitDate not found\n");
            fflush(0);
            exit(1);
       }
@@ -1607,15 +1607,15 @@ char **speciesStocking;
                             && (strcmp(fishRecord->reach, chkFishRecord->reach) == 0))
                    {
                          fprintf(stderr, "\n\n");
-                         fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles\n");
-                         fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> Multiple records for the following record\n");
+                         fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles\n");
+                         fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles >>>> Multiple records for the following record\n");
                          fprintf(stderr, "speciesName = %s date = %s age = %d number = %d  reach = %s\n",
                                        [fishRecord->mySpecies getName],
                                        fishRecord->date,
                                        fishRecord->age,
                                        fishRecord->number,
                                        fishRecord->reach);
-                         fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> readFishInitializationFiles\n");
+                         fprintf(stderr, "ERROR: TroutModelSwarm >>>> readFishInitializationFiles\n");
                          fflush(0);
                          exit(1);
                    }
@@ -1637,7 +1637,7 @@ char **speciesStocking;
    }
            
 
-  fprintf(stdout,"UTMTroutModelSwarm >>>> readFishInitializationFiles >>>> END\n");
+  fprintf(stdout,"TroutModelSwarm >>>> readFishInitializationFiles >>>> END\n");
   fflush(0);
 
   return self;
@@ -1723,7 +1723,7 @@ char **speciesStocking;
   BOOL moveFish = NO;
   id aHabitatSpace;
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> BEGIN\n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> BEGIN\n");
   //fflush(0);
 
   //
@@ -1741,7 +1741,7 @@ char **speciesStocking;
      numHoursSinceLastStep++;
   }
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before shouldfishmoveat \n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before shouldfishmoveat \n");
   //fflush(0);
   //
   // Second, check to see if the fish should move. This habitat method
@@ -1754,7 +1754,7 @@ char **speciesStocking;
 
   while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
     moveFish = [aHabitatSpace shouldFishMoveAt: modelTime];
-    //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
+    //fprintf(stdout,"TroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
     //fflush(0);
   }
 
@@ -1764,7 +1764,7 @@ char **speciesStocking;
   //
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before update fish repro func\n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update fish repro func\n");
   //fflush(0);
       [self updateFish];      //increments fish age if date is 1/1
       [self updateReproFuncs];
@@ -1775,7 +1775,7 @@ char **speciesStocking;
   //
   if(nextFishStockTime <= modelTime)
   {
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before stock\n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before stock\n");
   //fflush(0);
       [self stock];
   }
@@ -1813,13 +1813,13 @@ char **speciesStocking;
   // habitat update; habitat selection output is written after movement.
   //
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before moveFish: %s \n", (moveFish==YES)?"YES":"NO");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before moveFish: %s \n", (moveFish==YES)?"YES":"NO");
   //fflush(0);
   if(moveFish == YES) 
   {
      if(isFirstStep == FALSE)
      {
-      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before fish update die grow\n");
+      //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before fish update die grow\n");
       //fflush(0);
         [liveFish forEach: M(updateNumHoursSinceLastStep:) : (void *) &numHoursSinceLastStep];
         [liveFish forEach: M(die)];
@@ -1849,7 +1849,7 @@ char **speciesStocking;
      //
      if(isFirstStep == FALSE)
      {
-      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before breakout report\n");
+      //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before breakout report\n");
       //fflush(0);
         [self outputBreakoutReport];
 	// Comment the following for now, breakout reporting will need to be fixed later --colin
@@ -1860,12 +1860,12 @@ char **speciesStocking;
      // The following update method uses
      // the flow obtained in shouldFishMoveAt:
      //
-      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before update hab manager\n");
+      //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update hab manager\n");
       //fflush(0);
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
-      //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> before toggle and move\n");
+      //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before toggle and move\n");
       //fflush(0);
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
@@ -1899,7 +1899,7 @@ char **speciesStocking;
 
   //fprintf(stdout,"ModelSwarm >>>> step >>>> checkParam = %f\n\n", checkParam);
 
-  //fprintf(stdout,"UTMTroutModelSwarm >>>> step >>>> END\n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> END\n");
   //fflush(0);
 
   return self;
@@ -1919,7 +1919,7 @@ char **speciesStocking;
    id obj = nil;
    int printLevel = level;
  
-   fprintf(stdout,"UTMTroutModelSwarm >>>> printZones >>>> BEGIN >>>> aZone = %p level = %d\n", aZone, level);
+   fprintf(stdout,"TroutModelSwarm >>>> printZones >>>> BEGIN >>>> aZone = %p level = %d\n", aZone, level);
    fflush(0);
    //xprint(aZone);
 
@@ -1935,8 +1935,8 @@ char **speciesStocking;
           strncpy(aClassName, class_get_class_name(aClass), 20);   
           strncpy(ZoneClassName, class_get_class_name(ZoneClass), 20);   
 
-          fprintf(stdout,"UTMTroutModelSwarm >>>> printZones >>>> while >>>> obj = %p level = %d\n", obj, level);
-          fprintf(stdout,"UTMTroutModelSwarm >>>> printZones >>>> while >>>> aClassName = %s level = %d\n", aClassName, level);
+          fprintf(stdout,"TroutModelSwarm >>>> printZones >>>> while >>>> obj = %p level = %d\n", obj, level);
+          fprintf(stdout,"TroutModelSwarm >>>> printZones >>>> while >>>> aClassName = %s level = %d\n", aClassName, level);
           fflush(0);
 
 	  //xprint(obj);
@@ -1954,7 +1954,7 @@ char **speciesStocking;
           } 
     }
 
-   fprintf(stdout,"UTMTroutModelSwarm >>>> printZones >>>> END >>>> aZone = %p level = %d\n", aZone, level);
+   fprintf(stdout,"TroutModelSwarm >>>> printZones >>>> END >>>> aZone = %p level = %d\n", aZone, level);
    fflush(0);
 
    [ndx drop];
@@ -1989,7 +1989,7 @@ char **speciesStocking;
     BOOL fishLTMinPiscLength = NO;
     
      
-    //fprintf(stdout, "UTMTroutModelsSwarm >>>> toggleFishForHabSurvUpdate >>>> BEGIN\n");
+    //fprintf(stdout, "TroutModelSwarm >>>> toggleFishForHabSurvUpdate >>>> BEGIN\n");
     //fflush(0);
 
     // The variable toggleFishForHabSurvUpdate is set each day by the model swarm
@@ -2043,7 +2043,7 @@ char **speciesStocking;
         }
    }
 
-   //fprintf(stdout, "UTMTroutModelsSwarm >>>> toggleFishForHabSurvUpdate >>>> END\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> toggleFishForHabSurvUpdate >>>> END\n");
    //fflush(0);
     
    return self;
@@ -2203,7 +2203,7 @@ char **speciesStocking;
         [self printReddSurvReport];
      #endif
 
-     //fprintf(stdout,"UTMTroutModelSwarm >>>> stop >>>>\n");
+     //fprintf(stdout,"TroutModelSwarm >>>> stop >>>>\n");
      //fflush(stdout);
 
   }
@@ -2258,7 +2258,7 @@ char **speciesStocking;
   }
   else
   {
-     [InternalError raiseEvent: "ERROR: UTMTroutModelSwarm >>>> getAgeSymbolForAge >>>> incorrect age %d\n", anAge];
+     [InternalError raiseEvent: "ERROR: TroutModelSwarm >>>> getAgeSymbolForAge >>>> incorrect age %d\n", anAge];
   }
 
   return (id <Symbol>) self;
@@ -2393,7 +2393,7 @@ char **speciesStocking;
     id reachSymbol = nil;
     char* reachName = NULL;
 
-    fprintf(stdout, "UTMTroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
+    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> BEGIN\n");
     fflush(0);
 
     lstNdx = [reachSymbolList listBegin: scratchZone]; 
@@ -2425,7 +2425,7 @@ char **speciesStocking;
     }
 
 
-    fprintf(stdout, "UTMTroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
+    fprintf(stdout, "TroutModelSwarm >>>> getReachSymbolWithName >>>> END\n");
     fflush(0);
 
 
@@ -2581,7 +2581,7 @@ char **speciesStocking;
   id <InterpolationTable> aSpawnDepthInterpolator = nil;
   id <InterpolationTable> aSpawnVelocityInterpolator = nil;
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
   //fflush(0);
 
   //
@@ -2617,13 +2617,13 @@ char **speciesStocking;
   [newFish calcStarvPaAndPb];
 
   if(fishColorMap != nil){
-	  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
+	  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
 	  //fflush(0);
 	  [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
   }
 
   [newFish setTimeManager: timeManager];
-  [newFish setModel: (id <UTMTroutModelSwarm>) self];
+  [newFish setModel: (id <TroutModelSwarm>) self];
   [newFish setRandGen: randGen];
 
   aCMaxInterpolator = [cmaxInterpolatorMap at: species];
@@ -2639,7 +2639,7 @@ char **speciesStocking;
 
   newFish = [newFish createEnd];
 
-  //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
+  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
   //fflush(0);
         
   return newFish;
@@ -2708,7 +2708,7 @@ char **speciesStocking;
     id nextDeadFish = nil;
     id causeOfDeath = nil;
 
-    //fprintf(stdout, "UTMTroutModelSwarm >>>> updateCauseOfDeath >>>> BEGIN\n");
+    //fprintf(stdout, "TroutModelSwarm >>>> updateCauseOfDeath >>>> BEGIN\n");
     //fflush(0);
 
     if([killedFish getCount] > 0)
@@ -2772,7 +2772,7 @@ char **speciesStocking;
 
     } //if
 
-    //fprintf(stdout, "UTMTroutModelSwarm >>>> updateCauseOfDeath >>>> END\n");
+    //fprintf(stdout, "TroutModelSwarm >>>> updateCauseOfDeath >>>> END\n");
     //fflush(0);
 
     return self;
@@ -2806,7 +2806,7 @@ char **speciesStocking;
    //
    UTMTrout* newFish = (UTMTrout *) nil;
 
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
    //fflush(0);
    
 
@@ -2827,7 +2827,7 @@ char **speciesStocking;
 
   if([aFishParams getFishSpecies] == nil)
   {
-     fprintf(stderr, "UTMTroutModelSwarm >>>> createNewFishWithFishParams >>>> species is nil\n");
+     fprintf(stderr, "TroutModelSwarm >>>> createNewFishWithFishParams >>>> species is nil\n");
      fflush(0);
      exit(1);
   }
@@ -2864,7 +2864,7 @@ char **speciesStocking;
   }
   else
   {
-      fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> createNewFishWith >>>> improper fish age\n");
+      fprintf(stderr, "ERROR: TroutModelSwarm >>>> createNewFishWith >>>> improper fish age\n");
       fflush(0);
       exit(1);
   }
@@ -2914,19 +2914,19 @@ char **speciesStocking;
 
   int speciesIDX= 0;
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> BEGIN\n");
+  fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> BEGIN\n");
   fflush(0);
 
   if(numberOfSpecies > 10)
   {
-    fprintf(stderr,"ERROR: UTMTroutModelSwarm >>>> readSpeciesSetupFile >>>> Too many species\n");
+    fprintf(stderr,"ERROR: TroutModelSwarm >>>> readSpeciesSetupFile >>>> Too many species\n");
     fflush(0);
     exit(1);
   }
 
   if((speciesFP = fopen(speciesFile, "r")) == NULL ) 
   {
-    fprintf(stderr,"ERROR: UTMTroutModelSwarm >>>> readSpeciesSetupFile >>>>  unable to open %s\n", speciesFile);
+    fprintf(stderr,"ERROR: TroutModelSwarm >>>> readSpeciesSetupFile >>>>  unable to open %s\n", speciesFile);
     fflush(0);
     exit(1);
   }
@@ -2955,7 +2955,7 @@ char **speciesStocking;
                               speciesPopFile[speciesIDX],
                               speciesColor[speciesIDX],
 			      speciesStocking[speciesIDX]) != EOF){
-	      //fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
+	      //fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
 	      //fflush(0);
 
          SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
@@ -2973,7 +2973,7 @@ char **speciesStocking;
          [speciesSetupList addLast: (void *) speciesSetup];
 
          checkNumSpecies++;
-	 //fprintf(stdout, "UTMTroutModelSwarm >>>> readSpeciesSetup >>>> speciesSymbol %s \n", [speciesSetup->speciesSymbol getName]);
+	 //fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> speciesSymbol %s \n", [speciesSetup->speciesSymbol getName]);
 	 //fflush(0);
       }
    }
@@ -3063,7 +3063,7 @@ char **speciesStocking;
 
    if((printRptPtr = fopen(reddMortalityFile,"w")) == NULL) 
    {
-      fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> printReddReport >>>> Couldn't open %s\n", reddMortalityFile);
+      fprintf(stderr, "ERROR: TroutModelSwarm >>>> printReddReport >>>> Couldn't open %s\n", reddMortalityFile);
       fflush(0);
       exit(1);
    }
@@ -3105,7 +3105,7 @@ char **speciesStocking;
    id <ListIndex> reddListNdx = nil;
    id redd = nil;
  
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> printReddSurvReport >>>> BEGIN\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> BEGIN\n");
    //fflush(0);
 
 
@@ -3134,7 +3134,7 @@ char **speciesStocking;
        printRptPtr = NULL;
     }
 
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> printReddSurvReport >>>> END\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> END\n");
    //fflush(0);
 
     return self;
@@ -3523,7 +3523,7 @@ char **speciesStocking;
   }
   else 
   {
-    fprintf(stderr,  "ERROR: UTMTroutModelSwarm >>>> can't print trout histogram usage header with %s \n", aUse);
+    fprintf(stderr,  "ERROR: TroutModelSwarm >>>> can't print trout histogram usage header with %s \n", aUse);
     fflush(0);
     exit(1);
   }
@@ -3963,7 +3963,7 @@ char **speciesStocking;
    }
    else
    {
-      fprintf(stderr, "UTMTroutModelSwarm >>>> getSpeciesSymbolWithName >>>> method invoked before instantiateObjects\n");
+      fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> method invoked before instantiateObjects\n");
       fflush(0);
       exit(1);
    }
@@ -3988,7 +3988,7 @@ char **speciesStocking;
 
    if(!speciesNameFound)
    {
-       fprintf(stderr, "UTMTroutModelSwarm >>>> getSpeciesSymbolWithName >>>> no species symbol for name %s\n", aName);
+       fprintf(stderr, "TroutModelSwarm >>>> getSpeciesSymbolWithName >>>> no species symbol for name %s\n", aName);
        fflush(0);
        exit(1);
    } 
@@ -4019,7 +4019,7 @@ char **speciesStocking;
      {
         if((reddRptFilePtr = fopen(reddMortalityFile,"w")) == NULL ) 
         {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
              fflush(0);
              exit(1);
         }
@@ -4031,7 +4031,7 @@ char **speciesStocking;
      {
         if((reddRptFilePtr = fopen(reddMortalityFile,"w")) == NULL )
         {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
              fflush(0);
              exit(1);
         }
@@ -4043,7 +4043,7 @@ char **speciesStocking;
      {
          if((reddRptFilePtr = fopen(reddMortalityFile,"a")) == NULL )
           {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
              fflush(0);
              exit(1);
          }
@@ -4052,7 +4052,7 @@ char **speciesStocking;
 
    if(reddRptFilePtr == NULL)
    {
-        fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
+        fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddReportFilePtr >>>> Cannot open %s for writing\n", reddMortalityFile);
         fflush(0);
         exit(1);
    }
@@ -4070,7 +4070,7 @@ char **speciesStocking;
 {
    if(reddRptFilePtr == NULL)
    {
-       fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> getReddReportFilePtr >>>> File %s is not open\n", reddMortalityFile);
+       fprintf(stderr, "ERROR: TroutModelSwarm >>>> getReddReportFilePtr >>>> File %s is not open\n", reddMortalityFile);
        fflush(0);
        exit(1);
    }
@@ -4096,7 +4096,7 @@ char **speciesStocking;
      {
         if((reddSummaryFilePtr = fopen(reddOutputFile,"w")) == NULL)
         {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddSummaryFilePtr >>>> Cannot open %s for writing\n", reddOutputFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddSummaryFilePtr >>>> Cannot open %s for writing\n", reddOutputFile);
              fflush(0);
              exit(1);
         }
@@ -4123,7 +4123,7 @@ char **speciesStocking;
      {
         if((reddSummaryFilePtr = fopen(reddOutputFile,"w")) == NULL)
         {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>>> openReddSummaryFilePtr >>>> Cannot open %s for writing\n",reddOutputFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>>> openReddSummaryFilePtr >>>> Cannot open %s for writing\n",reddOutputFile);
              fflush(0);
              exit(1);
         }
@@ -4150,7 +4150,7 @@ char **speciesStocking;
      {
          if((reddSummaryFilePtr = fopen(reddOutputFile,"a")) == NULL) 
          {
-             fprintf(stderr, "ERROR: UTMTroutModelSwarm >>>> openReddSummaryFilePtr >>>> Cannot open %s for appending\n",reddOutputFile);
+             fprintf(stderr, "ERROR: TroutModelSwarm >>>> openReddSummaryFilePtr >>>> Cannot open %s for appending\n",reddOutputFile);
              fflush(0);
              exit(1);
          }
@@ -4213,7 +4213,7 @@ char **speciesStocking;
 /////////////////////////////////////////////////////
 - createBreakoutReporters
 {
-      fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> BEGIN\n");
+      fprintf(stdout, "TroutModelSwarm >>>> createBreakoutReporters >>>> BEGIN\n");
       fflush(0);
 
   BOOL fileOverWrite = TRUE;
@@ -4240,7 +4240,7 @@ char **speciesStocking;
                                         withFileOverwrite: fileOverWrite];
 					//withColumnWidth: 25];
 
-      //fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> after create begin mortality \n");
+      //fprintf(stdout, "TroutModelSwarm >>>> createBreakoutReporters >>>> after create begin mortality \n");
       //fflush(0);
 
   [fishMortalityReporter addColumnWithValueOfVariable: "scenario"
@@ -4278,7 +4278,7 @@ char **speciesStocking;
 
   fishMortalityReporter = [fishMortalityReporter createEnd];
 
-      //fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> after mortality rep\n");
+      //fprintf(stdout, "TroutModelSwarm >>>> createBreakoutReporters >>>> after mortality rep\n");
       //fflush(0);
 
   //
@@ -4336,7 +4336,7 @@ char **speciesStocking;
 
   liveFishReporter = [liveFishReporter createEnd];
 
-      fprintf(stdout, "UTMTroutModelSwarm >>>> createBreakoutReporters >>>> END\n");
+      fprintf(stdout, "TroutModelSwarm >>>> createBreakoutReporters >>>> END\n");
       fflush(0);
   return self;
 }
@@ -4348,7 +4348,7 @@ char **speciesStocking;
 ////////////////////////////////////////////
 - outputBreakoutReport
 {
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> outputBreakoutReport >>>> BEGIN\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> outputBreakoutReport >>>> BEGIN\n");
    //fflush(0);
 
    [liveFishReporter updateByReplacement];
@@ -4372,7 +4372,7 @@ char **speciesStocking;
    //[moveFishReporter updateByReplacement];
    //[moveFishReporter output];
 
-   //fprintf(stdout, "UTMTroutModelSwarm >>>> outputBreakoutReport >>>> END\n");
+   //fprintf(stdout, "TroutModelSwarm >>>> outputBreakoutReport >>>> END\n");
    //fflush(0);
 
    return self;
@@ -4400,7 +4400,7 @@ char **speciesStocking;
 ///////////////////////////////////////////////////////
 - switchColorRepFor: aHabitatSpace
 {
-    fprintf(stdout, "UTMTroutModelSwarm >>>> switchColorRepFor >>>> BEGIN\n");
+    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> BEGIN\n");
     fflush(0);
 
     if(observerSwarm == nil)
@@ -4412,7 +4412,7 @@ char **speciesStocking;
     [observerSwarm switchColorRepFor: aHabitatSpace];  
 
 
-    fprintf(stdout, "UTMTroutModelSwarm >>>> switchColorRepFor >>>> END\n");
+    fprintf(stdout, "TroutModelSwarm >>>> switchColorRepFor >>>> END\n");
     fflush(0);
 
     return self;
@@ -4560,7 +4560,7 @@ char **speciesStocking;
   id species=nil;
   FILE* aStream=NULL;
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> drop >>>> BEGIN\n");
+  fprintf(stdout, "TroutModelSwarm >>>> drop >>>> BEGIN\n");
   fflush(0);
 
   ndx = [speciesSymbolList listBegin: scratchZone];
@@ -4653,7 +4653,7 @@ char **speciesStocking;
   
   [super drop];
 
-  fprintf(stdout, "UTMTroutModelSwarm >>>> drop >>>> BEGIN\n");
+  fprintf(stdout, "TroutModelSwarm >>>> drop >>>> BEGIN\n");
   fflush(0);
 
 } //drop

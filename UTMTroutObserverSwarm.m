@@ -12,7 +12,7 @@
 #import <gui.h>
 
 #import "ExperSwarm.h"
-#import "UTMTroutModelSwarm.h"
+#import "TroutModelSwarm.h"
 #import "HabitatSpace.h"
 #import "UTMTroutObserverSwarm.h"
 
@@ -262,7 +262,7 @@
 {
   obsZone = [Zone create: [self getZone]];
 
-  troutModelSwarm = [UTMTroutModelSwarm create: self];
+  troutModelSwarm = [TroutModelSwarm create: self];
 
   [troutModelSwarm setPolyRasterResolutionX:  rasterResolutionX
                    setPolyRasterResolutionY:  rasterResolutionY 
