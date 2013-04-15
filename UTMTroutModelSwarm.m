@@ -172,8 +172,6 @@ char **speciesStocking;
   habitatManager = [HabitatManager createBegin: modelZone];
   [habitatManager instantiateObjects];
   [habitatManager setSiteLatitude: siteLatitude];
-  [habitatManager createSolarManager];
-  solarManager = [habitatManager getSolarManager];
   [habitatManager setModel: self];
   [habitatManager readReachSetupFile: "Reach.Setup"];
   [habitatManager setNumberOfSpecies: numberOfSpecies];
@@ -1785,11 +1783,8 @@ char **speciesStocking;
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
   //
-  timeTillDaytimeStarts  = modelTime - [timeManager getTimeTWithDate: [timeManager getDateWithTimeT: modelTime]
-						    withHour: (int) [solarManager getSunriseHour]
-						    withMinute: (int)  [solarManager getSunriseHour]*60
-						    withSecond: 0];
-
+  timeTillDaytimeStarts  = modelTime - [[reachList getFirst] getDaytimeStartTime];
+ 
   if((timeTillDaytimeStarts  >= (time_t) 0) && (timeTillDaytimeStarts < anHour))
   {
       [liveFish forEach: M(spawn)];

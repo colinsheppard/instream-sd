@@ -32,7 +32,6 @@ Boston, MA 02111-1307, USA.
 #import "HabitatSetup.h"
 #import "HabitatSpace.h"
 #import "UTMTroutModelSwarmP.h"
-#import "SolarManagerP.h"
 #import "globals.h"
 #import "PolyInputData.h"
 
@@ -41,7 +40,6 @@ Boston, MA 02111-1307, USA.
 
 id <UTMTroutModelSwarm> model;
 id <Zone> habManagerZone;
-id <SolarManager> solarManager;
 double siteLatitude;
 
 int numHabitatSpaces;
@@ -81,8 +79,6 @@ double shadeColorMax;
 
 }
 
-// New for 5.0
-- (id <SolarManager>) getSolarManager;
 
 + createBegin: aZone;
 - createEnd;
@@ -124,7 +120,6 @@ double shadeColorMax;
 - instantiateHabitatSpacesInZone: (id <Zone>) aZone;
 - finishBuildingTheHabitatSpaces;
 - buildHabSpaceCellFishInfoReporter;
-- createSolarManager;
 - buildReachJunctions;
 
 // 

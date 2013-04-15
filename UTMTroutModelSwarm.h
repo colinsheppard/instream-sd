@@ -292,8 +292,6 @@ time_t dataEndTime;
 //
 double checkParam;
 
-id <SolarManager> solarManager;
-
 // Stuff from instream 5.0
   int fishCounter;
   int    polyRasterResolutionX;

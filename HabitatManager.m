@@ -404,9 +404,6 @@ Boston, MA 02111-1307, USA.
 }*/
 
 
-- (id <SolarManager>) getSolarManager {
-  return solarManager;
-}
 
 /////////////////////////////////////////////////
 //
@@ -417,7 +414,6 @@ Boston, MA 02111-1307, USA.
          andWithModelStartFlag: (BOOL) aStartFlag
 {
    id habSpace = nil;
-   int julianDate;
 
 //   fprintf(stdout, "HabitatManager >>>> updateHabitatManagerWithTime >>>> BEGIN\n");
 //   fflush(0);
@@ -425,9 +421,6 @@ Boston, MA 02111-1307, USA.
 
    modelTime = aTime;
    strncpy(modelDate, [timeManager getDateWithTimeT: modelTime], (size_t) 11);
-   julianDate = [timeManager getJulianDayWithTimeT: modelTime]; 
-
-   [solarManager updateDayLengthWithJulianDate: julianDate];
 
    if(habitatSpaceNdx == nil)
    {
@@ -521,29 +514,6 @@ Boston, MA 02111-1307, USA.
     return self;
 }
 
-//////////////////////////////////////////
-//
-// createSolarManager
-//
-//////////////////////////////////////////
-- createSolarManager
-{
-   if(siteLatitude == -LARGEINT)
-   {
-      fprintf(stderr, "ERROR: HabitatManager >>>>> siteLatitude hase not been set\n");
-      fflush(0);
-      exit(1);
-   }
-
-   solarManager = [SolarManager create: habManagerZone
-                          withLatitude: siteLatitude
-                      withHorizonAngle: 0.0
-                    withTwilightLength: 6];
-
-   return self;
-}
-
-
 ////////////////////////////////////////////
 //
 // instantiateHabitatSpacesInZone
@@ -580,7 +550,6 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setHabUStreamJNumber: [habSetup getHabUStreamJNumber]];
 
      [habitatSpace setFishParamsMap: fishParamsMap];
-     [habitatSpace setSolarManager: solarManager];
 
   fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before buildObj \n");
   fflush(0); 

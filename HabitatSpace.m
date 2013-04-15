@@ -64,8 +64,6 @@ Boston, MA 02111-1307, USA.
 
   obj->flowInputManager = nil;
 
-  obj->solarManager = nil;
-
   obj->habitatRptFilePtr = NULL;
 
   obj->appendFiles = NO;
@@ -222,13 +220,6 @@ Boston, MA 02111-1307, USA.
   upstreamCells = [List create: habitatZone];
   downstreamCells = [List create: habitatZone];
 
-  if(solarManager == nil)
-  {
-     fprintf(stderr, "ERROR: HabitatSpace >>>> buildObjects >>>> solarManager has not been set\n");
-     fflush(0);
-     exit(1);
-  }
-
   cellFishList = [List create: habitatZone];
 
   return self;
@@ -266,16 +257,6 @@ Boston, MA 02111-1307, USA.
 }
 
 
-////////////////////////////////////////////////
-//
-// setSolarManager
-//
-////////////////////////////////////////////////
-- setSolarManager: (id <SolarManager>) aSolarManager
-{
-   solarManager = aSolarManager;
-   return self;
-}
 
 //////////////////////////////////////////////
 //
@@ -2417,6 +2398,41 @@ return self;
 
 //////////////////////////////////
 //
+// getDaytime*
+//
+/////////////////////////////////
+
+- (double) getDaytimeStartHour
+{
+
+  return daytimeStartHour;
+
+}
+
+- (time_t) getDaytimeStartTime
+{
+
+  return daytimeStartTime;
+
+}
+
+- (double) getDaytimeEndHour
+{
+
+    return daytimeEndHour;
+
+}
+
+- (time_t) getDaytimeEndTime
+{
+
+    return daytimeEndTime;
+
+}
+
+
+//////////////////////////////////
+//
 // getNumberOfDaylightHours
 //
 //////////////////////////////////
@@ -3056,7 +3072,7 @@ return self;
       tomorrowsRiverFlow = [flowInputManager getValueForTime: (modelTime_t + 86400)];
   }
        
-  dayLength = [solarManager getDayLength];
+  [self calcDayLength: aModelTime_t];
 
   [self updateFishCells];
 

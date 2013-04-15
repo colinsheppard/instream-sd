@@ -36,7 +36,6 @@ Boston, MA 02111-1307, USA.
 #import "TimeSeriesInputManagerP.h"
 #import "math.h"
 #import "InterpolationTableP.h"
-#import "SolarManagerP.h"
 #import "UTMTroutModelSwarmP.h"
 #import "PolyInputData.h"
 //#import "PolyInterpolatorFactory.h"
@@ -53,8 +52,6 @@ Boston, MA 02111-1307, USA.
   char* reachName;
   char* instanceName;
   id <Symbol> reachSymbol;
-
-  id <SolarManager> solarManager;
 
   int numCells;
   unsigned pixelsX;
@@ -375,7 +372,6 @@ long int maxYCoordinate;
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
 - setFishParamsMap: (id <Map>) aMap;
-- setSolarManager: (id <SolarManager>) aSolarManager;
 - setNumberOfSpecies: (int) aNumberOfSpecies;
 
 - (id <List>) getNeighborsWithin: (double) aRange 
@@ -497,6 +493,10 @@ long int maxYCoordinate;
 - (double) getNumberOfNightHours;
 - (double) getDayLength;
 - (int) getCurrentPhase;
+- (double) getDaytimeStartHour;
+- (time_t) getDaytimeStartTime;
+- (double) getDaytimeEndHour;
+- (time_t) getDaytimeEndTime;
 
 - calcDayLength: (time_t) aTime_t;
 

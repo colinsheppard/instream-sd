@@ -75,6 +75,7 @@
 							 "Date",
                              "currentHour",
                              "currentPhase",
+							 "numberOfDaylightHours",
                              "temperature",
                              "currentHourlyFlow",
 							 "dailyMeanFlow",

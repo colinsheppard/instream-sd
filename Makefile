@@ -62,7 +62,6 @@ OBJECTS=GraphDataObject.o \
 	UTMInterpolatorFactory.o \
 	InterpolationTable.o \
 	TimeSeriesInputManager.o\
-	SolarManager.o\
 	YearShuffler.o\
 	TroutMortalityCount.o\
 	KDTree.o
@@ -128,7 +127,6 @@ UTMRedd.o : UTMRedd.[hm]
 UTMInterpolatorFactory.o : UTMInterpolatorFactory.[hm]
 InterpolationTable.o : InterpolationTable.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
-SolarManager.o : SolarManager.[hm]
 #
 UTMTroutObserverSwarm.o  : UTMTroutObserverSwarm.[hm]
 UTMTroutModelSwarm.o : UTMTroutModelSwarm.[hm]
