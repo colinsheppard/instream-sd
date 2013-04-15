@@ -910,8 +910,9 @@ char **speciesStocking;
 
       [fishColorMap at: speciesSetup->speciesSymbol 
                 insert: (void *) fishColor];
-      fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %d, SPECIES = %s, return=%d \n", fishColor,[speciesSetup->speciesSymbol getName],*((long *)[fishColorMap at: speciesSetup->speciesSymbol]));
-      fflush(0);
+      // fprintf(stdout, "UTMTroutModelSwarm >>>> setFishColorMap >>>> FISH_COLOR = %ld, SPECIES = %s, return=%ld \n", fishColor,[speciesSetup->speciesSymbol getName],*((long *)[fishColorMap at: speciesSetup->speciesSymbol]));
+      // fflush(0);
+	  
   }
 
   [lstNdx drop];
