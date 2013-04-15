@@ -1223,15 +1223,35 @@ Boston, MA 02111-1307, USA.
       return isShelterAvailable;
 }
 
+/////////////////////////////////////////////////
+//
+// setFracHidingCover
+//
+////////////////////////////////////////////////
+
+- setFracHidingCover: (double) aDouble 
+{
+   if(aDouble > 1.0){
+         fprintf(stderr, "ERROR: FishCell >>>> setFracHidingCover >>>> attempted to set fracHidingCover to a value of %f but fracHidingCover must be <= 1.0\n", aDouble);
+         fflush(0);
+         exit(1);
+   }
+   fracHidingCover = aDouble;
+   return self;
+}
+
+
+
+
 ////////////////////////////////////
 //
 // resetHidingCover
 //
 ////////////////////////////////////
-- resetHidingCover
+- (void) resetHidingCover
 {
    availableHidingCover = [self getPolyCellArea] * fracHidingCover;
-   return self;
+   //return self;
 
 }
 

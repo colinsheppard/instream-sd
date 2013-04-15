@@ -1693,6 +1693,7 @@ return self;
     double fracShelter = 0.0;
     double distToHide = 0.0;
     double fracSpawn = 0.0;
+    double fracHiding  = 0.0;
     char reachEnd = 'K';
     FishCell* aCell = nil;
     char inputString[200];
@@ -1731,16 +1732,18 @@ return self;
 
     while(fgets(inputString,200,polyDataFPTR) != NULL){
       if(csvFormat){
-       sscanf(inputString, "%d,%lf,%lf,%lf,%c", &cellNo,
+       sscanf(inputString, "%d,%lf,%lf,%lf,%lf,%c", &cellNo,
                                                 &fracShelter,
                                                 &distToHide,
                                                 &fracSpawn,
+                                                &fracHiding,
                                                 &reachEnd);
       }else{
-       sscanf(inputString, "%d %lf %lf %lf %c", &cellNo,
+       sscanf(inputString, "%d %lf %lf %lf %lf %c", &cellNo,
                                                 &fracShelter,
                                                 &distToHide,
                                                 &fracSpawn,
+                                                &fracHiding,
                                                 &reachEnd);
       }
 
@@ -1767,6 +1770,7 @@ return self;
                [aCell setCellFracShelter: fracShelter];
                [aCell setDistanceToHide: (distToHide * 100.0)];  // Convert meters to cm
                [aCell setCellFracSpawn: fracSpawn];
+               [aCell setFracHidingCover: fracHiding];
                [aCell setReachEnd: toupper(reachEnd)];
                [aCell setCellDataSet: YES];
 

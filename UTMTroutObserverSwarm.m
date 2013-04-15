@@ -97,18 +97,18 @@
   probeMap = [probeMap createEnd];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellNumber"
   				   inClass: [PolyCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "rasterColorVariable"
-  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "reachEnd"
+  				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellDepth"
   				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellVelocity"
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "polyCellArea"
   				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "meanDepth"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "meanVelocity"
   				   inClass: [FishCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "interiorColor"
-  				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "cellFracSpawn"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "cellFracShelter"
@@ -117,13 +117,13 @@
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "shelterAreaAvailable"
   				   inClass: [FishCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "availableHidingCover"
-  				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "isShelterAvailable"
   				   inClass: [FishCell class]]];
-  [probeMap addProbe: [probeLibrary getProbeForVariable: "cellDistToHide"
-  				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "fracHidingCover"
+  				   inClass: [FishCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "availableHidingCover"
+  				   inClass: [FishCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForVariable: "cellDistToHide"
   				   inClass: [FishCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForVariable: "driftHourlyCellTotal"
   				   inClass: [FishCell class]]];
@@ -138,6 +138,10 @@
   [probeMap addProbe: [probeLibrary getProbeForMessage: "tagPolyCell"
   				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForMessage: "unTagPolyCell"
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForMessage: "tagAdjacentCells"
+  				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForMessage: "unTagAdjacentCells"
   				   inClass: [PolyCell class]]];
   [probeLibrary setProbeMap: probeMap For: [FishCell class]];
 

@@ -187,6 +187,11 @@ Boston, MA 02111-1307, USA.
 - (void) resetShelterAreaAvailable;
 - (BOOL) getIsShelterAvailable;
 
+- setFracHidingCover: (double) aDouble;
+- (double) getHidingCoverAvailable;
+- (void) resetHidingCover;
+- (BOOL) getIsHidingCoverAvailable;
+
 - setCellFracSpawn: (double) aDouble;
 - (double) getCellFracSpawn;
 - (double) getCellFracShelter;
@@ -223,9 +228,6 @@ Boston, MA 02111-1307, USA.
 - (BOOL) getDayNightPhaseSwitch;
 - (double) getNumberOfDaylightHours;
 - (double) getNumberOfNightHours;
-- resetHidingCover;
-- (BOOL) getIsHidingCoverAvailable;
-- (double) getHidingCoverAvailable;
 - (double) getDistanceTo: aCell;
 - moveHere: aFish;
 
