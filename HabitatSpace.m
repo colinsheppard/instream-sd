@@ -3094,6 +3094,7 @@ return self;
   [polyCellList forEach: M(updateDSCellHourlyTotal)];
   [polyCellList forEach: M(resetAvailHourlyTotal)];
   [polyCellList forEach: M(resetShelterAreaAvailable)];
+  [polyCellList forEach: M(resetHidingCover)];
 
 
   //fprintf(stdout, "HabitatSpace >>>> updateHabitatWithTime >>>> modelTime_t = %ld\n", modelTime_t);
