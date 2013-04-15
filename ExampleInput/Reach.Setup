@@ -10,7 +10,7 @@ cellGeomFile                      Tailrace-Geom.Data
 flowFile                          FlamingGorgePHHourlyFlow.Data
 temperatureFile                   GreendaleTemperature.Data
 turbidityFile                     GreenRiverTurbidity.Data
-cellHabVarsFile                   Tailrace-Cell.Data
+cellHabVarsFile                   Tailrace-CellData.csv
 driftFoodFile			  FG-HrlyDrift_15E-12.Data
 reachLength                       1000
 cellHydraulicFile		  Tailrace-Hyd.csv
