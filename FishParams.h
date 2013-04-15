@@ -155,10 +155,9 @@ double mortFishAqPredU1;
 double mortFishAqPredU9;
 double mortFishAqPredCoverFactor;
 
-
-// Added from instream 5.0
-/*double mortFishHiTT1;*/
-/*double mortFishHiTT9;*/
+double mortFishHiTT1;
+double mortFishHiTT9;
+/* Not used in instream-SD: */
 /*double mortFishTerrPredF1;*/
 /*double mortFishTerrPredF9;*/
 /*double mortFishAqPredMin;*/

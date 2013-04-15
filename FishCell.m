@@ -1703,7 +1703,7 @@ Boston, MA 02111-1307, USA.
 
       //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> beforeHighTemp \n");
       //fflush(0);
-/*     [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "HighTemperature"] 
+     [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "HighTemperature"] 
                         withType: "SingleFunctionProb"
                   withAgentKnows: YES
                  withIsStarvProb: NO];
@@ -1715,7 +1715,7 @@ Boston, MA 02111-1307, USA.
                                    withYValue1: 0.9
                                    withXValue2: fishParams->mortFishHiTT1
                                    withYValue2: 0.1];
-*/
+
 
      /*
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Velocity"] 
