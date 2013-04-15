@@ -2561,10 +2561,11 @@ return self;
    currentHourlyFlow = [flowInputManager getValueForTime: theCurrentTime];
    habDriftConc      = [driftFoodInputManager getValueForTime: theCurrentTime];
 
+   currentHour = [timeManager getHourWithTimeT: theCurrentTime];
    //
    // First, do the stuff the happens every midnight
    //
-   if([timeManager getHourWithTimeT: theCurrentTime] == 0)
+   if(currentHour == 0)
    {
         [self calcDayLength: theCurrentTime];
 
@@ -2593,7 +2594,7 @@ return self;
    //
    if(theCurrentTime == modelStartTime)
    {
-       if([timeManager getHourWithTimeT: theCurrentTime] != 0)
+       if(currentHour != 0)
        {
            fprintf(stderr, "ERROR: HabitatSpace >>>> shouldFishMoveAt >>>> Simulation startStartTime is not midnight\n");
            fflush(0);
@@ -2639,7 +2640,7 @@ return self;
         }
         else
         {
-            fprintf(stderr, "ERROR: HabitatSpace >>>> shouldFishMoveAt >>>> No currentPhase at model time Date %s hour %d\n", [timeManager getDateWithTimeT: theCurrentTime], [timeManager getHourWithTimeT: theCurrentTime]); 
+            fprintf(stderr, "ERROR: HabitatSpace >>>> shouldFishMoveAt >>>> No currentPhase at model time Date %s hour %d\n", [timeManager getDateWithTimeT: theCurrentTime], currentHour); 
             fflush(0);
             exit(1);
         }

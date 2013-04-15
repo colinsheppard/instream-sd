@@ -198,6 +198,7 @@ long int maxYCoordinate;
   BOOL flowChangeForMove;
   double numberOfDaylightHours;
   double numberOfNightHours;
+  int currentHour;
   DayPhase currentPhase;
   DayPhase phaseOfPrevStep;
   int anglingPressure;
@@ -496,6 +497,7 @@ long int maxYCoordinate;
 - (double) getNumberOfNightHours;
 - (double) getDayLength;
 - (int) getCurrentPhase;
+
 - calcDayLength: (time_t) aTime_t;
 
 - (double) getHabSearchProd;

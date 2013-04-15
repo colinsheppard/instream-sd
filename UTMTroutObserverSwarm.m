@@ -71,11 +71,13 @@
   // HabitatSpace
   //
   probeMap = [CustomProbeMap create: aZone forClass: [HabitatSpace class]
-			     withIdentifiers: "Date",
-                             "hour",
+			     withIdentifiers: "reachName",
+							 "Date",
+                             "currentHour",
                              "currentPhase",
                              "temperature",
                              "currentHourlyFlow",
+							 "dailyMeanFlow",
                              "turbidity",
                              "habDriftConc",
                              ":",
