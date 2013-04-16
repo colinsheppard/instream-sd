@@ -65,7 +65,6 @@ char **speciesStocking;
 
   troutModelSwarm->isFirstStep = TRUE;
 
-  troutModelSwarm->habSetupFile = (char *) nil;
   troutModelSwarm->fishOutputFile = (char *) nil;
   troutModelSwarm->speciesDepthUseOutStreamMap = nil; 
   troutModelSwarm->speciesVelocityUseOutStreamMap = nil;

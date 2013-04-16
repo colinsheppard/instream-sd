@@ -9,7 +9,7 @@ randGenSeed                         62324
 numberOfSpecies                         2
 habParamFile                     TailraceHabitat.Params
 
-runStartDate                     10/1/2000
+runStartDate                     10/1/1993
 runEndDate                       9/30/2007
 
 fishOutputFile                   Tailrace_LiveFishOut.csv
@@ -31,8 +31,6 @@ velocityAvailabilityFileName     velocityAvailability.Out
 
 fishDepthUseFileName            DepthUse.Out
 fishVelocityUseFileName         VelocityUse.Out
-
-habSetupFile           Reach.Setup
 
 siteLatitude                 40.9
 

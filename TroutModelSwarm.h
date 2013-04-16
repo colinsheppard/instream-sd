@@ -166,7 +166,6 @@ char*  reddOutputFile;
 char*  reddMortalityFile;
 char*  popInitDate;
 int    fileOutputFrequency;
-char*  habSetupFile;
 
 //
 // HISTOGRAM VARIABLES
