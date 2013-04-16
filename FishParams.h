@@ -222,8 +222,6 @@ double mortFishAngleFracKeptLegal;
 double mortFishAngleFracKeptIllegal;
 double mortFishAngleHookSurvRate;
 
-double mortFishVelocityHideFactor;
-
 double fishPiscivoryLength;
 
 double fishReactDistNightFactor;

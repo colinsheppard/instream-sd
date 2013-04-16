@@ -1717,7 +1717,7 @@ Boston, MA 02111-1307, USA.
                                    withYValue2: 0.1];
 
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Velocity"] 
-                        withType: "SingleFunctionProb"
+                        withType: "LimitingFunctionProb"
                   withAgentKnows: YES
                  withIsStarvProb: NO];
 
@@ -1730,6 +1730,12 @@ Boston, MA 02111-1307, USA.
                                    withYValue1: 0.9
                                    withXValue2: fishParams->mortFishVelocityV1
                                    withYValue2: 0.1];
+
+     [survMgr addBoolSwitchFuncToProbWithSymbol:  [model getFishMortalitySymbolWithName: "Velocity"]
+                       withInputObjectType: 1
+                            withInputSelector: M(getAmIInHidingCover)
+                               withYesValue: fishParams->mortFishVelocityCoverFactor 
+                                withNoValue: 0.0];
 
      /*
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Stranding"] 

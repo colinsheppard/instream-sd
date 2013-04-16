@@ -118,7 +118,6 @@ mortFishTerrPredT9	50
 mortFishTerrPredV1	20
 mortFishTerrPredV9	300
 mortFishVelocityCoverFactor	0.75
-mortFishVelocityHideFactor	0.75
 mortFishVelocityV1	1.8
 mortFishVelocityV9	1.4
 mortReddDewaterSurv	0.9
