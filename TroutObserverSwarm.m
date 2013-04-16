@@ -726,6 +726,12 @@
 //////////////////////////////////
 - _update_ 
 {
+  if(populationHisto)
+  {
+    [populationHisto reset];
+    [populationHisto update];
+    [populationHisto output];
+  }  
   if(mortalityGraph) 
   {
      [mortalityGraph step];
