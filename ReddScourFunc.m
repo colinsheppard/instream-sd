@@ -64,18 +64,18 @@
 
    if(inputMethod == (SEL) nil)
    {
-      [InternalError raiseEvent: "ERROR: ReddSuperImpFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod];
+      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod];
    }
   
    if(![anObj respondsTo: inputMethod])
    {
-      [InternalError raiseEvent: "ERROR: ReddSuperImpFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n"];
+      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n"];
    }
 
    /*
    if(messageProbe == nil)
    {
-      [InternalError raiseEvent: "ERROR: ReddSuperImpFunc >>>> updateWith: >>>> messageProbe is nil\n"];
+      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith: >>>> messageProbe is nil\n"];
    } 
    */
 

@@ -8,27 +8,27 @@
 // 
 
 
-#import "ReddSuperImpFunc.h"
+#import "ReddSuperimpFunc.h"
 #import "FishParams.h"
 #import "FishCell.h"
 #import "UTMRedd.h"
 #import "globals.h"
 
-@implementation ReddSuperImpFunc
+@implementation ReddSuperimpFunc
 
 +    createBegin: aZone
   setInputMethod: (SEL) anInputMethod
 {
 
-   ReddSuperImpFunc* superImpFunc = [super createBegin: aZone];
+   ReddSuperimpFunc* superimpFunc = [super createBegin: aZone];
 
-   superImpFunc->uniformDist = nil;
+   superimpFunc->uniformDist = nil;
  
 
-   [superImpFunc setInputMethod: anInputMethod];
-   [superImpFunc createInputMethodMessageProbeFor: anInputMethod];
+   [superimpFunc setInputMethod: anInputMethod];
+   [superimpFunc createInputMethodMessageProbeFor: anInputMethod];
 
-   return superImpFunc;
+   return superimpFunc;
 
 }
 
@@ -48,9 +48,9 @@
 
    FishParams* otherReddFishParams;
 
-   double superImpSF = 1.0;
+   double superimpSF = 1.0;
    id nextRedd;
-   double reddSuperImpRisk = -1.0;
+   double reddSuperimpRisk = -1.0;
    double cellArea;
    double cellGravelFrac;
    double reddSize;
@@ -60,21 +60,21 @@
 
    if(inputMethod == (SEL) nil)
    {
-       fprintf(stderr, "ERROR: ReddSuperImpFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod);
+       fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod);
        fflush(0);
        exit(1);
    }
   
    if(![anObj respondsTo: inputMethod])
    {
-        fprintf(stderr, "ERROR: ReddSuperImpFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n");
+        fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n");
         fflush(0);
         exit(1);
    }
 
    if(messageProbe == nil)
    {
-        fprintf(stderr, "ERROR: ReddSuperImpFunc >>>> updateWith: >>>> messageProbe is nil\n");
+        fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> updateWith: >>>> messageProbe is nil\n");
         fflush(0);
         exit(1);
    } 
@@ -91,7 +91,7 @@
 
         if(aRandGen == nil)
         {
-           fprintf(stderr, "ERROR: ReddSuperImpFunc >>>> the random generator is nil\n");
+           fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> the random generator is nil\n");
            fflush(0);
            exit(1);
         }
@@ -139,22 +139,22 @@
  
                   if(cellGravelFrac == 0.0) 
                   {
-                      reddSuperImpRisk = 0.0; //We can't have superimposition
+                      reddSuperimpRisk = 0.0; //We can't have superimposition
                                               //if there isn't any gravel
                   }
                   else 
                   { 
                       //
-                      //reddSuperImpRisk can be greater than 1 and that's ok
+                      //reddSuperimpRisk can be greater than 1 and that's ok
                       //
-                      reddSuperImpRisk = reddSize/(cellArea*cellGravelFrac);
+                      reddSuperimpRisk = reddSize/(cellArea*cellGravelFrac);
                   }
 
                   uniformRanNum = [uniformDist getDoubleSample];
 
-                  if(uniformRanNum < reddSuperImpRisk) 
+                  if(uniformRanNum < reddSuperimpRisk) 
                   {
-                      superImpSF *= [uniformDist getDoubleSample];
+                      superimpSF *= [uniformDist getDoubleSample];
                   }
             }
 
@@ -164,12 +164,12 @@
 
     }
 
-    funcValue = superImpSF;
+    funcValue = superimpSF;
    
    
    if((funcValue < 0.0) || (funcValue > 1.0))
    {
-       fprintf(stderr, "ERROR: ReddSuperImpFunc >>>> funcValue is not between 0 an 1\n");
+       fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> funcValue is not between 0 an 1\n");
        fflush(0);
        exit(1);
    }
@@ -181,7 +181,7 @@
 
 - (void) drop
 {
-   //fprintf(stdout, "ReddSuperImpFunc >>>> drop >>>> BEGIN\n");
+   //fprintf(stdout, "ReddSuperimpFunc >>>> drop >>>> BEGIN\n");
    //fflush(0);
 
    if(uniformDist)
@@ -190,7 +190,7 @@
    }
    [super drop];
 
-   //fprintf(stdout, "ReddSuperImpFunc >>>> drop >>>> END\n");
+   //fprintf(stdout, "ReddSuperimpFunc >>>> drop >>>> END\n");
    //fflush(0);
 }
 

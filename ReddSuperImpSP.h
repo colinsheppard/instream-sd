@@ -8,10 +8,10 @@
 // 
 
 #import "SurvProb.h"
-#import "ReddSuperImpFunc.h"
+#import "ReddSuperimpFunc.h"
 
 
-@interface ReddSuperImpSP : SurvProb
+@interface ReddSuperimpSP : SurvProb
 {
 
 
@@ -21,7 +21,7 @@
 - createEnd;
 
 
--  createReddSuperImpFuncWithMap: (id <Map>) aMap
+-  createReddSuperimpFuncWithMap: (id <Map>) aMap
                  withInputMethod: (SEL) anInputMethod;
 
 

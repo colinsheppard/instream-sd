@@ -4126,7 +4126,7 @@ char **speciesStocking;
                                                   "Scouring",
                                                   "LowTemp",
                                                   "HiTemp",
-                                                  "SuperImp",
+                                                  "Superimp",
                                                   "FryEmerged"); 
 
      }
@@ -4153,7 +4153,7 @@ char **speciesStocking;
                                                  "Scouring",
                                                  "LowTemp",
                                                  "HiTemp",
-                                                 "SuperImp",
+                                                 "Superimp",
                                                  "FryEmerged"); 
 
      }

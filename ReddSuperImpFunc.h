@@ -11,7 +11,7 @@
 
 #import "Func.h"
 
-@interface ReddSuperImpFunc : Func
+@interface ReddSuperimpFunc : Func
 {
     id uniformDist;
     double uniformRanNum;

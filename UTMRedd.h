@@ -33,7 +33,7 @@
   // generic Redd properties.
   //
 
-  int superImpCount;
+  int superimpCount;
 
   int    numberOfEggs;
   int    initialNumberOfEggs;
@@ -47,7 +47,7 @@
   int numberOfEggsLostToScouring;
   int numberOfEggsLostToLowTemp;
   int numberOfEggsLostToHiTemp;
-  int numberOfEggsLostToSuperImp;
+  int numberOfEggsLostToSuperimp;
 
   id <NormalDist> reddNormalDist;
 
@@ -121,7 +121,7 @@
                    : (int) eggsLostToScouring
                    : (int) eggsLostToLowTemp
                    : (int) eggsLostToHiTemp
-                   : (int) eggsLostToSuperImp
+                   : (int) eggsLostToSuperimp
                    : (time_t) aModelTime_t;
 
 //

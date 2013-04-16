@@ -8,15 +8,15 @@
 // 
 
 
-#import "ReddSuperImpSP.h"
+#import "ReddSuperimpSP.h"
 
 
-@implementation ReddSuperImpSP
+@implementation ReddSuperimpSP
 
 + createBegin: aZone
 {
 
-  ReddSuperImpSP* aCustomProb = [super createBegin: aZone];
+  ReddSuperimpSP* aCustomProb = [super createBegin: aZone];
 
   aCustomProb->funcList = [List create: aCustomProb->probZone];
 
@@ -32,17 +32,17 @@
 }
 
 
-- createReddSuperImpFuncWithMap: (id <Map>) aMap
+- createReddSuperimpFuncWithMap: (id <Map>) aMap
                 withInputMethod: (SEL) anInputMethod
 {
 
-  ReddSuperImpFunc* superImpFunc = [ReddSuperImpFunc createBegin: probZone
+  ReddSuperimpFunc* superimpFunc = [ReddSuperimpFunc createBegin: probZone
                                                    setInputMethod: anInputMethod];
 
 
-  [funcList addLast: superImpFunc];
+  [funcList addLast: superimpFunc];
 
-  return superImpFunc;
+  return superimpFunc;
 
 }
 
@@ -56,7 +56,7 @@
 
     if(aFunc == nil)
     {
-       fprintf(stderr, "ERROR: ReddSuperImpSP >>>> getSurvivalProb >>>> aFunc is nil\n");
+       fprintf(stderr, "ERROR: ReddSuperimpSP >>>> getSurvivalProb >>>> aFunc is nil\n");
        fflush(0);
        exit(1);
     }
@@ -72,12 +72,12 @@
 
 - (void) drop
 {
-    //fprintf(stdout, "ReddSuperImp >>>> drop >>>> BEGIN\n");
+    //fprintf(stdout, "ReddSuperimp >>>> drop >>>> BEGIN\n");
     //fflush(0);
 
     [super drop];
 
-    //fprintf(stdout, "ReddSuperImp >>>> drop >>>> END\n");
+    //fprintf(stdout, "ReddSuperimp >>>> drop >>>> END\n");
     //fflush(0);
 }
 

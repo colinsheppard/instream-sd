@@ -27,8 +27,8 @@ OBJECTS=GraphDataObject.o \
 	ConstantFunc.o \
 	BooleanSwitchFunc.o \
 \
-	ReddSuperImpSP.o \
-	ReddSuperImpFunc.o \
+	ReddSuperimpSP.o \
+	ReddSuperimpFunc.o \
 \
 	ReddScourSP.o \
 	ReddScourFunc.o \
@@ -97,8 +97,8 @@ LogisticFunc.o : LogisticFunc.[hm]
 ConstantFunc.o : ConstantFunc.[hm]
 BooleanSwitchFunc.o : BooleanSwitchFunc.[hm]
 #
-ReddSuperImpSP.o : ReddSuperImpSP.[hm] SurvProb.h
-ReddSuperImpFunc.o : ReddSuperImpFunc.[hm] Func.h
+ReddSuperimpSP.o : ReddSuperimpSP.[hm] SurvProb.h
+ReddSuperimpFunc.o : ReddSuperimpFunc.[hm] Func.h
 #
 ReddScourSP.o : ReddScourSP.[hm] SurvProb.h
 ReddScourFunc.o : ReddScourFunc.[hm] Func.h

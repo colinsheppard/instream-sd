@@ -74,7 +74,7 @@
   numberOfEggsLostToScouring = 0;
   numberOfEggsLostToLowTemp = 0;
   numberOfEggsLostToHiTemp = 0;
-  numberOfEggsLostToSuperImp = 0;
+  numberOfEggsLostToSuperimp = 0;
 
 
   
@@ -296,13 +296,13 @@
    double eggsLostToScouring = 0.0;
    double eggsLostToLowTemp = 0.0;
    double eggsLostToHiTemp = 0.0;
-   double eggsLostToSuperImp = 0.0;
+   double eggsLostToSuperimp = 0.0;
 
    double dewater = -LARGEINT;
    //double scour = -LARGEINT;
    double loTemp = -LARGEINT;
    double hiTemp = -LARGEINT;
-   double superImp = -LARGEINT;
+   double superimp = -LARGEINT;
 
    //fprintf(stdout, "UTMRedd >>>> survive >>>> BEGIN\n");
    //fflush(0);
@@ -332,7 +332,7 @@
             //else if (scour == -LARGEINT) scour = [aProb getSurvivalProb];
             else if (loTemp == -LARGEINT) loTemp = [aProb getSurvivalProb];
             else if (hiTemp == -LARGEINT) hiTemp = [aProb getSurvivalProb];
-            else if (superImp == -LARGEINT) superImp = [aProb getSurvivalProb];
+            else if (superimp == -LARGEINT) superimp = [aProb getSurvivalProb];
         }
 
         [lstNdx drop];  
@@ -341,7 +341,7 @@
             //|| (scour == -LARGEINT) 
             || (loTemp == -LARGEINT)
             || (hiTemp == -LARGEINT)
-            || (superImp == -LARGEINT))
+            || (superimp == -LARGEINT))
          {
                fprintf(stderr, "ERROR: Redd >>>> survive probability values not properly set\n");
                fflush(0);
@@ -363,8 +363,8 @@
    eggsLostToHiTemp = (numberOfEggs * (1.0 - hiTemp)) + 0.5;
    numberOfEggs -= (int) eggsLostToHiTemp;
 
-   eggsLostToSuperImp = (numberOfEggs * (1.0 - superImp)) + 0.5;
-   numberOfEggs -= (int) eggsLostToSuperImp;
+   eggsLostToSuperimp = (numberOfEggs * (1.0 - superimp)) + 0.5;
+   numberOfEggs -= (int) eggsLostToSuperimp;
 
    //
    // End code for the survival manager
@@ -374,7 +374,7 @@
    numberOfEggsLostToScouring += (int)eggsLostToScouring;
    numberOfEggsLostToLowTemp += (int)eggsLostToLowTemp;
    numberOfEggsLostToHiTemp += (int)eggsLostToHiTemp;
-   numberOfEggsLostToSuperImp += (int)eggsLostToSuperImp;
+   numberOfEggsLostToSuperimp += (int)eggsLostToSuperimp;
 
   if(printSummaryFlag == YES)
   {
@@ -382,7 +382,7 @@
                              : (int) eggsLostToScouring
                              : (int) eggsLostToLowTemp
                              : (int) eggsLostToHiTemp
-                             : (int) eggsLostToSuperImp
+                             : (int) eggsLostToSuperimp
                              : [(id <Model>)[[fishCell getSpace] getModel] getModelTime] ];
   
    }
@@ -649,7 +649,7 @@
                                                                      "Scouring",
                                                                      "LowTemp",
                                                                      "HiTemp",
-                                                                     "SuperImposition");
+                                                                     "Superimposition");
     
       printNdx = [printList listBegin: [self getZone]];
 
@@ -666,7 +666,7 @@
                                                                   numberOfEggsLostToScouring,
                                                                   numberOfEggsLostToLowTemp,
                                                                   numberOfEggsLostToHiTemp,
-                                                                  numberOfEggsLostToSuperImp);
+                                                                  numberOfEggsLostToSuperimp);
     
       fprintf(printRptPtr,"\n\n%s %p\n","END REPORT for Redd", self);
       fflush(printRptPtr);
@@ -689,7 +689,7 @@
                    : (int) eggsLostToScouring
                    : (int) eggsLostToLowTemp
                    : (int) eggsLostToHiTemp
-                   : (int) eggsLostToSuperImp
+                   : (int) eggsLostToSuperimp
                    : (time_t) aModelTime_t {
 
   if(printSummaryFlag == YES)
@@ -706,7 +706,7 @@
                                             eggsLostToScouring,
                                             eggsLostToLowTemp,
                                             eggsLostToHiTemp,
-                                            eggsLostToSuperImp);
+                                            eggsLostToSuperimp);
 
 
       [printList addLast: (void *) printString];
@@ -758,7 +758,7 @@
                                          "Scouring",
                                          "LowTemp",
                                          "HiTemp",
-                                         "SuperImposition");
+                                         "Superimposition");
 
 
        printNdx = [survPrintList listBegin: [self getZone]];
@@ -808,7 +808,7 @@
        double scour = -LARGEINT;
        double loTemp = -LARGEINT;
        double hiTemp = -LARGEINT;
-       double superImp = -LARGEINT;
+       double superimp = -LARGEINT;
 
        //fprintf(stdout, "UTMRedd >>>> createSurvPrintString >>>> BEGIN\n");
        //fflush(0);
@@ -838,7 +838,7 @@
                  //else if (scour == -LARGEINT) scour = [aProb getSurvivalProb];
                  else if (loTemp == -LARGEINT) loTemp = [aProb getSurvivalProb];
                  else if (hiTemp == -LARGEINT) hiTemp = [aProb getSurvivalProb];
-                 else if (superImp == -LARGEINT) superImp = [aProb getSurvivalProb];
+                 else if (superimp == -LARGEINT) superimp = [aProb getSurvivalProb];
              }
 
              [lstNdx drop];  
@@ -847,7 +847,7 @@
                  //|| (scour == -LARGEINT) 
                  || (loTemp == -LARGEINT)
                  || (hiTemp == -LARGEINT)
-                 || (superImp == -LARGEINT))
+                 || (superimp == -LARGEINT))
               {
                     fprintf(stderr, "ERROR: Redd >>>> survive probability values not properly set\n");
                     fflush(0);
@@ -874,7 +874,7 @@
                                                        scour,
                                                        loTemp,
                                                        hiTemp,
-                                                       superImp);
+                                                       superimp);
        [survPrintList addLast: (void *) printString];
      
        //fprintf(stdout, "UTMRedd >>>> createSurvPrintString >>>> END\n");
@@ -902,7 +902,7 @@
                                            + numberOfEggsLostToScouring
                                            + numberOfEggsLostToLowTemp
                                            + numberOfEggsLostToHiTemp
-                                           + numberOfEggsLostToSuperImp);
+                                           + numberOfEggsLostToSuperimp);
 
   //fprintf(stdout, "UTMRedd >>>> createReddSummaryStr >>>> BEGIN\n");
   //fflush(0);
@@ -927,7 +927,7 @@
                                        numberOfEggsLostToScouring,
                                        numberOfEggsLostToLowTemp,
                                        numberOfEggsLostToHiTemp,
-                                       numberOfEggsLostToSuperImp,
+                                       numberOfEggsLostToSuperimp,
                                        fryEmerged);
 
   //fprintf(stdout, "UTMRedd >>>> createReddSummaryStr >>>> END\n");
