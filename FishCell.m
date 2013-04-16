@@ -1882,6 +1882,33 @@ Boston, MA 02111-1307, USA.
                                   withXValue2: fishParams->mortFishConditionK9
                                   withYValue2: 0.9];
 
+     // Angling 
+      [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Angling"] 
+                        withType: "CustomProb"
+                  withAgentKnows: NO
+                 withIsStarvProb: NO];
+      
+     [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "Angling"] 
+            withInputObjectType: 1
+                 withInputSelector: M(getFishLength)
+                     withXValue1: fishParams->mortFishAngleL1
+                     withYValue1: LOWER_LOGISTIC_DEPENDENT
+                     withXValue2: fishParams->mortFishAngleL9
+                     withYValue2: UPPER_LOGISTIC_DEPENDENT];
+
+// Hooking
+      [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Hooking"] 
+                       withType: "CustomProb"
+                 withAgentKnows: NO
+                withIsStarvProb: NO];
+ 
+     [survMgr setLogisticFuncLimiterTo: 20.0];
+
+     //[survMgr setTestOutputOnWithFileName: "SurvMgrOut.Out"];
+     survMgr = [survMgr createEnd];
+
+
+								  
      [survMgr setLogisticFuncLimiterTo: 20.0];
      //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
      survMgr = [survMgr createEnd];
