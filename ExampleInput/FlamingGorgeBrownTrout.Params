@@ -84,8 +84,6 @@ mortFishAngleL9	20
 mortFishAngleSlotLower	33
 mortFishAngleSlotUpper	51
 mortFishAngleSuccess	0.0015
-mortFishAqPredA1	5.00E-06
-mortFishAqPredA9	5.00E-07
 mortFishAqPredCoverFactor	0.95
 mortFishAqPredD1	25
 mortFishAqPredD9	10
@@ -93,6 +91,8 @@ mortFishAqPredDayMin	0.95
 mortFishAqPredL1	4
 mortFishAqPredL9	8
 mortFishAqPredNightMin	0.9375
+mortFishAqPredP1	5.00E-06
+mortFishAqPredP9	5.00E-07
 mortFishAqPredT1	6
 mortFishAqPredT9	2
 mortFishAqPredU1	5

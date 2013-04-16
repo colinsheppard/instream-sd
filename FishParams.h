@@ -143,12 +143,12 @@ double fishTurbidParamB;
 
 double mortFishAqPredDayMin;
 double mortFishAqPredNightMin;
-double mortFishAqPredA9;
-double mortFishAqPredA1;
 double mortFishAqPredD1;
 double mortFishAqPredD9;
 double mortFishAqPredL1;
 double mortFishAqPredL9;
+double mortFishAqPredP9;
+double mortFishAqPredP1;
 double mortFishAqPredT1;
 double mortFishAqPredT9;
 double mortFishAqPredU1;
