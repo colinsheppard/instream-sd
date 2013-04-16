@@ -1737,20 +1737,19 @@ Boston, MA 02111-1307, USA.
                                withYesValue: fishParams->mortFishVelocityCoverFactor 
                                 withNoValue: 0.0];
 
-     /*
-      [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Stranding"] 
+     
+     [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Stranding"] 
                         withType: "SingleFunctionProb"
                   withAgentKnows: YES
                  withIsStarvProb: NO];
 
       [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "Stranding"] 
                            withInputObjectType: 1
-                             withInputSelector: M(getDepthLengthRatioForCell)
+                             withInputSelector: M(getDepthLengthRatio)
                                    withXValue1: fishParams->mortFishStrandD1
                                    withYValue1: 0.1
                                    withXValue2: fishParams->mortFishStrandD9
                                    withYValue2: 0.9];
-				   */
 
      //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before PoorCondition \n");
      //fflush(0);
