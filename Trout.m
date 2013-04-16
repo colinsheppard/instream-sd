@@ -13,7 +13,7 @@
 #import <math.h>
 #import "globals.h"
 #import "UTMRedd.h"
-#import "UTMTrout.h"
+#import "Trout.h"
 
 
 
@@ -31,7 +31,7 @@
 - addToRemovedList: aFish;
 @end
 
-@implementation UTMTrout
+@implementation Trout
 
 ///////////////////////////////////////////////////////////////
 //
@@ -40,9 +40,9 @@
 /////////////////////////////////////////////////////////////
 + createBegin: aZone 
 {
-  UTMTrout * newTrout;
+  Trout * newTrout;
 
-  //fprintf(stdout, "UTMTrout >>>> createBegin >>>> BEGIN\n");
+  //fprintf(stdout, "Trout >>>> createBegin >>>> BEGIN\n");
   //fflush(0);
 
   newTrout = [super createBegin: aZone];
@@ -81,10 +81,10 @@
 
   newTrout->toggledFishForHabSurvUpdate = nil;
  
-    //fprintf(stdout, "UTMTrout >>>> createBegin >>>> newTrout == %p\n", newTrout);
-    //fprintf(stdout, "UTMTrout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
+    //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
+    //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
     //fflush(0);
-  //fprintf(stdout, "UTMTrout >>>> createBegin >>>> END\n");
+  //fprintf(stdout, "Trout >>>> createBegin >>>> END\n");
   //fflush(0);
 
   return newTrout;
@@ -102,13 +102,13 @@
 
   if (fishParams == nil)
   {
-      fprintf(stderr, "ERROR: UTMTrout >>>> createEnd >>>> fishParams is nil\n");
+      fprintf(stderr, "ERROR: Trout >>>> createEnd >>>> fishParams is nil\n");
       fflush(0);
       exit(1);
   }
   if (troutRandGen == nil)
   {
-      fprintf(stderr, "ERROR: UTMTrout >>>> createEnd >>>> Fish %p doesn't have a troutRandGen.\n", self);
+      fprintf(stderr, "ERROR: Trout >>>> createEnd >>>> Fish %p doesn't have a troutRandGen.\n", self);
       fflush(0);
       exit(1);
   }
@@ -200,7 +200,7 @@
           return fishActivitySymbol;
      }
 
-     fprintf(stderr, "UTMTrout >>>> getFishActivitySymbol >>>> unknown fish activity\n");   
+     fprintf(stderr, "Trout >>>> getFishActivitySymbol >>>> unknown fish activity\n");   
      fflush(0);
      exit(1);
 
@@ -253,9 +253,9 @@
 - (int) getFishActivity
 {
    /*
-    fprintf(stdout, "UTMTrout >>>> getFishActivity >>>> self == %p\n", self);
-    fprintf(stdout, "UTMTrout >>>> getFishActivity >>>> fishActivity == %d\n", fishActivity);
-    fprintf(stdout, "UTMTrout >>>> getFishActivity >>>> deadOrAlive == %s\n", deadOrAlive);
+    fprintf(stdout, "Trout >>>> getFishActivity >>>> self == %p\n", self);
+    fprintf(stdout, "Trout >>>> getFishActivity >>>> fishActivity == %d\n", fishActivity);
+    fprintf(stdout, "Trout >>>> getFishActivity >>>> deadOrAlive == %s\n", deadOrAlive);
     fflush(0);
    */
     return (int) fishActivity;
@@ -992,7 +992,7 @@
 
   id spawnCell;
 
-  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> BEGIN\n");
+  //fprintf(stdout, "Trout >>>> Spawn >>>> BEGIN\n");
   //fflush(0);
   
 
@@ -1026,12 +1026,12 @@
       spawnCell = fishCell;
   }
 
-  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> before add fish\n");
+  //fprintf(stdout, "Trout >>>> Spawn >>>> before add fish\n");
   //fflush(0);
   [spawnCell addFish: self]; 
   fishCell = spawnCell;
 
-  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> before create redd in cell\n");
+  //fprintf(stdout, "Trout >>>> Spawn >>>> before create redd in cell\n");
   //fflush(0);
   [self createAReddInCell: spawnCell];
 
@@ -1039,7 +1039,7 @@
 
   spawnedThisSeason = YES;
 
-  //fprintf(stdout, "UTMTrout >>>> Spawn >>>> END\n");
+  //fprintf(stdout, "Trout >>>> Spawn >>>> END\n");
   //fflush(0);
 
   return self;
@@ -1086,7 +1086,7 @@
 
   if(currentTemp == -LARGEINT)
   {
-       fprintf(stderr, "ERROR: UTMTrout >>>> readyToSpawn >>>> currentTemp = %f\n", currentTemp);
+       fprintf(stderr, "ERROR: Trout >>>> readyToSpawn >>>> currentTemp = %f\n", currentTemp);
        fflush(0);
        exit(1);
   }
@@ -1224,7 +1224,7 @@
   double bestSpawnQuality = 0.0;
   double spawnQuality = -LARGEINT;
 
-  //fprintf(stdout, "UTMTrout >>>> findCellForNewRedd >>>> BEGIN\n");
+  //fprintf(stdout, "Trout >>>> findCellForNewRedd >>>> BEGIN\n");
   //fflush(0);
 
   [fishCell getNeighborsWithin: maxMoveDistance
@@ -1258,7 +1258,7 @@
 
   [potentialCells drop];
 
-  //fprintf(stdout, "UTMTrout >>>> findCellForNewRedd >>>> END\n");
+  //fprintf(stdout, "Trout >>>> findCellForNewRedd >>>> END\n");
   //fflush(0);
 
   //
@@ -1280,7 +1280,7 @@
 {
   UTMRedd*  newRedd;
 
-  //fprintf(stderr, "UTMTrout >>>> createAReddInCell >>>> BEGIN\n");
+  //fprintf(stderr, "Trout >>>> createAReddInCell >>>> BEGIN\n");
   //fflush(0);
 
   newRedd = [UTMRedd createBegin: [model getZone]];
@@ -1303,7 +1303,7 @@
   [aCell addRedd: newRedd];
   [model addRedd: newRedd];
 
-  //fprintf(stderr, "UTMTrout >>>> createAReddInCell >>>> END\n");
+  //fprintf(stderr, "Trout >>>> createAReddInCell >>>> END\n");
   //fflush(0);
 
   return self;
@@ -1319,7 +1319,7 @@
 {
    double spawnQuality;
 
-   //fprintf(stdout, "UTMTrout >>>> getSpawnQuality >>>> BEGIN\n");
+   //fprintf(stdout, "Trout >>>> getSpawnQuality >>>> BEGIN\n");
    //fflush(0);
 
    spawnQuality = [self getSpawnDepthSuitFor: [aCell getPolyCellDepth]]
@@ -1327,7 +1327,7 @@
                 * [aCell getPolyCellArea]
                 * [aCell getCellFracSpawn]; 
 
-   //fprintf(stdout, "UTMTrout >>>> getSpawnQuality >>>> END\n");
+   //fprintf(stdout, "Trout >>>> getSpawnQuality >>>> END\n");
    //fflush(0);
 
    return spawnQuality;
@@ -1392,7 +1392,7 @@
 {
     double sds=LARGEINT;
 
-    //fprintf(stdout, "UTMTrout >>>> getSpawnDepthSuitFor >>>> BEGIN\n");
+    //fprintf(stdout, "Trout >>>> getSpawnDepthSuitFor >>>> BEGIN\n");
     //fflush(0);
 
     if(aDepth >= fishParams->fishSpawnDSuitD5)
@@ -1437,7 +1437,7 @@
     }
 
 
-    //fprintf(stdout, "UTMTrout >>>> getSpawnDepthSuitFor >>>> END\n");
+    //fprintf(stdout, "Trout >>>> getSpawnDepthSuitFor >>>> END\n");
     //fflush(0);
 
     return sds;
@@ -1455,7 +1455,7 @@
 {
     double svs=LARGEINT;
 
-    //fprintf(stdout, "UTMTrout >>>> getSpawnVelSuitFor >>>> BEGIN\n");
+    //fprintf(stdout, "Trout >>>> getSpawnVelSuitFor >>>> BEGIN\n");
     //fflush(0);
 
     if (aVel >= fishParams->fishSpawnVSuitV6 )
@@ -1507,7 +1507,7 @@
                                andQ: fishParams->fishSpawnVSuitV6];
     }
     
-    //fprintf(stdout, "UTMTrout >>>> getSpawnVelSuitFor >>>> END\n");
+    //fprintf(stdout, "Trout >>>> getSpawnVelSuitFor >>>> END\n");
     //fflush(0);
 
     return svs;
@@ -1541,7 +1541,7 @@
 //////////////////////////////////////////////////////////////////////
 - move
 {
-	//fprintf(stdout, "UTMTrout >>>> move >>>> BEGIN\n");
+	//fprintf(stdout, "Trout >>>> move >>>> BEGIN\n");
 	//fflush(0);
   if(causeOfDeath) 
   {
@@ -1549,11 +1549,11 @@
   }
 
 
-  //fprintf(stdout, "UTMTrout >>>> move >>>> before calcDist\n");
+  //fprintf(stdout, "Trout >>>> move >>>> before calcDist\n");
   //fflush(0);
   [self calcMaxMoveDistance];
 
-  //fprintf(stdout, "UTMTrout >>>> move >>>> before get Time Stuff\n");
+  //fprintf(stdout, "Trout >>>> move >>>> before get Time Stuff\n");
   //fflush(0);
   numberOfDaylightHours = [fishCell getNumberOfDaylightHours];
   numberOfNightHours = [fishCell getNumberOfNightHours];
@@ -1602,7 +1602,7 @@
 
   [self moveToMaximizeExpectedMaturity]; 
 
-  //fprintf(stdout, "UTMTrout >>>> move >>>> END\n");
+  //fprintf(stdout, "Trout >>>> move >>>> END\n");
   //fflush(0);
   return self;
 }
@@ -1647,7 +1647,7 @@
   {
       if((outPtr = fopen("LoHiCellMove.rpt", "w")) == NULL)
       {
-          fprintf(stderr, "ERROR: UTMTrout >>>> moveToMaximizeExpectedMaturity >>>> opening MoveToOutput.Test\n");
+          fprintf(stderr, "ERROR: Trout >>>> moveToMaximizeExpectedMaturity >>>> opening MoveToOutput.Test\n");
           exit(1);
       }
 
@@ -2012,7 +2012,7 @@
 
          break;
 
-        default: fprintf(stderr, "ERROR: UTMTrout >>>> moveToBestDest >>>> Fish has no feeding strategy\n");
+        default: fprintf(stderr, "ERROR: Trout >>>> moveToBestDest >>>> Fish has no feeding strategy\n");
                  fflush(0);
                  exit(1);
                  break;
@@ -2456,7 +2456,7 @@
 
   totalFoodConsumptionThisStep = 0.0;
 
-  //fprintf(stdout, "UTMTrout >>>> grow >>>> BEGIN\n");
+  //fprintf(stdout, "Trout >>>> grow >>>> BEGIN\n");
   //fflush(0);
   if(causeOfDeath) 
   {
@@ -2468,7 +2468,7 @@
   {
       if(fishParams->fishMovePenaltyTime < 0.0)
       {
-           fprintf(stderr, "ERROR: UTMTrout >>>> grow >>>> fishMovePenaltyTime is less than zero\n");
+           fprintf(stderr, "ERROR: Trout >>>> grow >>>> fishMovePenaltyTime is less than zero\n");
            fflush(stderr);
            exit(1);
       }
@@ -2525,7 +2525,7 @@
   [self updateMaxSwimSpeed];
 
   
-  //fprintf(stdout, "UTMTrout >>>> grow >>>> END\n");
+  //fprintf(stdout, "Trout >>>> grow >>>> END\n");
   //fflush(0);
 
 
@@ -2541,7 +2541,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 - die 
 {
-    //fprintf(stdout, "UTMTrout >>>> die >>>> BEGIN\n");
+    //fprintf(stdout, "Trout >>>> die >>>> BEGIN\n");
     //fflush(0);
 
     //
@@ -2549,7 +2549,7 @@
     //
     if(numHoursSinceLastStep < 1)
     {
-         fprintf(stderr, "ERROR: UTMTrout >>>> die >>>> numHoursSinceLastStep is < 1\n");
+         fprintf(stderr, "ERROR: Trout >>>> die >>>> numHoursSinceLastStep is < 1\n");
          fflush(0);
          exit(1);
     }
@@ -2607,7 +2607,7 @@
      
        while(([lstNdx getLoc] != End) && ((aProb = [lstNdx next]) != nil))
        {
-           //fprintf(stdout, "UTMTrout >>>> die >>>> probName = %s\n", [aProb getName]);
+           //fprintf(stdout, "Trout >>>> die >>>> probName = %s\n", [aProb getName]);
            //fflush(0);
 
            if(survCount < 7)
@@ -2773,7 +2773,7 @@
 // compare
 // Comment: Needed by QSort in TroutModelSwarm method: buildTotalTroutPopList
 ///////////////////////////////////////////////////////////////////////////////
-- (int) compare: (UTMTrout *) aFish 
+- (int) compare: (Trout *) aFish 
 {
   double otherFishDominance;
   otherFishDominance = [aFish getFishDominance];
@@ -2832,14 +2832,14 @@
       fishActivity = HIDE;
       if([aCell getIsHidingCoverAvailable]) hidingCover = YES;
       swimSpdVelocityRatio = [aCell getPolyCellVelocity]/maxSwimSpeed;
-       // fprintf(stdout, "UTMTrout >>>> HIDING >>>> ratio = %f maxSwimSpeed = %f\n", swimSpdVelocityRatio,maxSwimSpeed);
+       // fprintf(stdout, "Trout >>>> HIDING >>>> ratio = %f maxSwimSpeed = %f\n", swimSpdVelocityRatio,maxSwimSpeed);
        // fflush(0);
   }
   else 
   {
       fishActivity = FEED;
       swimSpdVelocityRatio = cellSwimSpeed/maxSwimSpeed;
-       // fprintf(stdout, "UTMTrout >>>> FEEDING >>>> ratio = %f\n", swimSpdVelocityRatio);
+       // fprintf(stdout, "Trout >>>> FEEDING >>>> ratio = %f\n", swimSpdVelocityRatio);
        // fflush(0);
  
   }
@@ -2870,13 +2870,13 @@
 
   if(x1 == x2)
   {
-      fprintf(stderr, "UTMTrout >>>> calcStarvPaAndPb... >>>> the independent variables mortFishConditionK1 and mortFishConditionK9 are equal\n");
+      fprintf(stderr, "Trout >>>> calcStarvPaAndPb... >>>> the independent variables mortFishConditionK1 and mortFishConditionK9 are equal\n");
       fflush(0);
       exit(1);
   }
   if((y1 == 1.0) || (y2 == 1.0))
   {
-      fprintf(stderr, "UTMTrout >>>> calcStarvPaAndPb... >>>> the dependent variables LOWER_LOGISTIC_DEPENDENT or LOWER_LOGISTIC_DEPENDENT equal 1.0\n");
+      fprintf(stderr, "Trout >>>> calcStarvPaAndPb... >>>> the dependent variables LOWER_LOGISTIC_DEPENDENT or LOWER_LOGISTIC_DEPENDENT equal 1.0\n");
       fflush(0);
       exit(1);
   }
@@ -3183,7 +3183,7 @@
    fCTF6 = fishParams->fishCmaxTempF6;
    fCTF7 = fishParams->fishCmaxTempF7;
 
-   //fprintf(stdout, "UTMTrout >>>> calcCmaxTempFunction >>>> aTemperature = %f\n", aTemperature);
+   //fprintf(stdout, "Trout >>>> calcCmaxTempFunction >>>> aTemperature = %f\n", aTemperature);
    //fflush(0);
 
 
@@ -3558,7 +3558,7 @@
    }
    else
    {
-        fprintf(stderr, "ERROR: UTMTrout >>>> calcNetEnergyAt: withStrategy: incorrect feed Strategy\n");
+        fprintf(stderr, "ERROR: Trout >>>> calcNetEnergyAt: withStrategy: incorrect feed Strategy\n");
         fflush(0);
         exit(1);
    }
@@ -3832,7 +3832,7 @@ return self;
     }
     else 
     {
-        fprintf(stderr, "ERROR: UTMTrout >>>>> Cannot open %s for writing\n", mvDistanceRptFName);
+        fprintf(stderr, "ERROR: Trout >>>>> Cannot open %s for writing\n", mvDistanceRptFName);
         fflush(0);
         exit(1);
     }
@@ -3945,7 +3945,7 @@ return self;
      {
 	 if((survReportPtr = fopen(survivalReport, "w+")) == NULL) 
          {
-	    fprintf(stderr, "ERROR: UTMTrout >>>> printSurvivalReport >>>> Cannot open %s for writing\n",survivalReport);
+	    fprintf(stderr, "ERROR: Trout >>>> printSurvivalReport >>>> Cannot open %s for writing\n",survivalReport);
             fflush(0);
             exit(1);
 	 }
@@ -4011,7 +4011,7 @@ return self;
      {
 	 if((survReportPtr = fopen(survivalReport, "a")) == NULL) 
          {
-	    fprintf(stderr, "ERROR: UTMTrout >>>> printSurvivalReport >>>> Cannot open %s for writing\n",survivalReport);
+	    fprintf(stderr, "ERROR: Trout >>>> printSurvivalReport >>>> Cannot open %s for writing\n",survivalReport);
             fflush(0);
             exit(1);
 	 }
@@ -4181,7 +4181,7 @@ return self;
   {
      if((spawnReportPtr = fopen(readyToSpawnFile,"w+")) == NULL)
      {
-         fprintf(stderr, "ERROR: UTMTrout >>>> Cannot open %s for writing",readyToSpawnFile);
+         fprintf(stderr, "ERROR: Trout >>>> Cannot open %s for writing",readyToSpawnFile);
          fflush(0);
          exit(1);
      }

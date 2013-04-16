@@ -20,7 +20,7 @@
 #import "TroutModelSwarm.h"
 #import "globals.h"
 
-@interface UTMTroutObserverSwarm: Swarm
+@interface TroutObserverSwarm: Swarm
 {
   id <ProbeMap> probeMap;
   BOOL finished;

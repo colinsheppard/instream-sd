@@ -14,7 +14,7 @@
 #import <string.h>
 #import <simtools.h>
 #import <random.h>
-#import "UTMTroutObserverSwarm.h"
+#import "TroutObserverSwarm.h"
 #import "FishParams.h"
 #import "FishCell.h"
 #import "TroutModelSwarm.h"
@@ -2054,7 +2054,7 @@ char **speciesStocking;
 // addAFish
 //
 ////////////////////////////////////////////////////////////
-- addAFish: (UTMTrout *) aTrout 
+- addAFish: (Trout *) aTrout 
 {
   numFish++;
   [liveFish addLast: aTrout];
@@ -2078,7 +2078,7 @@ char **speciesStocking;
 // addToKilledList
 //
 ///////////////////////////////////////
-- addToKilledList: (UTMTrout *) aFish 
+- addToKilledList: (Trout *) aFish 
 {
   [deadFish addLast: aFish];
   [killedFish addLast: aFish];
@@ -2567,7 +2567,7 @@ char **speciesStocking;
 // createNewFishWithSpeciesIndex
 //
 /////////////////////////////////////////////////////
-- (UTMTrout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
+- (Trout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
                                   Species: (id <Symbol>) species
                                       Age: (int) age
                                    Length: (double) fishLength 
@@ -2594,9 +2594,9 @@ char **speciesStocking;
   // set properties of the new Trout
   //
 
-  ((UTMTrout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
+  ((Trout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
 
-  //((UTMTrout *)newFish)->randGen = randGen;
+  //((Trout *)newFish)->randGen = randGen;
 
 
   [newFish setSpecies: species];
@@ -2802,7 +2802,7 @@ char **speciesStocking;
 // createNewFishWithFishParams
 //
 /////////////////////////////////////////////////////
-- (UTMTrout *) createNewFishWithFishParams: (FishParams *) aFishParams  
+- (Trout *) createNewFishWithFishParams: (FishParams *) aFishParams  
                          withTroutClass: (Class) aTroutClass
                                     Age: (int) age
                                  Length: (float) fishLength 
@@ -2811,7 +2811,7 @@ char **speciesStocking;
    //
    // The newFish color is currently being set in the observer swarm
    //
-   UTMTrout* newFish = (UTMTrout *) nil;
+   Trout* newFish = (Trout *) nil;
 
    //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
    //fflush(0);
@@ -2821,7 +2821,7 @@ char **speciesStocking;
 
    // set properties of the new Trout
 
-  ((UTMTrout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
+  ((Trout *)newFish)->sex = ([coinFlip getCoinToss] == YES ?  Female : Male);
 
 
   [newFish setFishParams: aFishParams];

@@ -38,7 +38,7 @@ Boston, MA 02111-1307, USA.
 
 
 #import "globals.h"
-#import "UTMTrout.h"
+#import "Trout.h"
 #import "UTMRedd.h"
 #import "FishCell.h"
 #import "HabitatSpace.h"
@@ -2110,7 +2110,7 @@ return self;
 - probeFishAtX: (int) probedX Y: (int) probedY 
 {
   FishCell*  fishCell = nil;
-  UTMTrout* fish = nil;
+  Trout* fish = nil;
   UTMRedd* redd = nil;
   id <ListIndex> fishNdx = nil;
   id <ListIndex> reddNdx = nil;

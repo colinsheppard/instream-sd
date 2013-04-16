@@ -329,7 +329,7 @@ double checkParam;
 
 // Stuff from instream 5.0
 - buildFishClass;
-- (UTMTrout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
+- (Trout *) createNewFishWithSpeciesIndex: (int) speciesNdx  
                                   Species: (id <Symbol>) species
                                       Age: (int) age
                                    Length: (double) fishLength;
@@ -417,13 +417,13 @@ double checkParam;
 
 
 
-- addAFish: (UTMTrout *) aTrout;
+- addAFish: (Trout *) aTrout;
 - (id <List>) getLiveFishList;
 - (id <List>) getDeadTroutList;
 - removeKilledFishFromLiveFishList;
 
 
-- addToKilledList: (UTMTrout *) aFish;
+- addToKilledList: (Trout *) aFish;
 - addToEmptyReddList: aRedd;
 - processEmptyReddList;
 
@@ -471,7 +471,7 @@ double checkParam;
 
 //- getCountOfTotPopList;
 
-- (UTMTrout *) createNewFishWithFishParams: (FishParams *) aFishParams  
+- (Trout *) createNewFishWithFishParams: (FishParams *) aFishParams  
                          withTroutClass: (Class) aTroutClass
                                     Age: (int) age
                                  Length: (float) fishLength;

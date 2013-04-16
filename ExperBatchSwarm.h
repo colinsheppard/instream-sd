@@ -14,7 +14,7 @@
 #import <analysis.h>
 #import <activity.h>
 #import <collections.h>
-#import "UTMTroutBatchSwarm.h"
+#import "TroutBatchSwarm.h"
 
 // First, the interface for the ParameterManager
 
@@ -48,7 +48,7 @@ id <Symbol> NONE;
   id experSchedule;
   id testSchedule;
 
-  UTMTroutBatchSwarm* subSwarm;
+  TroutBatchSwarm* subSwarm;
 
   id * modelSwarm;
   id <List> experClassList;

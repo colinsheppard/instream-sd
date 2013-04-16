@@ -30,7 +30,7 @@
 #include "FeedStrategy.h"
 
 
-@interface UTMTrout: SwarmObject
+@interface Trout: SwarmObject
 {
 
   id model;
@@ -452,7 +452,7 @@ id toggledFishForHabSurvUpdate;
 - (double) getPiscivorousFishDensity; // Pass through to the cell
 
 
-- (int) compare: (UTMTrout *) aFish; //needed for the QSort in TroutModelSwarm
+- (int) compare: (Trout *) aFish; //needed for the QSort in TroutModelSwarm
 
 //FISH FEEDING AND ENERGETICS METHODS
 

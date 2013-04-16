@@ -12,7 +12,7 @@ OBJECTS=GraphDataObject.o \
 	TimeManager.o \
 \
 	ExperBatchSwarm.o \
-	UTMTroutBatchSwarm.o \
+	TroutBatchSwarm.o \
 \
 	ZoneAllocMapper.o \
 \
@@ -46,7 +46,7 @@ OBJECTS=GraphDataObject.o \
 	BreakoutVarProbe.o \
 	BreakoutMessageProbe.o \
 \
-	UTMTroutObserverSwarm.o \
+	TroutObserverSwarm.o \
 	TroutModelSwarm.o \
         HabitatManager.o \
         HabitatSetup.o \
@@ -55,7 +55,7 @@ OBJECTS=GraphDataObject.o \
 	PolyCell.o \
 	PolyPoint.o \
 	FishCell.o \
-	UTMTrout.o \
+	Trout.o \
 	Rainbow.o \
 	Brown.o \
 	UTMRedd.o \
@@ -82,7 +82,7 @@ ExperSwarm.o: ExperSwarm.[hm] SearchElement.h ScenarioIterator.h globals.h
 TimeManager.o : TimeManager.[hm]
 #
 ExperBatchSwarm.o : ExperBatchSwarm.[hm]
-UTMTroutBatchSwarm.o : UTMTroutBatchSwarm.[hm]
+TroutBatchSwarm.o : TroutBatchSwarm.[hm]
 #
 ZoneAllocMapper.o : ZoneAllocMapper.[hm]
 #
@@ -120,7 +120,7 @@ PolyInputData.o : PolyInputData.[hm]
 PolyCell.o : PolyCell.[hm]
 PolyPoint.o : PolyCell.[hm]
 FishCell.o : FishCell.[hm]
-UTMTrout.o : UTMTrout.[hm]
+Trout.o : Trout.[hm]
 Rainbow.o : Rainbow.[hm]
 Brown.o : Brown.[hm]
 UTMRedd.o : UTMRedd.[hm]
@@ -128,7 +128,7 @@ UTMInterpolatorFactory.o : UTMInterpolatorFactory.[hm]
 InterpolationTable.o : InterpolationTable.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
-UTMTroutObserverSwarm.o  : UTMTroutObserverSwarm.[hm]
+TroutObserverSwarm.o  : TroutObserverSwarm.[hm]
 TroutModelSwarm.o : TroutModelSwarm.[hm]
 HabitatManager.o : HabitatManager.[hm]
 HabitatSetup.o : HabitatSetup.[hm]

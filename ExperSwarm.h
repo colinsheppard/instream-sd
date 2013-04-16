@@ -15,7 +15,7 @@
 #import <analysis.h>
 #import <analysis/EZGraph.h>
 
-#import "UTMTroutObserverSwarm.h"
+#import "TroutObserverSwarm.h"
 
 // First, the interface for the ParameterManager
 
@@ -56,7 +56,7 @@ id <Symbol> NONE;
   id experSchedule;
   id testSchedule;
 
-  UTMTroutObserverSwarm* subSwarm;
+  TroutObserverSwarm* subSwarm;
   id <ActivityControl> subSwarmControl;
 
   id * modelSwarm;

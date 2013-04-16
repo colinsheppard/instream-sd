@@ -20,7 +20,7 @@
 #import "TroutModelSwarm.h"
 #import "globals.h"
 
-@interface UTMTroutBatchSwarm: Swarm
+@interface TroutBatchSwarm: Swarm
 {
   char* modelSetupFile;
 

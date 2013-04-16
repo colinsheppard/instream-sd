@@ -8,8 +8,8 @@
 // 
 
 
-#import "UTMTrout.h"
-@interface Brown : UTMTrout 
+#import "Trout.h"
+@interface Brown : Trout 
 {
 
 }

@@ -650,7 +650,7 @@
   id <List> zoneList=nil;
   id <List> instanceNamesUsed = [List create: scratchZone];
 
-  subSwarm = [UTMTroutObserverSwarm create: self];
+  subSwarm = [TroutObserverSwarm create: self];
 
   [ObjectLoader load: subSwarm fromFileNamed: "Observer.Setup"];
 

@@ -8,7 +8,7 @@
 // 
 
 #import "Angling.h"
-#import "UTMTrout.h"
+#import "Trout.h"
 #import "FishCell.h"
 #import "TroutModelSwarm.h"
 
@@ -69,7 +69,7 @@
     double captureRate;
     double anglePressure;
 
-    UTMTrout* aTrout;
+    Trout* aTrout;
     FishParams* fishParams = (FishParams *) nil;
     FishCell* habitatObj;
     unsigned int timesHooked = 0;
@@ -146,7 +146,7 @@
    
         if(firstTime == YES)
         {
-            fprintf(anglingFP,"%-20s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s\n", "AnglingSurvProb", "FishCell", "UTMTrout", "CurrentPhase", "FishLength", "AnglePressure", "TimeInterval", "CaptureRate", "TimesHooked", "SurvProb");
+            fprintf(anglingFP,"%-20s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s\n", "AnglingSurvProb", "FishCell", "Trout", "CurrentPhase", "FishLength", "AnglePressure", "TimeInterval", "CaptureRate", "TimesHooked", "SurvProb");
             fflush(anglingFP);
             firstTime = NO;
         }

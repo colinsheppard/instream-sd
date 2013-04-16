@@ -661,7 +661,7 @@
   fprintf(stdout, "ExperBatchSwarm >>>> setupModel >>>> BEGIN\n");
   fflush(0);
 
-  subSwarm = [UTMTroutBatchSwarm create: experZone];
+  subSwarm = [TroutBatchSwarm create: experZone];
 
   [ObjectLoader load: subSwarm fromFileNamed: "Observer.Setup"];
 

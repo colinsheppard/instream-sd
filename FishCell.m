@@ -28,7 +28,7 @@ Boston, MA 02111-1307, USA.
 
 
 #import "HabitatSpace.h"
-#import "UTMTrout.h"
+#import "Trout.h"
 #import "TroutModelSwarm.h"
 #import "UTMRedd.h"
 #import "BreakoutReporter.h"
@@ -301,7 +301,7 @@ Boston, MA 02111-1307, USA.
        counter = 0.0;
        id <ListIndex> ndx;
        ndx = [fishIContain listBegin: scratchZone];
-       UTMTrout* fish = nil;
+       Trout* fish = nil;
 
        while(([ndx getLoc] != End) && ((fish = [ndx next]) != nil))
        {    

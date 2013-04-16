@@ -11,7 +11,7 @@
 
 
 #include <math.h>
-#import  "UTMTrout.h"
+#import  "Trout.h"
 #import "UTMRedd.h"
 
 @protocol Model
@@ -19,12 +19,12 @@
 - createANewFishFrom: aRedd;
 - addToEmptyReddList: aRedd;
 
-- (UTMTrout *) createNewFishWithFishParams: (FishParams *) aFishParams  
+- (Trout *) createNewFishWithFishParams: (FishParams *) aFishParams  
                          withTroutClass: (Class) aTroutClass
                                     Age: (int) age
                                  Length: (float) fishLength;
 
-- addAFish: (UTMTrout *) aTrout;
+- addAFish: (Trout *) aTrout;
 
 - (int) getScenario;
 - (int) getReplicate;

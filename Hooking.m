@@ -9,7 +9,7 @@
 
 
 #import "Hooking.h"
-#import "UTMTrout.h"
+#import "Trout.h"
 #import "FishParams.h"
 #import <math.h>
 
@@ -36,7 +36,7 @@
 - (double) getSurvivalProb
 {
 
-    UTMTrout* aTrout;
+    Trout* aTrout;
     unsigned int timesHooked = 0;
     int speciesNdx;
     double survivalProb = 1.0;

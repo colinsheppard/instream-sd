@@ -9,8 +9,8 @@
 
 
 
-#import "UTMTrout.h"
-@interface Rainbow : UTMTrout 
+#import "Trout.h"
+@interface Rainbow : Trout 
 {
 
 

@@ -14,9 +14,9 @@
 #import "ExperSwarm.h"
 #import "TroutModelSwarm.h"
 #import "HabitatSpace.h"
-#import "UTMTroutObserverSwarm.h"
+#import "TroutObserverSwarm.h"
 
-@implementation UTMTroutObserverSwarm
+@implementation TroutObserverSwarm
 //////////////////////////////////////////////
 //
 // create
@@ -24,7 +24,7 @@
 //////////////////////////////////////////
 + create: aZone
 {
-  UTMTroutObserverSwarm* obj=nil;
+  TroutObserverSwarm* obj=nil;
 
   obj = [super create: aZone];
 
@@ -183,7 +183,7 @@
   id speciesClass;
 
   probeMap = [CustomProbeMap create: [self getZone] 
-                           forClass: [UTMTrout class]
+                           forClass: [Trout class]
                     withIdentifiers: "age",
                                      "fishLength",
                                      "fishWeight",
@@ -303,7 +303,7 @@
 {
   int ndx;
 
-  fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
+  fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> BEGIN\n");
   fflush(0);
 
   if((rasterResolutionX <= 0) || (rasterResolutionY <= 0))
@@ -333,7 +333,7 @@
 
   //utmColormap = [Colormap create: obsZone];
 
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before velocity\n");
+  //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> before velocity\n");
   //fflush(0);
 
   {
@@ -343,7 +343,7 @@
 
      if(maxShadeVelocity <= 0.0)
      {
-         fprintf(stderr, "ERROR: UTMTroutObserverSwarm >>>> maxShadeVelocity is <= 0.0 >>>> check Observer.Setup\n");
+         fprintf(stderr, "ERROR: TroutObserverSwarm >>>> maxShadeVelocity is <= 0.0 >>>> check Observer.Setup\n");
          fflush(0);
          exit(1);
      }
@@ -363,7 +363,7 @@
 
      }
   }
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before depth\n");
+  //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> before depth\n");
   //fflush(0);
   {
      strncpy(toggleColorVariable, "depth", 6);
@@ -373,7 +373,7 @@
 
      if(maxShadeDepth <= 0.0)
      {
-         fprintf(stderr, "ERROR: UTMTroutObserverSwarm >>>> maxShadeDepth is <= 0.0 >>>> check Observer.Setup\n");
+         fprintf(stderr, "ERROR: TroutObserverSwarm >>>> maxShadeDepth is <= 0.0 >>>> check Observer.Setup\n");
          fflush(0);
          exit(1);
      }
@@ -408,12 +408,12 @@
   }
   else
   {
-      fprintf(stderr, "ERROR: UTMTroutObserverSwarm >>>> buildObjects >>>> rasterColorVariable = %s\n", rasterColorVariable);
+      fprintf(stderr, "ERROR: TroutObserverSwarm >>>> buildObjects >>>> rasterColorVariable = %s\n", rasterColorVariable);
       fflush(0);
       exit(1);
   }
 
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before colormaps\n");
+  //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> before colormaps\n");
   //fflush(0);
   [depthColormap setColor: POLYBOUNDARYCOLOR ToName: "black"];
   [depthColormap setColor: TAG_CELL_COLOR ToName: tagCellColor];
@@ -430,7 +430,7 @@
   [velocityColormap setColor: NIGHTTIMERASTER ToName: "MidnightBlue"];
   
   
-  //fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> before rasterres\n");
+  //fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> before rasterres\n");
   //fflush(0);
    //
    //build model Objects and set the fish color in the ModelSwarm
@@ -614,7 +614,7 @@
       }
   }
 
-   fprintf(stdout, "UTMTroutObserverSwarm >>>> buildObjects >>>> END\n");
+   fprintf(stdout, "TroutObserverSwarm >>>> buildObjects >>>> END\n");
    fflush(0);
 
    return self;
@@ -686,7 +686,7 @@
    // fflush(0);
 
    id theRaster = [habitatRasterMap at: aHabitatSpace];
-  // fprintf(stdout, "UTMTroutObserverSwarm >>>> redrawRaster >>>> currentPhase = %d\n", [aHabitatSpace getCurrentPhase]);
+  // fprintf(stdout, "TroutObserverSwarm >>>> redrawRaster >>>> currentPhase = %d\n", [aHabitatSpace getCurrentPhase]);
   //fflush(0);
  
 

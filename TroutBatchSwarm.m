@@ -11,10 +11,10 @@
 #import <objectbase.h>
 #import <gui.h>
 
-#import "UTMTroutBatchSwarm.h"
+#import "TroutBatchSwarm.h"
 
 
-@implementation UTMTroutBatchSwarm
+@implementation TroutBatchSwarm
 
 //////////////////////////////////////////////
 //
@@ -34,7 +34,7 @@
 //////////////////////////////////////////////////////
 - createEnd
 {
-  UTMTroutBatchSwarm* obj;
+  TroutBatchSwarm* obj;
 
   obj = [super createEnd];
 
@@ -63,7 +63,7 @@
 //////////////////////////////////////
 - objectSetup 
 {
-  fprintf(stdout, "UTMTroutBatchSwarm >>>> objectSetup >>>> BEGIN\n");
+  fprintf(stdout, "TroutBatchSwarm >>>> objectSetup >>>> BEGIN\n");
   fflush(0);
 
   obsZone = [Zone create: [self getZone]];
@@ -88,7 +88,7 @@
 
   [troutModelSwarm instantiateObjects];
 
-  fprintf(stdout, "UTMTroutBatchSwarm >>>> objectSetup >>>> END\n");
+  fprintf(stdout, "TroutBatchSwarm >>>> objectSetup >>>> END\n");
   fflush(0);
   return self;
 }
