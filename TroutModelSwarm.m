@@ -1883,6 +1883,10 @@ char **speciesStocking;
      //
      numHoursSinceLastStep = 0;
 
+	 // Output to terminal
+	 fprintf(stdout,"Scenario: %d, Replicate: %d, Date: %s, Hour: %d, Live fish: %d\n", 
+		scenario,replicate, [timeManager getDateWithTimeT: modelTime], 
+		[timeManager getHourWithTimeT: modelTime], [liveFish getCount]);
 
   }    
 
@@ -1891,10 +1895,7 @@ char **speciesStocking;
       isFirstStep = FALSE;
   }
 
-  if([timeManager getHourWithTimeT: modelTime] == 0){
-	  fprintf(stdout,"Scenario %d, Replicate %d, Number of live fish at start of %s: %d\n", 
-		scenario,replicate, [timeManager getDateWithTimeT: modelTime],[liveFish getCount]);
-  }
+
   //[self     printZone: modelZone 
        //withPrintLevel: 1];
 

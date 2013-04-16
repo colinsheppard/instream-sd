@@ -1896,7 +1896,7 @@ Boston, MA 02111-1307, USA.
                      withXValue2: fishParams->mortFishAngleL9
                      withYValue2: UPPER_LOGISTIC_DEPENDENT];
 
-// Hooking
+     // Hooking
       [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "Hooking"] 
                        withType: "CustomProb"
                  withAgentKnows: NO
@@ -1904,10 +1904,7 @@ Boston, MA 02111-1307, USA.
  
      [survMgr setLogisticFuncLimiterTo: 20.0];
 
-     //[survMgr setTestOutputOnWithFileName: "SurvMgrOut.Out"];
      survMgr = [survMgr createEnd];
-
-
 								  
      [survMgr setLogisticFuncLimiterTo: 20.0];
      //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
@@ -1960,8 +1957,6 @@ Boston, MA 02111-1307, USA.
                         withInputObjectType: 1
                           withInputSelector: M(getCell)];
     */
-
-
      //
      // Low Temperature
      //
@@ -1978,9 +1973,6 @@ Boston, MA 02111-1307, USA.
                                   withYValue1: 0.1
                                   withXValue2: fishParams->mortReddLoTT9
                                   withYValue2: 0.9];
-
-
-
 
      //
      // High Temperature
@@ -2000,7 +1992,7 @@ Boston, MA 02111-1307, USA.
                                   withYValue2: 0.1];
 
      //
-     // SuperImposition
+     // Superimposition
      //
      
      /*
