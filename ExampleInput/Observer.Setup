@@ -14,7 +14,7 @@ takeRasterPictures          NO
 
 rasterColorVariable         depth
 maxShadeVelocity 	        150
-maxShadeDepth 	            400
+maxShadeDepth 	            300
 
 tagFishColor                LimeGreen
 tagCellColor                DeepPink1

@@ -1749,11 +1749,15 @@ char **speciesStocking;
   // updates hourly flow, and updates daily habitat variables if the
   // current time is midnight.
   //
+
   id <ListIndex> lstNdx = nil;
   lstNdx = [reachList listBegin: scratchZone];
 
   while(([lstNdx getLoc] != End) && ((aHabitatSpace = (HabitatSpace *) [lstNdx next]) != (HabitatSpace *) nil)){
-    moveFish = [aHabitatSpace shouldFishMoveAt: modelTime];
+    if ([aHabitatSpace shouldFishMoveAt: modelTime])
+	{
+		moveFish = YES;  // Any reach can trigger movement
+	}
     //fprintf(stdout,"TroutModelSwarm >>>> step >>>> shouldFishMove? %s \n",(moveFish ? "YES" : "NO") );
     //fflush(0);
   }
