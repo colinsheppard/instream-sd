@@ -30,7 +30,7 @@ OBJECTS=GraphDataObject.o \
 	ReddSuperimp.o \
 	ReddSuperimpFunc.o \
 \
-	ReddScourSP.o \
+	ReddScour.o \
 	ReddScourFunc.o \
 \
 	AnglePressureFunc.o \
@@ -100,7 +100,7 @@ BooleanSwitchFunc.o : BooleanSwitchFunc.[hm]
 ReddSuperimp.o : ReddSuperimp.[hm] SurvProb.h
 ReddSuperimpFunc.o : ReddSuperimpFunc.[hm] Func.h
 #
-ReddScourSP.o : ReddScourSP.[hm] SurvProb.h
+ReddScour.o : ReddScour.[hm] SurvProb.h
 ReddScourFunc.o : ReddScourFunc.[hm] Func.h
 #
 Angling.o : Angling.[hm] SurvProb.h

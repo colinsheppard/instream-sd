@@ -1941,8 +1941,6 @@ Boston, MA 02111-1307, USA.
                                   withYesValue: 1.0
 		                   withNoValue: fishParams->mortReddDewaterSurv];
 
-
-    /*
      //
      // Scouring
      // 
@@ -1950,13 +1948,12 @@ Boston, MA 02111-1307, USA.
                        withType: "CustomProb"
                  withAgentKnows: YES
                 withIsStarvProb: NO];
-  
-   
+     
      [survMgr addCustomFuncToProbWithSymbol: [model getReddMortalitySymbolWithName: "ReddScour"] 
                               withClassName: "ReddScourFunc"
                         withInputObjectType: 1
                           withInputSelector: M(getCell)];
-    */
+
      //
      // Low Temperature
      //
