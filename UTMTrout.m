@@ -2832,11 +2832,15 @@
       fishActivity = HIDE;
       if([aCell getIsHidingCoverAvailable]) hidingCover = YES;
       swimSpdVelocityRatio = [aCell getPolyCellVelocity]/maxSwimSpeed;
+       // fprintf(stdout, "UTMTrout >>>> HIDING >>>> ratio = %f maxSwimSpeed = %f\n", swimSpdVelocityRatio,maxSwimSpeed);
+       // fflush(0);
   }
   else 
   {
       fishActivity = FEED;
       swimSpdVelocityRatio = cellSwimSpeed/maxSwimSpeed;
+       // fprintf(stdout, "UTMTrout >>>> FEEDING >>>> ratio = %f\n", swimSpdVelocityRatio);
+       // fflush(0);
  
   }
 

@@ -1819,8 +1819,6 @@ char **speciesStocking;
   {
      if(isFirstStep == FALSE)
      {
-      //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before fish update die grow\n");
-      //fflush(0);
         [liveFish forEach: M(updateNumHoursSinceLastStep:) : (void *) &numHoursSinceLastStep];
         [liveFish forEach: M(die)];
         [liveFish forEach: M(grow)];
@@ -2612,9 +2610,18 @@ char **speciesStocking;
   [newFish setFishLength: fishLength];
   [newFish setFishCondition: 1.0];
   [newFish setFishWeightFromLength: fishLength andCondition: 1.0]; 
-  [newFish setTimeTLastSpawned: 0];    //Dec 31 1969
+  //
+  // Set time last spawned to modelTime - 5 years
+  //
+  [newFish setTimeTLastSpawned: (modelTime - (time_t) 157600000)];    
 
   [newFish calcStarvPaAndPb];
+
+  [newFish updateMaxSwimSpeed];
+
+  [newFish calcMaxMoveDistance];
+
+  [newFish updateNumHoursSinceLastStep: (void *) &numHoursSinceLastStep];
 
   if(fishColorMap != nil){
 	  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
