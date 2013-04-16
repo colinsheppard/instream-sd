@@ -1,7 +1,7 @@
-#Experiment setup file for Flaming Gorge trout model	
-#Steady flow experiments	
-#SFR; created:	7/06/2009 8:02
-	
+#Experiment setup file for inSTREAM 6.0	
+#Example with no experiment
+#SFR; created:	4/16/2013
+
 numberOfScenarios	1
 numberOfReplicates	1
 	
@@ -10,49 +10,3 @@ inClass:	TroutModelSwarm
 	
 sendReplicateCountToParam:	replicate
 inClass:	TroutModelSwarm
-	
-ClassName	TroutModelSwarm
-InstanceName	NONE
-ParamName	appendFiles
-ValueType	BOOL
-Value	NO
-#Value   YES
-#Value   YES
-#Value   YES
-#Value   YES
-	
-ClassName	HabitatSpace
-InstanceName	NONE
-ParamName	flowFile
-ValueType	filename
-Value	FlamingGorgePHHourlyFlow.Data
-#Value	FG-Steady-30-Flow.Data
-#Value	FG-Steady-40-Flow.Data
-#Value	FG-Steady-50-Flow.Data
-#Value	FG-Steady-60-Flow.Data
-#Value	FG-Steady-70-Flow.Data
-#Value	FG-Steady-80-Flow.Data
-#Value	FG-Steady-90-Flow.Data
-#Value	FG-Steady-100-Flow.Data
-#Value	FG-Steady-133-Flow.Data
-	
-#ClassName	TroutModelSwarm
-#InstanceName	NONE
-#ParamName	fishOutputFile
-#ValueType	filename
-#Value	Steady-Scens6-10-Tailrace-LiveFish.Out
-#Value	Steady-Scens6-10-Tailrace-LiveFish.Out
-#Value	Steady-Scens8-10-Tailrace-LiveFish.Out
-#Value	Steady-Scens8-10-Tailrace-LiveFish.Out
-#Value	Steady-Scens8-10-Tailrace-LiveFish.Out
-
-ClassName                      FishParams
-InstanceName                   NONE
-ParamName                      fishSpawnMaxFlow
-ValueType                      double
-Value                          134
-#Value                          134
-#Value                          134
-#Value                          134
-#Value                          134
-
