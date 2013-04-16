@@ -1769,7 +1769,6 @@ Boston, MA 02111-1307, USA.
                                   withYValue1: 0.1
                                   withXValue2: fishParams->mortFishConditionK9
                                   withYValue2: 0.9];
-    
 
      //
      // TerrestialPredation Predation
@@ -1779,14 +1778,13 @@ Boston, MA 02111-1307, USA.
        withAgentKnows: YES
       withIsStarvProb: NO];
 
-     /*
-      * comment this out for now, Steve will think through parameters needed later
-     [survMgr addConstantFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
-                          withValue: fishParams->mortFishTerrPredMin];
-      */
-
-     //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before Terrestrial Pred\n");
-     //fflush(0);
+     [survMgr addBoolSwitchFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
+          withInputObjectType: 0 
+               withInputSelector: M(getCurrentPhase)
+               //withInputSelector: M(getPhaseOfPrevStep)
+                  withYesValue: fishParams->mortFishTerrPredDayMin
+                   withNoValue: fishParams->mortFishTerrPredNightMin];
+     
      [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
                           withInputObjectType: 0
                             withInputSelector: M(getPolyCellDepth)
