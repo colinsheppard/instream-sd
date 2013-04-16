@@ -1809,23 +1809,7 @@ Boston, MA 02111-1307, USA.
                   withYesValue: fishParams->mortFishAqPredCoverFactor
                    withNoValue: 0.0];
 
-     // Poor Condition
-     [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "PoorCondition"]
-                       withType: "SingleFunctionProb"
-                 withAgentKnows: YES
-                withIsStarvProb: YES];
-
-     [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "PoorCondition"] 
-                          withInputObjectType: 1
-                            withInputSelector: M(getFishCondition)
-                                  withXValue1: fishParams->mortFishConditionK1
-                                  withYValue1: 0.1
-                                  withXValue2: fishParams->mortFishConditionK9
-                                  withYValue2: 0.9];
-
-     //
      // TerrestialPredation Predation
-     // 
      [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
              withType: "LimitingFunctionProb"
        withAgentKnows: YES
@@ -1861,16 +1845,8 @@ Boston, MA 02111-1307, USA.
                                   withYValue1: 0.9
                                   withXValue2: fishParams->mortFishTerrPredL1
                                   withYValue2: 0.1];
-/*
-     [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
-                          withInputObjectType: 1
-                            withInputSelector: M(getFeedTimeForCell)
-                                  withXValue1: fishParams->mortFishTerrPredF9
-                                  withYValue1: 0.9
-                                  withXValue2: fishParams->mortFishTerrPredF1
-                                  withYValue2: 0.1];
-*/
-     [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
+
+	 [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
                           withInputObjectType: 0
                             withInputSelector: M(getPolyCellVelocity)
                                   withXValue1: fishParams->mortFishTerrPredV1
@@ -1886,14 +1862,25 @@ Boston, MA 02111-1307, USA.
                                   withXValue2: fishParams->mortFishTerrPredH1
                                   withYValue2: 0.1];
 
+     [survMgr addBoolSwitchFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "TerrestialPredation"] 
+          withInputObjectType: 1 
+               withInputSelector: M(getAmIInHidingCover)
+                  withYesValue: fishParams->mortFishTerrPredCoverFactor
+                   withNoValue: 0.0];
 
+     // Poor Condition
+     [survMgr addPROBWithSymbol: [model getFishMortalitySymbolWithName: "PoorCondition"]
+                       withType: "SingleFunctionProb"
+                 withAgentKnows: YES
+                withIsStarvProb: YES];
 
-     //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before Aquatic Pred\n");
-     //fflush(0);
-
-
-     //fprintf(stdout, "FishCell >>>> initializeSurvProb >>>> before logistic limiter\n");
-     //fflush(0);
+     [survMgr addLogisticFuncToProbWithSymbol: [model getFishMortalitySymbolWithName: "PoorCondition"] 
+                          withInputObjectType: 1
+                            withInputSelector: M(getFishCondition)
+                                  withXValue1: fishParams->mortFishConditionK1
+                                  withYValue1: 0.1
+                                  withXValue2: fishParams->mortFishConditionK9
+                                  withYValue2: 0.9];
 
      [survMgr setLogisticFuncLimiterTo: 20.0];
      //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
