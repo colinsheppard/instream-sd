@@ -11,7 +11,7 @@
 #import "ReddSuperimpFunc.h"
 
 
-@interface ReddSuperimpSP : SurvProb
+@interface ReddSuperimp : SurvProb
 {
 
 

@@ -8,15 +8,15 @@
 // 
 
 
-#import "ReddSuperimpSP.h"
+#import "ReddSuperimp.h"
 
 
-@implementation ReddSuperimpSP
+@implementation ReddSuperimp
 
 + createBegin: aZone
 {
 
-  ReddSuperimpSP* aCustomProb = [super createBegin: aZone];
+  ReddSuperimp* aCustomProb = [super createBegin: aZone];
 
   aCustomProb->funcList = [List create: aCustomProb->probZone];
 
@@ -56,7 +56,7 @@
 
     if(aFunc == nil)
     {
-       fprintf(stderr, "ERROR: ReddSuperimpSP >>>> getSurvivalProb >>>> aFunc is nil\n");
+       fprintf(stderr, "ERROR: ReddSuperimp >>>> getSurvivalProb >>>> aFunc is nil\n");
        fflush(0);
        exit(1);
     }

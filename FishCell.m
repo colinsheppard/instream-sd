@@ -1994,20 +1994,15 @@ Boston, MA 02111-1307, USA.
      //
      // Superimposition
      //
-     
-     /*
       [survMgr addPROBWithSymbol: [model getReddMortalitySymbolWithName: "ReddSuperimp"] 
                        withType: "CustomProb"
                  withAgentKnows: YES
                 withIsStarvProb: NO];
-  
    
       [survMgr addCustomFuncToProbWithSymbol: [model getReddMortalitySymbolWithName: "ReddSuperimp"] 
                                withClassName: "ReddSuperimpFunc"
                          withInputObjectType: 1
                            withInputSelector: M(getCell)];
-      */
-
 
      [survMgr setLogisticFuncLimiterTo: 20.0];
      //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
