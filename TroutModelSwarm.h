@@ -166,7 +166,7 @@ char*  reddOutputFile;
 char*  reddMortalityFile;
 char*  popInitDate;
 int    fileOutputFrequency;
-
+double fracFlowChangeForMovement;
 char* tagFishColor;
 
 //

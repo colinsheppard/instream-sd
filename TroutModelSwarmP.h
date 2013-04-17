@@ -62,6 +62,7 @@ Boston, MA 02111-1307, USA.
 
   int	    resultsAgeThreshold;
   char*	    resultsCensusDay;
+  double fracFlowChangeForMovement;
 
   //END VARIABLES INITIALIZED BY Model.Setup
   //END VARIABLES INITIALIZED BY Model.Setup

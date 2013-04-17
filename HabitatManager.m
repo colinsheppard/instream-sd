@@ -92,6 +92,12 @@ Boston, MA 02111-1307, USA.
 }
 
 
+- setFracFlowChangeForMovement: (double) aFraction
+{
+   habFracFlowChangeForMovement = aFraction;
+   return self;
+}
+
 ///////////////////////////////////////
 //
 ////      GET METHODS
@@ -644,6 +650,8 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setDataStartTime: dataStartTime andEndTime: dataEndTime];
 
      [habitatSpace createTimeSeriesInputManagers]; 
+	 
+	 [habitatSpace setHabFracFlowChange: habFracFlowChangeForMovement];
 
      habitatSpace = [habitatSpace createEnd];
   fprintf(stdout, "HabitatManager >>>> afterCreateEnd \n");

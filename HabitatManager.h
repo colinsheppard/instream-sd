@@ -77,6 +77,8 @@ int polyRasterResolutionY;
 char polyRasterColorVariable[35];
 double shadeColorMax;
 
+double habFracFlowChangeForMovement;
+
 }
 
 
@@ -91,6 +93,8 @@ double shadeColorMax;
 
 - setDataStartTime: (time_t) aDataStartTime
         andEndTime: (time_t) aDataEndTime;
+		
+- setFracFlowChangeForMovement: (double) aFraction;
 
 - setSiteLatitude: (double) aLatitude;
 

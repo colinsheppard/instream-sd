@@ -312,6 +312,8 @@ char **speciesStocking;
   [habitatManager setDataStartTime: (time_t) dataStartTime
                         andEndTime: (time_t) dataEndTime];
 
+  [habitatManager setFracFlowChangeForMovement: (double) fracFlowChangeForMovement];
+
   //
   // Moved from instantiateObjects 
   //

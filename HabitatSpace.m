@@ -411,6 +411,19 @@ return self;
    return self;
 }
 
+
+////////////////////////////////////////////////
+//
+// setHabFracFlowChange
+//
+////////////////////////////////////////////////
+- setHabFracFlowChange: (double) aFraction
+{
+   habFracFlowChangeForMovement = aFraction;
+   return self;
+}
+
+
 ////////////////////////////////////
 //
 // getReachName

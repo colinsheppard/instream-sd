@@ -202,7 +202,7 @@ long int maxYCoordinate;
   double habAngleNightFactor;
   BOOL dayNightPhaseSwitch;
   double currentHourlyFlow;
-  double habFracFlowChangeForMovement;
+  double habFracFlowChangeForMovement;  // Now set by model swarm instead of hab parameter
   double changeInDailyFlow;
   double dailyMeanFlow;
   double prevDailyMeanFlow;
@@ -329,6 +329,8 @@ long int maxYCoordinate;
 - setInstanceName: (char *) anInstanceName;
 - (char *) getReachName;
 - (char *) getInstanceName;
+
+- setHabFracFlowChange: (double) aFraction;
 
 - setReachSymbol: (id <Symbol>) aSymbol;
 - (id <Symbol>) getReachSymbol;
