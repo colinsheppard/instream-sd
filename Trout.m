@@ -1955,8 +1955,11 @@
 
    //
    // Deplete the cell's food and shelter resources
-   // used up by the fish
+   // used up by the fish, and decide whether fish is piscivorous
+   // (which depends on whether it feeds)
    //
+
+    iAmPiscivorous = NO;
 
    switch(fishFeedingStrategy) 
    {
@@ -1976,6 +1979,13 @@
                 else {
                       inShelter = "NO";
                 }
+
+		if(fishLength >= fishParams->fishPiscivoryLength)
+		{
+			iAmPiscivorous = YES;
+			[habitatSpace incrementNumPiscivorousFish];
+		}
+
         break;
      
      case SEARCH:
@@ -1988,7 +1998,14 @@
          inHidingCover = "NO";
          hidingCover = NO;
          feedStrategy = "SEARCH";  //Probe Variable
-         break;
+
+		if(fishLength >= fishParams->fishPiscivoryLength)
+		{
+			iAmPiscivorous = YES;
+			[habitatSpace incrementNumPiscivorousFish];
+		}
+
+		break;
 
      
      case HIDE:
@@ -2018,19 +2035,11 @@
                  break;
     }
 
-    iAmPiscivorous = NO;
-
-
-    if(fishLength >= fishParams->fishPiscivoryLength)
-    {
-       iAmPiscivorous = YES;
-       [habitatSpace incrementNumPiscivorousFish];
-    }
 
     // The variable toggledFishForHabSurvUpdate is set each day by the model swarm
     // method setUpdateAqPredToYes, part of the updateActions.
     // It is set to yes if this fish is either (a) the smallest
-    // piscivorous fish or (b) the last fish. The aquatic predation
+    // piscivory-length fish or (b) the last fish. The aquatic predation
     // survival probability needs to be updated when this fish moves. 
     
     if(toggledFishForHabSurvUpdate == self)

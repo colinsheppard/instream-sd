@@ -81,6 +81,7 @@
 							 "dailyMeanFlow",
                              "turbidity",
                              "habDriftConc",
+							 "numPiscivorousFish",
                              ":",
                              "switchColorRep",
                              "tagCellNumber:",
