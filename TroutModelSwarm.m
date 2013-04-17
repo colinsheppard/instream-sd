@@ -1758,7 +1758,7 @@ char **speciesStocking;
   }
 
   //
-  // Third, if it is midnight, call the method the updates
+  // Third, if it is midnight, call the method that updates
   // fish variables: age, time till next spawning period.
   //
   if([timeManager getHourWithTimeT: modelTime] == 0)
@@ -1833,7 +1833,7 @@ char **speciesStocking;
      [self removeKilledFishFromLiveFishList];
 
      //
-     // sort total population by dominance
+     // sort total population by length
      //
      [QSort sortObjectsIn:  liveFish];
      [QSort reverseOrderOf: liveFish];
@@ -1866,12 +1866,6 @@ char **speciesStocking;
       //fflush(0);
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
-
-     //[self printTroutDepthUseHisto];
-     //[self printTroutVelocityUseHisto];
-
-     //[habitatSpace printAreaDepthHisto];
-     //[habitatSpace printAreaVelocityHisto];
 
      //
      // Finally, re-set the number of hours 
@@ -2018,6 +2012,7 @@ char **speciesStocking;
             ndx = [liveFish listBegin: scratchZone];
             while(([ndx getLoc] != End) && ((fish = [ndx next]) != nil))
             {
+              //  fprintf(stdout, "TroutModelSwarm >>>> toggleFishForHabSurvUpdate >>>> length: %f\n",[fish getFishLength]);
                 if([fish getFishLength] < minSpeciesMinPiscLength) 
                 {
                     [prevFish toggleFishForHabSurvUpdate];
@@ -2602,6 +2597,7 @@ char **speciesStocking;
   [newFish setSpecies: species];
   [newFish setSpeciesNdx: speciesNdx];
   [newFish setAge: age];
+  [newFish setHabitatManager: habitatManager];
 
   ageSymbol = [self getAgeSymbolForAge: age];
    

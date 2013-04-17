@@ -765,6 +765,26 @@ Boston, MA 02111-1307, USA.
 
 
 
+////////////////////////////////////////////////////
+//
+// updateAqPredProbs
+//
+//////////////////////////////////////////////////
+- updateAqPredProbs
+{
+    id <ListIndex> ndx = [habitatSpaceList listBegin: scratchZone];
+    HabitatSpace* habitatSpace = nil;
+    while(([ndx getLoc] != End) && ((habitatSpace = [ndx next]) != nil))
+    {
+        [habitatSpace calcPiscivorousFishDensity];
+        [habitatSpace updateHabSurvProbForAqPred];
+    }
+    [ndx drop];
+    ndx = nil;
+   
+    return self;
+}
+
 
 
 

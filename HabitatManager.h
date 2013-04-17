@@ -122,6 +122,11 @@ double shadeColorMax;
 - buildHabSpaceCellFishInfoReporter;
 - buildReachJunctions;
 
+//
+// UPDATE AQUATIC PREDATION AFTER LAST PISCIV FISH HAS MOVED
+//
+- updateAqPredProbs;
+
 // 
 // FILE OUTPUT
 //

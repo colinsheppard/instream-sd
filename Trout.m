@@ -2040,12 +2040,15 @@
     // method setUpdateAqPredToYes, part of the updateActions.
     // It is set to yes if this fish is either (a) the smallest
     // piscivory-length fish or (b) the last fish. The aquatic predation
-    // survival probability needs to be updated when this fish moves. 
+    // survival probabilities in all reaches need to be updated when this fish moves. 
     
     if(toggledFishForHabSurvUpdate == self)
     {
-       [habitatSpace calcPiscivorousFishDensity];
-       [habitatSpace updateHabSurvProbForAqPred];
+		fprintf(stdout, "TROUT >>>> moveTo >>>> I triggered aq pred update with length = %f\n", fishLength);
+		fflush(0);
+       [habitatManager updateAqPredProbs];
+	   // Now untoggle myself
+	   toggledFishForHabSurvUpdate = nil;
     }
 
     //
