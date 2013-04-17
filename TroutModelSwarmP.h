@@ -59,7 +59,7 @@ Boston, MA 02111-1307, USA.
   const char*  reddOutputFile;
   char* popInitDate;
   int          fileOutputFrequency;
-  char*        movementRule;
+
   int	    resultsAgeThreshold;
   char*	    resultsCensusDay;
 

@@ -536,16 +536,6 @@ long int maxYCoordinate;
 //- _getCellContainingFloatX: (double) probedX floatY: (double) probedY;
 - (FishCell *) getFCellWithCellNumber: (int) aCellNumber;
 
-//
-// HISTOGRAM
-//
-- setAreaDepthBinWidth: (int) aWidth;
-- setDepthHistoMaxDepth: (double) aDepth;
-- setAreaVelocityBinWidth: (int) aWidth;
-- setVelocityHistoMaxVelocity: (double) aVelocity;
-
-- setAreaDepthHistoFmtStr: (char *) aFmtStr;
-- setAreaVelocityHistoFmtStr: (char *) aFmtStr;
 
 // STRING FUNCTIONS
 

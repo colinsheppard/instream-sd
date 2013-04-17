@@ -24,7 +24,7 @@ REACHBEGIN
 reachName                         LittleHole
 habParamFile                      TailraceHabitat.Params
 cellGeomFile                      LittleHole-Geom.Data
-flowFile                          FlamingGorgePHHourlyFlow.Data
+flowFile                          TestSteadyFlow.Data
 temperatureFile                   GreendaleTemperature.Data
 turbidityFile                     GreenRiverTurbidity.Data
 cellHabVarsFile                   LittleHole-CellData.csv

@@ -167,36 +167,12 @@ char*  reddMortalityFile;
 char*  popInitDate;
 int    fileOutputFrequency;
 
-//
-// HISTOGRAM VARIABLES
-//
-int depthBinWidth;
-int velocityBinWidth;
-
-double depthHistoMaxDepth;
-double velocityHistoMaxVelocity;
-
-char* depthAvailabilityFileName;
-char* velocityAvailabilityFileName;
-
-char* areaDepthHistoFmtStr;
-char* areaVelocityHistoFmtStr;
-
-char* fishDepthUseFileName;
-char* fishVelocityUseFileName;
-
-
 char* tagFishColor;
 
 //
 //END VARIABLES INITIALIZED BY Model.Setup
 //
 
-//
-// MORE HISTOGRAM VARIABLES
-//
-id <Map> speciesDepthUseOutStreamMap;
-id <Map> speciesVelocityUseOutStreamMap;
 
 id fishColorMap;
 double shadeColorMax;
@@ -504,19 +480,6 @@ double checkParam;
 
 
 - dropFishMortObjs;
-
-
-//
-// HISTOGRAM METHODS
-//
-//- printTroutDepthUseHisto;
-//- printTroutVelocityUseHisto;
-- openTroutDepthUseFiles;
-- openTroutVelocityUseFiles;
-
-- printTroutUseHeaderToStream: (FILE *) aStream 
-                      withUse: (char *) aUse;
-
 
 
 - createBreakoutReporters;

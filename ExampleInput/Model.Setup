@@ -1,6 +1,6 @@
-# Model Setup for instream-SD2D, Tailrace analysis runs
-# SFR 9/08
-# Tailrace standard scenario
+# Model Setup for instream-SD
+# Test setup
+# SFR 4/2013
 
 
 @begin
@@ -12,25 +12,13 @@ habParamFile                     TailraceHabitat.Params
 runStartDate                     10/1/1993
 runEndDate                       9/30/2007
 
-fishOutputFile                   Tailrace_LiveFishOut.csv
-fishMortalityFile                Tailrace_DeadFishOut.csv
-reddMortalityFile                TailraceDeadRedds.Out
-reddOutputFile                   TailraceRedds.Out
+fishOutputFile                   LiveFishOut.csv
+fishMortalityFile                DeadFishOut.csv
+reddMortalityFile                DeadRedds.Out
+reddOutputFile                   Redds.Out
 popInitDate                      10/1/2000
-fileOutputFrequency                     30
-appendFiles				 0
-
-
-depthBinWidth                   50
-velocityBinWidth                50
-depthHistoMaxDepth              200
-velocityHistoMaxVelocity        200
-
-depthAvailabilityFileName       depthAvailability.Out
-velocityAvailabilityFileName     velocityAvailability.Out
-
-fishDepthUseFileName            DepthUse.Out
-fishVelocityUseFileName         VelocityUse.Out
+fileOutputFrequency              1
+appendFiles				 		 0
 
 siteLatitude                 40.9
 
