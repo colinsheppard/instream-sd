@@ -147,6 +147,8 @@
   				   inClass: [PolyCell class]]];
   [probeMap addProbe: [probeLibrary getProbeForMessage: "unTagAdjacentCells"
   				   inClass: [PolyCell class]]];
+  [probeMap addProbe: [probeLibrary getProbeForMessage: "tagNeighborsWithin:"
+  				   inClass: [FishCell class]]];
   [probeLibrary setProbeMap: probeMap For: [FishCell class]];
 
 
