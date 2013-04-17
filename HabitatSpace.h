@@ -380,7 +380,7 @@ long int maxYCoordinate;
 
 - (id <List>) getNeighborsInReachWithin: (double) aRange 
                               of: refCell 
-                        withList: (id <List>) aCellList; // used by spawners
+                        withList: (id <List>) aCellList; // used by getNeighborsWithin
 
 - readGeometry;
 - calcSpaceVariables;

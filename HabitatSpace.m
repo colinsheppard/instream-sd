@@ -2731,7 +2731,7 @@ return self;
 //
 // getNeighborsInReachWithin
 //
-// Used by salmon spawners, which cannot move out of their reach
+// Gets cells in same reach; used by getNeighborsWithin
 //
 ///////////////////////////////////////////////////////////////////////
 - (id <List>) getNeighborsInReachWithin: (double) aRange 

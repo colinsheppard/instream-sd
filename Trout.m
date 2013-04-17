@@ -2044,8 +2044,8 @@
     
     if(toggledFishForHabSurvUpdate == self)
     {
-		fprintf(stdout, "TROUT >>>> moveTo >>>> I triggered aq pred update with length = %f\n", fishLength);
-		fflush(0);
+		//fprintf(stdout, "TROUT >>>> moveTo >>>> I triggered aq pred update with length = %f\n", fishLength);
+		//fflush(0);
        [habitatManager updateAqPredProbs];
 	   // Now untoggle myself
 	   toggledFishForHabSurvUpdate = nil;

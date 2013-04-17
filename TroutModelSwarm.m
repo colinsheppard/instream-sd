@@ -3580,6 +3580,11 @@ char **speciesStocking;
                                           withType: "string"
                                          withLabel: "ModelDate"];
 
+  [fishMortalityReporter addColumnWithValueFromSelector: @selector(getModelHour)
+                                        fromObject: (id) self
+                                          withType: "long"
+                                         withLabel: "ModelHour"];
+
   [fishMortalityReporter breakOutUsingSelector: @selector(getReachSymbol)
                                 withListOfKeys: reachSymbolList];
 
@@ -3629,6 +3634,31 @@ char **speciesStocking;
                                         withType: "string"
                                        withLabel: "ModelDate"];
 
+  [liveFishReporter addColumnWithValueFromSelector: @selector(getModelHour)
+                                        fromObject: (id) self
+                                          withType: "long"
+                                         withLabel: "ModelHour"];
+
+  [liveFishReporter addColumnWithValueOfVariable: "currentPhase"
+                                      fromObject: (id) [reachList getFirst]
+                                        withType: "int" 
+                                       withLabel: "PhaseOfPrevStep"];
+
+  [liveFishReporter addColumnWithValueOfVariable: "numHoursSinceLastStep"
+                                      fromObject: (id) self
+                                        withType: "int" 
+                                       withLabel: "HoursInPrevStep"];
+
+  [liveFishReporter addColumnWithValueOfVariable: "currentHourlyFlow"
+                                      fromObject: (id) [reachList getFirst]
+                                        withType: "double" 
+                                       withLabel: "FlowIn1stReach"];
+
+  [liveFishReporter addColumnWithValueOfVariable: "temperature"
+                                      fromObject: (id) [reachList getFirst]
+                                        withType: "double" 
+                                       withLabel: "TemperatureIn1stReach"];
+ 
   [liveFishReporter breakOutUsingSelector: @selector(getReachSymbol)
                            withListOfKeys: reachSymbolList];
 
@@ -3641,6 +3671,10 @@ char **speciesStocking;
   [liveFishReporter createOutputWithLabel: "Count"
                              withSelector: @selector(getFishCount)
                          withAveragerType: "Count"];
+
+  [liveFishReporter createOutputWithLabel: "FractionFeedingPrevStep"
+                             withSelector: @selector(getIsFishFeeding)
+                         withAveragerType: "Average"];
 
   [liveFishReporter createOutputWithLabel: "MeanLength"
                              withSelector: @selector(getFishLength)
