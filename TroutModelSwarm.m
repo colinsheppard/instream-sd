@@ -2181,6 +2181,9 @@ char **speciesStocking;
 - (BOOL) whenToStop 
 { 
   BOOL STOP;
+  
+     // fprintf(stdout,"TroutModelSwarm >>>> whenToStop >>>>\n");
+     // fflush(stdout);
 
   if(modelTime >= runEndTime) 
   {
@@ -3915,7 +3918,7 @@ char **speciesStocking;
 //////////////////////////////////////////////////////////
 - (void) drop
 {
-  id <ListIndex> ndx;
+  //id <ListIndex> ndx;
   //id species=nil;
   //FILE* aStream=NULL;
 

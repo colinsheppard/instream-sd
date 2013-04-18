@@ -343,6 +343,9 @@ long int maxYCoordinate;
 - updateAnglePressureWith: (time_t) aTime;
 - (double) getDailyMeanFlow;
 - (double) getPrevDailyMeanFlow;
+- (double) getPrevDailyMaxFlow;
+- (double) getDailyMaxFlow;
+- (double) getNextDailyMaxFlow;
 
 
 //

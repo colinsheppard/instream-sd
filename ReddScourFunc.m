@@ -83,7 +83,7 @@
 
    //inputValue = [messageProbe doubleDynamicCallOn: anObj];
 
-   cell = [aRedd getWorld];
+   cell = [aRedd getCell];
 
    speciesNdx = [aRedd getSpeciesNdx];
    fishParams = [aRedd getFishParams];

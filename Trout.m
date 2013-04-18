@@ -1285,7 +1285,7 @@
   [newRedd setTimeManager: timeManager];
   [newRedd setFishParams: fishParams];
   [newRedd setModel: model];
-  [newRedd setWorld: aCell];
+  [newRedd setCell: aCell];
   [newRedd setReddColor: myColor];
   [newRedd setSpecies: species]; 
 

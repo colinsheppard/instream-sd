@@ -338,6 +338,38 @@ return self;
    return prevDailyMeanFlow;
 }
 
+/////////////////////////////////////////
+//
+// getPrevDailyMaxFlow
+//
+/////////////////////////////////////////
+- (double) getPrevDailyMaxFlow
+{
+   return prevDailyMaxFlow;
+}
+
+
+///////////////////////////////////////
+//
+// getDailyMaxFlow
+//
+//////////////////////////////////////
+- (double) getDailyMaxFlow
+{
+   return dailyMaxFlow;
+}
+
+
+////////////////////////////////////////
+//
+// getNextDailyMaxFlow
+//
+////////////////////////////////////////
+- (double) getNextDailyMaxFlow
+{
+    return nextDailyMaxFlow;
+}
+
 ///////////////////////////////////////
 //
 // setNumberOfSpecies
@@ -2602,6 +2634,7 @@ return self;
         turbidity = [turbidityInputManager getValueForTime: theCurrentTime];
   
         prevDailyMeanFlow = dailyMeanFlow;
+		prevDailyMaxFlow = dailyMaxFlow;
 
         dailyMeanFlow =  [flowInputManager getMeanValueWithStartTime: theCurrentTime
                                                        withEndTime: (theCurrentTime + 82800)];

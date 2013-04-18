@@ -77,8 +77,8 @@
 - setModel: aModel;
 - setFishParams: (FishParams *) aFishParams;
 - (FishParams *) getFishParams;
-- setWorld: (FishCell *) aCell;
-- (FishCell *)getWorld;
+- setCell: (FishCell *) aCell;
+- (FishCell *)getCell;
 
 
 

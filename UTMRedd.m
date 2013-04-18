@@ -153,7 +153,7 @@
     return fishParams;
 }
 
-- setWorld: (FishCell *) aCell 
+- setCell: (FishCell *) aCell 
 {
   fishCell = aCell;
   polyCellNumber = [fishCell getPolyCellNumber];
@@ -161,7 +161,7 @@
 }
 
   
-- (FishCell *) getWorld 
+- (FishCell *) getCell 
 {
   return fishCell;
 }

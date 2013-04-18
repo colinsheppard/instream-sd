@@ -79,7 +79,7 @@
         exit(1);
    } 
 
-   cell = [aRedd getWorld];
+   cell = [aRedd getCell];
 
    if(uniformDist == nil)
    {
@@ -113,7 +113,7 @@
    //
    //funcValue = [messageProbe doubleDynamicCallOn: anObj];
 
-   if((reddList = [cell getReddList]) != nil) 
+   if((reddList = [cell getReddsIContain]) != nil) 
    {
       reddListNdx = [reddList listBegin: scratchZone];
 
@@ -135,7 +135,7 @@
                  
                   cellArea = [cell getPolyCellArea];
   
-                  cellGravelFrac = [[aRedd getWorld] getCellFracSpawn];
+                  cellGravelFrac = [[aRedd getCell] getCellFracSpawn];
  
                   if(cellGravelFrac == 0.0) 
                   {
