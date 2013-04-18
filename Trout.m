@@ -74,8 +74,6 @@
   newTrout->hidingCover = NO;
 
   newTrout->destCellList = [List create: aZone];
-  newTrout->goodDestCellList = [List create: aZone];
-  newTrout->badDestCellList = [List create: aZone];
   newTrout->fishDistanceLastMoved = 0.0;
   newTrout->fishCumulativeDistanceMoved = 0.0;
 
@@ -1630,32 +1628,18 @@
   //fprintf(stdout, "Trout >>>> moveToMaximizeExpectedMaturity >>>> BEGIN\n");
   //fflush(0);
 
+  /*
+   "Speed up" that tried to skip cells with high velocity removed 4/2013
+   because it didn't have much benefit.
+  */
+
+
   //
   // Update variables that don't change among cells
   //
   
   [self calcStandardRespiration];
   [self calcCmax];
-
-  //
-  // Test output for speedup that skips cells with excessive velocity
-  //
-  #ifdef LOHICELLOUTPUT
-  static FILE *outPtr = NULL;
-  static BOOL loHiFirstTime = YES;
-  if(loHiFirstTime)
-  {
-      if((outPtr = fopen("LoHiCellMove.rpt", "w")) == NULL)
-      {
-          fprintf(stderr, "ERROR: Trout >>>> moveToMaximizeExpectedMaturity >>>> opening MoveToOutput.Test\n");
-          exit(1);
-      }
-
-      fprintf(outPtr, "%-20s%-20s%-20s%-25s\n\n", "CellLoHiType", "CellVelocity", "FishLength", "ExpectedMaturityAtDest");
-      fflush(outPtr);
-      loHiFirstTime = NO;
-  }
-  #endif 
 
   if(fishCell == nil) 
   {
@@ -1664,19 +1648,10 @@
      exit(1);
   }
 
-  if([goodDestCellList getCount] > 0)
-  {
-     [goodDestCellList removeAll];
-  }
-  if([badDestCellList getCount] > 0)
-  {
-     [badDestCellList removeAll];
-  }
   if([destCellList getCount] > 0)
   {
      [destCellList removeAll];
   }
-
   //
   // calculate our expected maturity here
   //
@@ -1704,17 +1679,6 @@
   }
 
   //
-  // Please note --  the speed-up algorithm depends on the exact algorithm
-  //                 for high velocity survival which is coded in cell.m
-
-  //
-  // To reduce the number of cells that trout must evaluate, separate out the
-  // potential destination cells with velocity high enough to cause high velocity
-  // mortality. Assume that trout are using velocity shelter.
-  // At the same time, exclude cells with zero depth.
-  //
-
-  //
   // moveCellList is either the destCellList or the listOfAdjacentCells from the fishCell.
   // Regardless it shouldn't be empty
   //
@@ -1726,26 +1690,6 @@
   }
 
   destNdx = [moveCellList listBegin: scratchZone];
-  while(([destNdx getLoc] != End) && ((destCell = [destNdx next]) != nil))
-  {
-    if([destCell getPolyCellDepth] > 0.0)
-    {
-       if(([destCell getPolyCellVelocity] * (fishParams->fishShelterSpeedFrac)/maxSwimSpeed) > fishParams->mortFishVelocityV9)
-       {
-            [badDestCellList addLast: destCell];
-       }
-       else
-       {
-            [goodDestCellList addLast: destCell];
-       }
-    }
-  }
-  [destNdx drop];
-  destNdx = nil;
-
-  if([goodDestCellList getCount] > 0)
-  {
-      destNdx = [goodDestCellList listBegin: scratchZone];
       while (([destNdx getLoc] != End) && ((destCell = [destNdx next]) != nil))
       {
           expectedMaturityAtDest = [self expectedMaturityAt: destCell];
@@ -1755,65 +1699,16 @@
 	      bestExpectedMaturity = expectedMaturityAtDest;
 	      bestDest = destCell;
           }
-
-          #ifdef LOHICELLOUTPUT
-          if(!loHiFirstTime)
-          {
-             fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "LoVelCell", [destCell getPolyCellVelocity], fishLength, expectedMaturityAtDest);
-             fflush(outPtr);
-          }
-          #endif
-
       }  //while destNdx
 
       [destNdx drop];
       destNdx = nil;
-
-  }
 
   if(expectedMaturityHere >= bestExpectedMaturity) 
   {
        bestDest = fishCell;
        bestExpectedMaturity = expectedMaturityHere;
   }
-
-  //
-  // Now: Test whether the best destination offers higher EM higher than the probability
-  // of surviving high velocity mortality at velocity threshold used to separate good
-  // from bad potential destinations. If not, then evaluate EM for the list of bad potential
-  // destinations.
-  //
-
-  if([badDestCellList getCount] > 0)
-  {
-      if(bestExpectedMaturity < pow((0.9 + (0.1 * fishParams->mortFishVelocityCoverFactor)), fishParams->fishFitnessHorizon))
-      {
-          destNdx = [badDestCellList listBegin: scratchZone];
-          while (([destNdx getLoc] != End) && ((destCell = [destNdx next]) != nil))
-          {
-                 expectedMaturityAtDest = [self expectedMaturityAt: destCell];
-    
-	         if (expectedMaturityAtDest > bestExpectedMaturity) 
-	         {
-	             bestExpectedMaturity = expectedMaturityAtDest;
-	             bestDest = destCell;
-	         }
-
-                #ifdef LOHICELLOUTPUT
-                if(!loHiFirstTime)
-                {
-                   fprintf(outPtr, "%-20s%-20f%-20f%-25f\n", "HiVelCell", [destCell getPolyCellVelocity], fishLength, expectedMaturityAtDest);
-                   fflush(outPtr);
-                }
-                #endif
-
-          } // while destNdx
-
-          [destNdx drop];
-          destNdx = nil;
-
-      } // if bestExpectedMaturity 
-   }
 
   if(bestDest == nil) 
   { 
@@ -4379,8 +4274,6 @@ return self;
 - (void) drop
 {
      [destCellList drop];
-     [goodDestCellList drop];
-     [badDestCellList drop];
 
      [spawnDist drop];
      [dieDist drop];

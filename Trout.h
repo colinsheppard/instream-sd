@@ -25,8 +25,6 @@
 //#define READY_TO_SPAWN_RPT
 //#define SPAWN_CELL_RPT
 
-//#define LOHICELLOUTPUT
-
 #include "FeedStrategy.h"
 
 
@@ -259,11 +257,6 @@ id toggledFishForHabSurvUpdate;
   double fishDistanceLastMoved;
   double fishCumulativeDistanceMoved;
   
-  //
-  // Lists added for destination cells
-  //
-  id <List> goodDestCellList;
-  id <List> badDestCellList;
   
   // Stuff from Instream 5.0
   int fishID;
