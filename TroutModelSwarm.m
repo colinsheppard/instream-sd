@@ -324,12 +324,9 @@ char **speciesStocking;
 
   [habitatManager finishBuildingTheHabitatSpaces];
   
-  /*
-   * for now ignore reporting stuff --colin
   if(writeCellFishReport == YES){
       [habitatManager buildHabSpaceCellFishInfoReporter];
   }
-  */
 
   [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
@@ -1851,8 +1848,12 @@ char **speciesStocking;
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before breakout report\n");
       //fflush(0);
         [self outputBreakoutReport];
-	// Comment the following for now, breakout reporting will need to be fixed later --colin
-        //[habitatSpace printCellFishInfo];
+
+	  //Optional outputs:
+		if(writeCellFishReport == YES){
+			[habitatManager outputCellFishInfoReport];
+		}
+
      }
 
      // 

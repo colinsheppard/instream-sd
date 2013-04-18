@@ -23,5 +23,7 @@ appendFiles				 		 0
 siteLatitude                 40.9
 fracFlowChangeForMovement	 0.1
 
+writeCellFishReport			1
+
 @end
 

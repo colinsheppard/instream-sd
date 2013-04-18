@@ -3654,6 +3654,11 @@ return self;
                                         withType: "string"
                                        withLabel: "ModelDate"];
 
+  [cellFishInfoReporter addColumnWithValueOfVariable: "currentHour"
+                                        fromObject: (id) self
+                                          withType: "int"
+                                         withLabel: "ModelHour"];
+
   [cellFishInfoReporter addColumnWithValueOfVariable: "habCellNumber"
                                       fromObject: self
                                         withType: "int"
@@ -3687,8 +3692,8 @@ return self;
   [cellFishInfoReporter breakOutUsingSelector: @selector(getSpecies)
                                withListOfKeys: speciesSymbolList];
 
-  [cellFishInfoReporter breakOutUsingSelector: @selector(getAgeSymbol)
-                               withListOfKeys: ageSymbolList];
+  // [cellFishInfoReporter breakOutUsingSelector: @selector(getAgeSymbol)
+                               // withListOfKeys: ageSymbolList];
 
   [cellFishInfoReporter createOutputWithLabel: "Count"
                                  withSelector: @selector(getFishCount)
@@ -3714,10 +3719,24 @@ return self;
    id <ListIndex> cellNdx = nil;
    FishCell*  aCell = nil;
 
-   //fprintf(stdout, "HabitatSpace >>>> %s >>>> outputCellFishInfoReport >>>> BEGIN\n", [reachSymbol getName]);
-   //fflush(0);
+   // fprintf(stdout, "HabitatSpace >>>> %s >>>> outputCellFishInfoReport >>>> BEGIN\n", [reachSymbol getName]);
+   // fflush(0);
 
    
+  if(ageSymbolList == nil)
+  {
+     fprintf(stderr, "ERROR: HabitatSpace >>>> buildCellFishInfoReporter >>>> ageSymbolList is nil\n");
+     fflush(0);
+     exit(1);
+  }
+
+  if([ageSymbolList getCount] < 1)
+  {
+     fprintf(stderr, "ERROR: HabitatSpace >>>> buildCellFishInfoReporter >>>> ageSymbolList is empty\n");
+     fflush(0);
+     exit(1);
+  }
+
    if(cellFishInfoReporter == nil)
    {
        fprintf(stderr, "ERROR: HabitatSpace >>>> outputCellFishInfoReport >>>> cellFishInfoReporter is nil\n");
@@ -3769,6 +3788,7 @@ return self;
       //
       // Now output the breakout reporter
       //
+
       [cellFishInfoReporter updateByReplacement];
       [cellFishInfoReporter output];
   }
@@ -3776,8 +3796,8 @@ return self;
   [cellNdx drop];
   
 
-  //fprintf(stdout, "HabitatSpace >>>> %s >>>> outputCellFishInfoReport >>>> END\n", [reachSymbol getName]);
-  //fflush(0);
+  // fprintf(stdout, "HabitatSpace >>>> %s >>>> outputCellFishInfoReport >>>> END\n", [reachSymbol getName]);
+  // fflush(0);
 
   return self;
 }
