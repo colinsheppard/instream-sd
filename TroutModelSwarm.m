@@ -1849,11 +1849,6 @@ char **speciesStocking;
       //fflush(0);
         [self outputBreakoutReport];
 
-	  //Optional outputs:
-		if(writeCellFishReport == YES){
-			[habitatManager outputCellFishInfoReport];
-		}
-
      }
 
      // 
@@ -1865,6 +1860,11 @@ char **speciesStocking;
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
+
+	 //Optional outputs -- Need to be after habitatManager update:
+		if(writeCellFishReport == YES){
+			[habitatManager outputCellFishInfoReport];
+		}
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before toggle and move\n");
       //fflush(0);
      [self toggleFishForHabSurvUpdate];

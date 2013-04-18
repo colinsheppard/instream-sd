@@ -3058,7 +3058,7 @@ return self;
 // andWithModelStartFlag
 //
 //////////////////////////////////////////////////////////////////////
--   updateHabitatWithTime: (time_t) aModelTime_t
+- updateHabitatWithTime: (time_t) aModelTime_t
     andWithModelStartFlag: (BOOL) aStartFlag
 {
 	//fprintf(stdout, "HabitatSpace >>>> updateHabitatWithTime >>>> BEGIN\n");
