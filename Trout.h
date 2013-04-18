@@ -470,7 +470,7 @@ id toggledFishForHabSurvUpdate;
 //FOOD INTAKE: MAXIMUM CONSUMPTION
 
 //- (double) calcCmax: (double) aTemperature;
-- calcCmax;
+- calcCmax: (double) aTemperature;
 - (double) calcCmaxTempFunction: (double) aTemperature;
 
 
@@ -480,8 +480,8 @@ id toggledFishForHabSurvUpdate;
 
 //RESPIRATION COSTS
 
-//- (double) calcStandardRespiration: (FishCell *) aCell;
-- calcStandardRespiration;
+- calcStandardRespirationAt: (FishCell *) aCell;
+//- calcStandardRespiration;
 - (double) calcActivityRespirationAt: (FishCell *) aCell withSwimSpeed: (double) aSpeed;
 - (double) calcTotalRespirationAt: (FishCell *) aCell withSwimSpeed: (double) aSpeed; 
 

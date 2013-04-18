@@ -1633,14 +1633,6 @@
    because it didn't have much benefit.
   */
 
-
-  //
-  // Update variables that don't change among cells
-  //
-  
-  [self calcStandardRespiration];
-  [self calcCmax];
-
   if(fishCell == nil) 
   {
      fprintf(stderr, "ERROR: Trout >>>> moveToMaximizeExpectedMaturity >>>> Fish %p has no Cell context.\n", self);
@@ -2004,6 +1996,11 @@
 /////////////////////////////////////////////////////////////////
 - (double) expectedMaturityAt: (FishCell *) aCell 
 { 
+
+ // Update standard resp. and CMax
+ [self calcStandardRespirationAt: aCell];
+ [self calcCmax: [aCell getTemperature]];
+
   FishActivity bestActivityForCell = HIDE;
   double bestERMForCell = -LARGEINT;
 
@@ -3025,36 +3022,26 @@
 // consumption. We divide it by 24 to get an hourly value.
 // 
 ///////////////////////////////////////////////////////////
-- calcCmax 
+- calcCmax: (double) aTemperature 
 {
-  double temperature;
   double fCPA,fCPB;
   double cmaxTempFunction;
 
   fCPA = fishParams->fishCmaxParamA;
   fCPB = fishParams->fishCmaxParamB;
 
-  if(fishCell == nil)
-  {
-     fprintf(stderr, "ERROR: Trout >>>> calcCmax >>>> fishCell is nil\n");
-     fflush(0);
-     exit(1);
-  } 
- 
-  temperature = [fishCell getTemperature];
-  
-  if(isnan(temperature) || isinf(temperature))
+  if(isnan(aTemperature) || isinf(aTemperature))
   {
      fprintf(stderr, "ERROR: Trout >>>> calcCmax >>>> an nan or inf occurred\n");
-     fprintf(stderr, "ERROR: Trout >>>> calcCmax >>>> temperature = %f\n", temperature);
+     fprintf(stderr, "ERROR: Trout >>>> calcCmax >>>> temperature = %f\n", aTemperature);
      fflush(0);
      exit(1);
   } 
 
-  cmaxTempFunction = [self calcCmaxTempFunction: [fishCell getTemperature]];
+  cmaxTempFunction = [self calcCmaxTempFunction: aTemperature];
 
   //
-  //Note the  instance variables cMax andfishWeight in the following
+  //Note the  instance variables cMax and fishWeight in the following
   //
   cMax = (fCPA * pow(fishWeight,(1+fCPB)) * cmaxTempFunction)/24.0;
 
@@ -3146,23 +3133,30 @@
 //
 ///////////////////////////////////////////////////////
 //
-// calcStandardRespiration
+// calcStandardRespirationAt:
 //
 // Note: this now returns an HOURLY respiration rate.
 // The parameters are for daily standard respiration.
 // We divide the daily rate by 24 to get an hourly rate.
 //
 ////////////////////////////////////////////////////////
-- calcStandardRespiration
+- calcStandardRespirationAt: (FishCell *) aCell
 {
   double fRPA=0.0,fRPB=0.0,fRPC=0.0;
   double temperature;
 
+  if(aCell == nil)
+  {
+     fprintf(stderr, "ERROR: Trout >>>> calcStandardRespirationAt >>>> aCell is nil\n");
+     fflush(0);
+     exit(1);
+  }
+
+  temperature = [aCell getTemperature];
+
   fRPA = fishParams->fishRespParamA;
   fRPB = fishParams->fishRespParamB;
   fRPC = fishParams->fishRespParamC;
-
-  temperature = [fishCell getTemperature];
 
   //
   //Note the instance variables fishWeight and standardResp
