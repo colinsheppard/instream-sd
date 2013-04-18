@@ -82,9 +82,7 @@
 
 
 
-- drawSelfOn: (id <Raster>) aRaster 
-         atX: (int) anX 
-           Y: (int) aY;
+- drawSelfOn: (id <Raster>) aRaster;
 
 - setReddColor: (Color) aColor;
 - (Color) getReddColor;

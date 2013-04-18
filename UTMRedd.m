@@ -201,15 +201,16 @@
 //
 /////////////////////////////////////////////////////////////
 - drawSelfOn: (id <Raster>) aRaster 
-         atX: (int) anX 
-           Y: (int) aY 
 {
-  [aRaster ellipseX0: anX - 5 
-                  Y0: aY - 3 
-                  X1: anX + 5 
-                  Y1: aY + 3 
-               Width: 2 
+  if (myRasterX >= 0)  // myRasterX is -1 if there are no pixels in cell
+  {
+  [aRaster ellipseX0: myRasterX - 4 
+                  Y0: myRasterY - 3 
+                  X1: myRasterX + 4 
+                  Y1: myRasterY + 3 
+               Width: 1 
                Color: myColor];  
+  }
 
   return self;
 }
