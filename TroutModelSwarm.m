@@ -2857,8 +2857,6 @@ char **speciesStocking;
   [newFish setFishLength: fishLength];
   [newFish setFishCondition: 1.0];
   [newFish setFishWeightFromLength: fishLength andCondition: 1.0]; 
-  [newFish setFishDominance];
-
 
   //
   // Set time last spawned to modelTime - 5 years

@@ -851,42 +851,6 @@
 }
 
 
-//////////////////////////////////////////////////////////////////
-//
-// setFishDominance
-//
-/////////////////////////////////////////////////////////////////
-- setFishDominance 
-{
-
-  fishDominance = fishParams->fishSppDomFactor*fishLength;
-  return self;
-}
-
-
-/////////////////////////////////////////////////////////
-//
-// getFishDominance
-//
-//////////////////////////////////////////////////////////
-- (double) getFishDominance
-{
-  return fishDominance;
-}
-
-
-//////////////////////////////////////////////////////////////////
-//
-// getDominanceForLength
-//
-/////////////////////////////////////////////////////////////////
-- (double) getDominanceForLength: (double) aLength 
-{
-  double dominance;
-  dominance = fishParams->fishSppDomFactor*aLength;
-  return dominance;
-}
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // getFishShelterArea
@@ -2534,7 +2498,6 @@
   fishLength = [self getLengthForNewWeight: fishWeight];
   fishCondition = [self getConditionForWeight: fishWeight andLength: fishLength];
   fishFracMature = [self getFracMatureForLength: fishLength];
-  fishDominance = [self getDominanceForLength: fishLength];
 
   //
   // Added 6/13/2001 SKJ
@@ -2793,14 +2756,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 - (int) compare: (Trout *) aFish 
 {
-  double otherFishDominance;
-  otherFishDominance = [aFish getFishDominance];
+  double otherFishLength;
+  otherFishLength = [aFish getFishLength];
 
-  if (fishDominance > otherFishDominance)
+  if (fishLength > otherFishLength)
   {
     return 1;
   }
-  else if(fishDominance == otherFishDominance)
+  else if(fishLength == otherFishLength)
   {
     return 0;
   }
@@ -3681,10 +3644,11 @@
       if((mvRptPtr = fopen(mvRptFName,"w+")) != NULL ) 
       {
 
-     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-17s\n",
+     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-17s\n",
                                                             "Date",
                                                             "Hour",
                                                             "FishID",
+                                                            "Species",
                                                             "BESTDEST",
                                                             "CELLNO",
                                                             "SHELTERAREAAVAIL",
@@ -3743,10 +3707,11 @@ else
      exit(1);
 
   }
-  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E\n",
+  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15s%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E\n",
                                                    date,
                                                    hour,
                                                    self,
+												   mySpecies,
                                                    aCell,
                                                    cellNo,
                                                    shelterAreaAvailable,

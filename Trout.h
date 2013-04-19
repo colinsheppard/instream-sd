@@ -49,7 +49,6 @@
   int   age;
   double fishLength;  // cm
   double fishWeight;  // grams
-  double fishDominance;
   double fishCondition;
   double domValue;
   double searchParameter; // cm/hr
@@ -340,8 +339,6 @@ id toggledFishForHabSurvUpdate;
 
 - setFishWeightFromLength: (double) aLength andCondition: (double) aCondition;
 - setFishLength: (double) aFloat;
-- setFishDominance;
-- (double) getFishDominance;
 
 - (id <Symbol>) getCauseOfDeath;
 - (time_t) getTimeOfDeath;
@@ -366,7 +363,6 @@ id toggledFishForHabSurvUpdate;
 
 - (double) getWeightWithIntake: (double) anEnergyIntake;
 - (double) getLengthForNewWeight: (double) aWeight;
-- (double) getDominanceForLength: (double) aLength;
 - (double) getFracMatureForLength: (double) aLength;
 
 - (double) getConditionForWeight: (double) aWeight andLength: (double) aLength;

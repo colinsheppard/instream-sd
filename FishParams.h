@@ -130,7 +130,6 @@ double fishSpawnVSuitV4;
 double fishSpawnVSuitV5;
 double fishSpawnVSuitV6;
 double fishSpawnWtLossFraction;
-double fishSppDomFactor;
 double fishSwimParamA;
 double fishSwimParamB;
 double fishWeightParamA;

@@ -69,7 +69,6 @@ fishSpawnVSuitV4	75
 fishSpawnVSuitV5	100
 fishSpawnVSuitV6	1000
 fishSpawnWtLossFraction	0.2
-fishSppDomFactor	1
 fishSwimParamA	1.83
 fishSwimParamB	33
 fishTurbidMin	5
