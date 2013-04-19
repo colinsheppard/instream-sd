@@ -9,8 +9,8 @@ randGenSeed                         62324
 numberOfSpecies                         2
 habParamFile                     TailraceHabitat.Params
 
-runStartDate                     10/1/1993
-runEndDate                       9/30/2007
+runStartDate                     10/1/2001
+runEndDate                       10/15/2001
 
 fishOutputFile                   LiveFishOut.csv
 fishMortalityFile                DeadFishOut.csv
@@ -23,7 +23,7 @@ appendFiles				 		 0
 siteLatitude                 40.9
 fracFlowChangeForMovement	 0.1
 
-writeCellFishReport			1
+writeCellFishReport			0
 
 @end
 

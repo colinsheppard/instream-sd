@@ -1010,7 +1010,7 @@ char **speciesStocking;
 
       for(numFishNdx=0; numFishNdx < initialFishRecord->number; numFishNdx++)
       {
-          FishParams* fishParams = nil;
+        //  FishParams* fishParams = nil;  Not used
           id newFish;
           double length;
           int age = initialFishRecord->age;
@@ -1029,7 +1029,7 @@ char **speciesStocking;
 
           [liveFish addLast: newFish];
           
-	      fishParams = [newFish getFishParams];
+	   //   fishParams = [newFish getFishParams];  Not used
 
           //
           // need to draw for random position
@@ -1219,8 +1219,7 @@ char **speciesStocking;
    int MAX_COUNT=1000000;
    id randCellDist = nil;
 
-   id lengthNormalDist = nil; // this distribution goes out of scope
-
+   id lengthNormalDist = nil;
 
    int arraySize = [fishStockList getCount];
    time_t nextTimeArray[arraySize];
@@ -1229,14 +1228,13 @@ char **speciesStocking;
    id aHabitatSpace;
    id <List> polyCellList = nil;
 
-   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
-   //fflush(0);
-
+   fprintf(stdout, "TroutModelSwarm >>>> stock >>>> BEGIN\n");
+   fflush(0);
 
    if([fishStockList getCount] == 0) return self;
 
    //
-   // set up the distribution that will place the fishes on the grid
+   // set up the distribution to draw fish lengths
    //
 
    lengthNormalDist = [NormalDist create: modelZone 
@@ -1278,15 +1276,15 @@ char **speciesStocking;
 					   setIntegerMin: 0
 						  setMax: [polyCellList getCount] - 1];
 
-                //fprintf(stdout, "%ld %s %d %d %d %f %f \n", 
-                                      //fishStockRecord->fishStockTime,
-	                              //[fishStockRecord->speciesSymbol getName],
-                                      //fishStockRecord->speciesNdx,
-                                      //fishStockRecord->age,
-                                      //fishStockRecord->numberOfFishThisAge,
-                                      //fishStockRecord->meanLength,
-                                      //fishStockRecord->stdDevLength);
-                //fflush(0);
+                fprintf(stdout, "%ld %s %d %d %d %f %f \n", 
+                                      fishStockRecord->fishStockTime,
+	                              [fishStockRecord->speciesSymbol getName],
+                                      fishStockRecord->speciesNdx,
+                                      fishStockRecord->age,
+                                      fishStockRecord->numberOfFishThisAge,
+                                      fishStockRecord->meanLength,
+                                      fishStockRecord->stdDevLength);
+                fflush(0);
          
 
                 for (fishNdx=0;fishNdx<fishStockRecord->numberOfFishThisAge;fishNdx++)
@@ -1311,6 +1309,7 @@ char **speciesStocking;
                                                  withTroutClass: fishStockRecord->troutClass
                                                             Age: fishStockRecord->age
                                                          Length: length];
+
 
                    [newFish setStockedFishActivity: Feed];
   
@@ -1353,14 +1352,13 @@ char **speciesStocking;
 		 
 		      if(counter >= MAX_COUNT)
                       {
-		           fprintf(stderr, "ERROR: TroutModelSwarm >>>> stock >>>> Failed to put fish at nonzero depth cell after %d attempts\n",counter);
+		           fprintf(stderr, "ERROR: TroutModelSwarm >>>> stock >>>> Failed to put fish at cell >50 cm deep after %d attempts\n",counter);
                            fflush(0);
                            exit(1);
                       }
                 }
           }
    }
-
 
    [listNdx drop];
 
@@ -1389,8 +1387,8 @@ char **speciesStocking;
 
    }
            
-   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
-   //fflush(0);
+   fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
+   fflush(0);
 
    return self;
 }
@@ -2815,8 +2813,8 @@ char **speciesStocking;
    //
    Trout* newFish = (Trout *) nil;
 
-   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
-   //fflush(0);
+   // fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
+   // fflush(0);
    
 
    newFish = [aTroutClass createBegin: modelZone];
@@ -2850,35 +2848,11 @@ char **speciesStocking;
   [newFish  setFishActivitySymbolsWith: Hide
                                   with: Feed];
 
- 
   //
   // Set ages and age symbols
   //
   [newFish setAge: age];
-  if(age == 0)
-  {
-      [newFish setAgeSymbol: Age0];
-  }
-  else if(age == 1)
-  {
-     [newFish setAgeSymbol: Age1];
-  }
-  else if(age == 2)
-  {
-      [newFish setAgeSymbol: Age2];
-  }
-  else if(age > 2)
-  {
-      [newFish setAgeSymbol: Age3Plus];
-  }
-  else
-  {
-      fprintf(stderr, "ERROR: TroutModelSwarm >>>> createNewFishWith >>>> improper fish age\n");
-      fflush(0);
-      exit(1);
-  }
-
-
+  [newFish setAgeSymbol: [self getAgeSymbolForAge: age]];
 
   [newFish setFishLength: fishLength];
   [newFish setFishCondition: 1.0];
