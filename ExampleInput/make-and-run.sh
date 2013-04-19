@@ -2,5 +2,5 @@
 
 cd ..
 make
-cd Tailrace
+cd ExampleInput/
 ../instreamSD2D.exe 
