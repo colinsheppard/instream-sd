@@ -69,6 +69,8 @@
   BOOL ERROR = NO;
   BOOL NOVARS = YES;
 
+  fprintf(stderr, "ParameterManager >>>> initializeParameters >>>> BEGIN\n");
+  fflush(0);
 
   // create a subzone to hold all the parameter objects
   parameterZone = [Zone create: [self getZone]];
@@ -555,6 +557,8 @@
 
   [controlPanel setStateStopped];
 
+  fprintf(stdout, "EXPERSWARM >>>> buildObjects >>>> after build param manager\n");
+  fflush(0);
   //
   // creates the controller for the subSwarm
   //
@@ -562,6 +566,8 @@
   [subSwarmControl setDisplayName: "Model Run Controller"];
   subSwarmControl = [subSwarmControl createEnd];
 
+  fprintf(stdout, "EXPERSWARM >>>> buildObjects >>>> after build model controller\n");
+  fflush(0);
 
   //
   // Get the classes of the objects that will be probed and altered at run time
@@ -573,6 +579,8 @@
   //
   experClassNdx = [experClassList listBegin: [self getZone]];
 
+  fprintf(stdout, "EXPERSWARM >>>> buildObjects >>>> after get class indices\n");
+  fflush(0);
   //
   // Get the labels (user defined names) of the objects that will be
   // altered at run time.
