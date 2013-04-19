@@ -110,7 +110,6 @@ double fishSpawnDSuitS4;
 double fishSpawnDSuitS5;
 double fishSpawnEggViability;
 char * fishSpawnEndDate;
-double fishSpawnMaxFlow;
 double fishSpawnMaxFlowChange;
 double fishSpawnMaxTemp;
 double fishSpawnMinCond;

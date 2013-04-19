@@ -48,14 +48,13 @@ fishSpawnDSuitS4	1
 fishSpawnDSuitS5	0
 fishSpawnEggViability	0.8
 fishSpawnEndDate	11/30
-fishSpawnMaxFlow	60
 fishSpawnMaxFlowChange	0.2
 fishSpawnMaxTemp	10
 fishSpawnMinAge	1
 fishSpawnMinCond	0.95
 fishSpawnMinLength	25
 fishSpawnMinTemp	4
-fishSpawnProb	0.333
+fishSpawnProb	0.04
 fishSpawnStartDate	10/1
 fishSpawnVSuitS1	0
 fishSpawnVSuitS2	0

@@ -19,4 +19,5 @@ habLatitude	41
 habPreyEnergyDensity	4000
 habSearchProd	1.00E-06
 habTwilightLength	0.5
+habMaxSpawnFlow	60
 @end	

@@ -1199,7 +1199,7 @@
        //
        // FLOW THRESHHOLD
        //
-       if([fishCell getDailyMeanFlow] > fishParams->fishSpawnMaxFlow)
+       if([fishCell getDailyMeanFlow] > [[fishCell getReach] getHabMaxSpawnFlow])
        {
            return NO;
        }
