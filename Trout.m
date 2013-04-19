@@ -1691,25 +1691,24 @@
 //
 // moveToMaximizeExpectedMaturity 
 //
+// Cleaned up 4/19/2013 SFR to remove redundancies with new KDTree
+// implementation of getNeighborsWithin: 
+//  
+//   "Speed up" that tried to skip cells with high velocity removed 4/2013
+//   because it didn't have much benefit.
+//  
 ///////////////////////////////////////////////////////////////////////
 - moveToMaximizeExpectedMaturity
 {
-  id <List> moveCellList = nil;
   id <ListIndex> destNdx = nil;
   FishCell *destCell=nil;
   FishCell *bestDest=nil;
   
   double bestExpectedMaturity=0.0;
-  double expectedMaturityHere=0.0;
   double expectedMaturityAtDest=0.0;
 
   //fprintf(stdout, "Trout >>>> moveToMaximizeExpectedMaturity >>>> BEGIN\n");
   //fflush(0);
-
-  /*
-   "Speed up" that tried to skip cells with high velocity removed 4/2013
-   because it didn't have much benefit.
-  */
 
   if(fishCell == nil) 
   {
@@ -1718,48 +1717,25 @@
      exit(1);
   }
 
+  //
+  // destCellList must be empty when passed to fishCell.
+  //
   if([destCellList getCount] > 0)
   {
      [destCellList removeAll];
   }
-  //
-  // calculate our expected maturity here
-  //
 
-  expectedMaturityHere = [self expectedMaturityAt: fishCell];
-
-  //
-  // Get our neighboring cells
-  // If we're really small, just get our cells adjacent to our fishCell
-  //
-  // destCellList must be empty when passed to fishCell.
-  //
   [fishCell getNeighborsWithin: maxMoveDistance
                       withList: destCellList];
 
-  //
-  // moveCellList will either point to destCellList or listOfAdjacentCells (from FishCell)
-  //
-
-  moveCellList = destCellList;
-
-  if([moveCellList getCount] == 0) 
+  if([destCellList getCount] == 0)
   {
-         moveCellList = [fishCell getListOfAdjacentCells];
-  }
-
-  //
-  // moveCellList is either the destCellList or the listOfAdjacentCells from the fishCell.
-  // Regardless it shouldn't be empty
-  //
-  if([moveCellList getCount] == 0)
-  {
-      fprintf(stderr, "ERROR: Trout >>>> moveToMaximizeExpectedMaturity >>>> moveCellList is empty\n");
+      fprintf(stderr, "ERROR: Trout >>>> moveToMaximizeExpectedMaturity >>>> destCellList is empty\n");
       fflush(0); 
       exit(1);
   }
 
-  destNdx = [moveCellList listBegin: scratchZone];
+  destNdx = [destCellList listBegin: scratchZone];
       while (([destNdx getLoc] != End) && ((destCell = [destNdx next]) != nil))
       {
           expectedMaturityAtDest = [self expectedMaturityAt: destCell];
@@ -1773,12 +1749,6 @@
 
       [destNdx drop];
       destNdx = nil;
-
-  if(expectedMaturityHere >= bestExpectedMaturity) 
-  {
-       bestDest = fishCell;
-       bestExpectedMaturity = expectedMaturityHere;
-  }
 
   if(bestDest == nil) 
   { 
@@ -2075,6 +2045,11 @@
 - (double) expectedMaturityAt: (FishCell *) aCell 
 { 
 
+ // Exclude dry cells unless they are fish's current cell
+ if([aCell getPolyCellDepth] <= 0.0 && aCell != fishCell) {
+	return -1.0;
+ }
+ 
  // Update standard resp. and CMax
  [self calcStandardRespirationAt: aCell];
  [self calcCmax: [aCell getTemperature]];
