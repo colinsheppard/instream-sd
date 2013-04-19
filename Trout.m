@@ -4061,12 +4061,11 @@ return self;
 
   char * readyTSString = "NO";
 
-  int currentDateDiff;
+  //int currentDateDiff;
 
   time_t currentTime = (time_t) 0;
 
   int fishSpawnDateDiff;
-  double currentTemp;
 
   char *lastSpawnDate = (char *) NULL;  
 
@@ -4112,8 +4111,6 @@ return self;
 
   lastSpawnDate = [[self getZone] alloc: 12*sizeof(char)];
 
-  currentTemp = [fishCell getTemperature];
-
   currentTime = [self getCurrentTimeT];
 
   fSED  = [timeManager getJulianDayWithDay: (char *) fishParams->fishSpawnEndDate];
@@ -4128,13 +4125,13 @@ return self;
   if(timeLastSpawned > (time_t) 0)
   {
        strncpy(lastSpawnDate, [timeManager getDateWithTimeT: timeLastSpawned], 12);
-       currentDateDiff = [timeManager getNumberOfDaysBetween: timeLastSpawned
-                                                         and: currentTime];
+       // currentDateDiff = [timeManager getNumberOfDaysBetween: timeLastSpawned
+                                                         // and: currentTime];
   } 
   else 
   {
          strncpy(lastSpawnDate, "00/00/0000", (size_t) 12);
-         currentDateDiff = -1;
+        // currentDateDiff = -1;
   }
 
   fprintf(spawnReportPtr,"%-15s%-12s%-4d%-9s%-12f%-15f%-18f%-12f%-12f%-20d%-15s%-12s\n",
