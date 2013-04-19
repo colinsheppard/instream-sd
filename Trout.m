@@ -1037,6 +1037,11 @@
 
   spawnedThisSeason = YES;
 
+  //
+  // reduce weight of spawners
+  //
+  fishWeight = fishWeight * (1.0 - fishParams->fishSpawnWtLossFraction);
+
   //fprintf(stdout, "Trout >>>> Spawn >>>> END\n");
   //fflush(0);
 
