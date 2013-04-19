@@ -370,6 +370,18 @@
 }
 
 
+//////////////////////////////////////
+//
+// getSex
+//
+///////////////////////////////////////
+- (id <Symbol>) getSex
+{
+   return sex;
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // setAge
@@ -989,6 +1001,9 @@
   // incur 1-day increase in mortality risk due to spawning
 
   id spawnCell;
+  id <List> fishList;
+  id <ListIndex> fishLstNdx;
+  id anotherTrout = nil;
 
   //fprintf(stdout, "Trout >>>> Spawn >>>> BEGIN\n");
   //fflush(0);
@@ -1033,14 +1048,37 @@
   //fflush(0);
   [self createAReddInCell: spawnCell];
 
-  timeLastSpawned = [self getCurrentTimeT];
-
-  spawnedThisSeason = YES;
-
   //
   // reduce weight of spawners
   //
   fishWeight = fishWeight * (1.0 - fishParams->fishSpawnWtLossFraction);
+
+  timeLastSpawned = [self getCurrentTimeT];
+  spawnedThisSeason = YES;
+
+  //
+  // Now, find male spawner.
+  //
+  fishList = [model getLiveFishList]; 
+
+  if(fishList == nil){
+     fprintf(stderr, "ERROR: Trout >>>> spawn >>>> fishList is nil\n");
+     fflush(0);
+     exit(1);
+  }
+
+  //
+  // Search for first (= largest) eligible
+  // male, if there is one.
+  //
+  fishLstNdx = [fishList listBegin: scratchZone];
+  while(([fishLstNdx getLoc] != End) && ((anotherTrout = [fishLstNdx next]) != nil)){
+       if([self shouldISpawnWith: anotherTrout]){
+           [anotherTrout updateMaleSpawner];
+           break;
+       }
+  }
+  [fishLstNdx drop];
 
   //fprintf(stdout, "Trout >>>> Spawn >>>> END\n");
   //fflush(0);
@@ -1210,6 +1248,76 @@
    
 } // readyToSpawn
 
+
+
+
+/////////////////////////////////////////////
+//
+// shouldISpawnWith
+//
+/////////////////////////////////////////////
+- (BOOL) shouldISpawnWith: aTrout
+{
+   if([aTrout getSex] != Male)
+   {
+       return NO;
+   }
+   if([aTrout getSpecies] != species)
+   {
+       return NO;
+   }
+   if([aTrout getReachSymbol] != [self getReachSymbol])
+   {
+       return NO;
+   }
+   if([aTrout getFishLength] < fishParams->fishSpawnMinLength)
+   {
+       return NO;
+   }
+   if([aTrout getAge] < fishParams->fishSpawnMinAge)
+   {
+       return NO;
+   }
+   if([aTrout getFishCondition] < fishParams->fishSpawnMinCond) 
+   {
+       return NO;
+   }
+   if([aTrout getSpawnedThisSeason] == YES) 
+   {
+       return NO;
+   }
+
+   return YES;
+}
+
+
+////////////////////////////////////
+//
+// updateMaleSpawner
+//
+///////////////////////////////////       
+- updateMaleSpawner 
+{
+  if(sex != Male)
+  {
+     fprintf(stderr, "ERROR: Trout >>>> updateMaleSpawner >>>> fish is not male\n");
+     fflush(0);
+     exit(1);
+  }
+
+  spawnedThisSeason = YES;
+  fishWeight = fishWeight * (1.0 - fishParams->fishSpawnWtLossFraction);
+
+  // fprintf(stdout, "I'm a male and I spawned, with condition: %f\n", fishCondition);
+  // fflush(0);
+
+  return self;
+}  
+       
+- (BOOL) getSpawnedThisSeason
+{
+   return spawnedThisSeason;
+}
 
 
 

@@ -279,7 +279,6 @@ id toggledFishForHabSurvUpdate;
 + createBegin: aZone;
 - createEnd;
 
-
 - (id <Symbol>) getReachSymbol;
 
 //
@@ -303,6 +302,7 @@ id toggledFishForHabSurvUpdate;
 - setSpeciesNdx: (int) anIndex;
 - (int) getSpeciesNdx;
 - (id <Symbol>) getSpecies;
+- (id <Symbol>) getSex;
 - setSpecies: (id <Symbol>) aSymbol;
 
 - setFishActivitySymbolsWith: (id <Symbol>) aHideSymbol
@@ -315,6 +315,8 @@ id toggledFishForHabSurvUpdate;
 
 - (FishCell *) getCell;
 - setCell: (FishCell *) aFishCell;
+
+- (BOOL) getSpawnedThisSeason;
 
 //
 // This is used to set a fish's activity, 
@@ -394,6 +396,8 @@ id toggledFishForHabSurvUpdate;
 - setTimeTLastSpawned: (time_t) aTimeT;
 - (time_t) getTimeTLastSpawned;
 - (BOOL) readyToSpawn;
+- (BOOL) shouldISpawnWith: aTrout;
+- updateMaleSpawner;
 - (FishCell *) findCellForNewRedd;
 - createAReddInCell: (FishCell *) aCell;
 
