@@ -46,6 +46,7 @@ fishSpawnDSuitS2	0
 fishSpawnDSuitS3	1
 fishSpawnDSuitS4	1
 fishSpawnDSuitS5	0
+fishSpawnEggViability	0.8
 fishSpawnEndDate	5/31
 fishSpawnMaxFlow	60
 fishSpawnMaxFlowChange	0.2

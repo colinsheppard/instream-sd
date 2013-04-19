@@ -1295,7 +1295,8 @@
   [newRedd setSpecies: species]; 
 
   [newRedd setNumberOfEggs: fishParams->fishFecundParamA
-                          * pow(fishLength, fishParams->fishFecundParamB)];
+         * pow(fishLength, fishParams->fishFecundParamB)
+         * fishParams->fishSpawnEggViability];
 
   [newRedd setSpawnerLength: fishLength];
 
