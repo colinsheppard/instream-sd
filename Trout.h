@@ -82,6 +82,7 @@
 
 double driftFoodIntake;
 double driftNetEnergy;
+double detectDistance;
 double searchFoodIntake;
 double searchNetEnergy;
 double standardResp;
@@ -455,14 +456,15 @@ id toggledFishForHabSurvUpdate;
 
 // FOOD INTAKE: DRIFT FEEDING STRATEGY
 
-- (double) calcReactDistance: (FishCell *) aCell;
+- (double) calcDetectDistanceAt: (FishCell *) aCell;
 - (double) calcCaptureArea: (FishCell *) aCell;
+- (double) calcCaptureSuccess: (FishCell *) aCell;
 - (double) calcDriftIntake: (FishCell *) aCell;
 
 
 //FOOD INTAKE: ACTIVE FEEDING STRATEGY
 
-- updateMaxSwimSpeed;
+- (double) calcMaxSwimSpeedAt: (FishCell *) aCell;
 - (double) getMaxSwimSpeed;
 - (double) calcSearchIntakeAt: (FishCell *) aCell;
 

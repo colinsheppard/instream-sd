@@ -87,10 +87,12 @@ double fishFecundParamA;
 double fishFecundParamB;
 double fishFitnessHorizon;
 
-double fishReactParamA;
-double fishReactParamB;
-double fishReactParamC;
-double fishReactParamD;
+double fishMaxSwimParamA;
+double fishMaxSwimParamB;
+double fishMaxSwimParamC;
+double fishMaxSwimParamD;
+double fishMaxSwimParamE;
+
 double fishRespParamA;
 double fishRespParamB;
 double fishRespParamC;
@@ -130,16 +132,14 @@ double fishSpawnVSuitV4;
 double fishSpawnVSuitV5;
 double fishSpawnVSuitV6;
 double fishSpawnWtLossFraction;
-double fishSwimParamA;
-double fishSwimParamB;
 double fishWeightParamA;
 double fishWeightParamB;
 
-
 double fishTurbidMin;
-double fishTurbidParamA;
-double fishTurbidParamB;
-
+double fishTurbidExp;
+double fishDetectDistParamA;
+double fishDetectDistParamB;
+double fishTurbidThreshold;
 
 double mortFishAqPredDayMin;
 double mortFishAqPredNightMin;

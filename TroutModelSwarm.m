@@ -849,6 +849,10 @@ char **speciesStocking;
 - (double) getReproFuncFor: aFish 
                 withLength: (double) aLength
 {
+	//fprintf(stdout, "ModelSwarm >> getReproFuncFor fish with length: %f returns: %f\n",aLength,
+	//	[[reproLogisticFuncMap at: [aFish getSpecies]]
+    //                      evaluateFor: aLength] );
+	//fflush(0);
       return [[reproLogisticFuncMap at: [aFish getSpecies]]
                           evaluateFor: aLength];
 }

@@ -1848,6 +1848,7 @@
   captureArea = [self calcCaptureArea: bestDest];
   //cMax = [self calcCmax: [bestDest getTemperature] ];
   cMaxFT = [self calcCmaxTempFunction: [bestDest getTemperature]];
+  detectDistance = [self calcDetectDistanceAt: bestDest]; 
   driftFoodIntake = [self calcDriftFoodIntakeAt: bestDest];
   driftNetEnergy = [self calcDriftNetEnergyAt: bestDest];
   searchFoodIntake = [self calcSearchFoodIntakeAt: bestDest];
@@ -1863,8 +1864,6 @@
   
   nonStarvSurvival = [self getNonStarvSPAt: bestDest
                               withActivity: fishActivity];
-
-  reactiveDistance = [self calcReactDistance: bestDest];
 
   fishSwimSpeed = cellSwimSpeed;       // cellSwimSpeed is set in -calcNetEnergyForCell
 
@@ -2478,7 +2477,7 @@
   // Added 6/13/2001 SKJ
   //
   
-  [self updateMaxSwimSpeed];
+  maxSwimSpeed = [self calcMaxSwimSpeedAt: fishCell];
 
   
   //fprintf(stdout, "Trout >>>> grow >>>> END\n");
@@ -2767,6 +2766,8 @@
           withActivity: (FishActivity) aFishActivity 
 {
   double aNonStarvSP = 1;
+  double aMaxSwimSpeed = [self calcMaxSwimSpeedAt: aCell];
+
 
   //
   // Temporarily set instance variable for whether fish is
@@ -2787,14 +2788,14 @@
   {
       fishActivity = HIDE;
       if([aCell getIsHidingCoverAvailable]) hidingCover = YES;
-      swimSpdVelocityRatio = [aCell getPolyCellVelocity]/maxSwimSpeed;
+      swimSpdVelocityRatio = [aCell getPolyCellVelocity]/aMaxSwimSpeed;
        // fprintf(stdout, "Trout >>>> HIDING >>>> ratio = %f maxSwimSpeed = %f\n", swimSpdVelocityRatio,maxSwimSpeed);
        // fflush(0);
   }
   else 
   {
       fishActivity = FEED;
-      swimSpdVelocityRatio = cellSwimSpeed/maxSwimSpeed;
+      swimSpdVelocityRatio = cellSwimSpeed/aMaxSwimSpeed;
        // fprintf(stdout, "Trout >>>> FEEDING >>>> ratio = %f\n", swimSpdVelocityRatio);
        // fflush(0);
  
@@ -2874,126 +2875,140 @@
 //
 //
 ///////////////////////////////////////
-//
-// calcReactDistance
-//
-//////////////////////////////////////
-- (double) calcReactDistance: (FishCell *) aCell 
-{
-  double aReactDistance;
-  double fRPA=0.0,fRPB=0.0,fRPC=0.0,fRPD=0.0;
-
-  double fishTurbidMin;
-  double fTPA=0.0, fTPB=0.0;
-  double turbidity;
-
-  double velocity=0.0;
-  double temperature=0.0;
-
-  fRPA = fishParams->fishReactParamA; 
-  fRPB = fishParams->fishReactParamB; 
-  fRPC = fishParams->fishReactParamC; 
-  fRPD = fishParams->fishReactParamD; 
-
-  if(aCell == nil)
-  {
-      fprintf(stderr, "ERROR: TROUT >>>> calcReactDist aCell = %p\n", aCell);
-      fflush(0);
-      exit(1);
-  }
-
-  temperature = [aCell getTemperature];
-  velocity = [aCell getPolyCellVelocity];
-
-  aReactDistance = fishLength*((2.197-fRPA-fRPB*(velocity/fishLength)-(fRPC*temperature))/fRPD);
-
-  //
-  // Test for reactive distance less than zero is needed
-  // BOTH here and after turbidity calculation - otherwise
-  // you can get positive reactive distance when it should be zero.
-  //
-  //
-  if(aReactDistance < 0.0) 
-  {
-      aReactDistance = 0.0;
-  }
-  else 
-  {
-      //
-      // TURBIDITY
-      //
-      fishTurbidMin = fishParams->fishTurbidMin;
-      fTPA = fishParams->fishTurbidParamA; 
-      fTPB = fishParams->fishTurbidParamB; 
-      turbidity = [aCell getTurbidity];
- 
-      //
-      //  if turbidity <= fishTurbidMin (NTU), 
-      //  then aReactDistance is unaffected
-      //  otherwise ...
-      //
-      if(turbidity > fishTurbidMin)
-      {
-         aReactDistance = aReactDistance * ((turbidity * fTPA) + fTPB);
-      }
-
-      if(aReactDistance < 0.0) 
-      {
-         aReactDistance = 0.0;  // see above comment
-      }
-
-  } //else
-
-  if(currentPhase == NIGHT)
-  {
-      aReactDistance *= fishParams->fishReactDistNightFactor;
-  }
-
-  return aReactDistance;
-}
-
-
-///////////////////////////////////////////
-//
-//calcCaptureArea
-//
-//////////////////////////////////////////
-- (double) calcCaptureArea: (FishCell *) aCell 
-{
-  double aCaptureArea;
-  double depth;
-  double aReactDistance;
-  double minvalue=0.0;
-
-  depth = [aCell getPolyCellDepth];
-  aReactDistance = [self calcReactDistance: aCell];
-
-  minvalue = (aReactDistance < depth) ? aReactDistance : depth;
-
-  aCaptureArea = 2*aReactDistance*minvalue;
-
-  return aCaptureArea;
-}
-
-
 /////////////////////////////////
 //
 // calcDriftIntake
 // Comment: Intake = hourly rate 
 //
+// Replaced with method from inSTREAM Version 5 4/2013 SFR
 /////////////////////////////////
 - (double) calcDriftIntake: (FishCell *) aCell 
 {
   double aDriftIntake;
   double aCaptureArea;
+  double aCaptureSuccess;
 
   aCaptureArea = [self calcCaptureArea: aCell];
+  aCaptureSuccess = [self calcCaptureSuccess: aCell];
 
-  aDriftIntake = [aCell getHabDriftConc] * [aCell getPolyCellVelocity] * aCaptureArea * 3600;
+
+  aDriftIntake =   [aCell getHabDriftConc] 
+                 * [aCell getPolyCellVelocity]
+                 * aCaptureArea 
+                 * aCaptureSuccess
+                 * 3600.0;
 
   return aDriftIntake;
+
 }
 
+///////////////////////////////////////////
+//
+//calcCaptureArea
+//
+// Replaced with method from inSTREAM Version 5 4/2013 SFR
+//
+//////////////////////////////////////////
+- (double) calcCaptureArea: (FishCell *) aCell 
+{
+   double aCaptureArea;
+   double depth;
+   double minValue=0.0;
+   double aDetectDistance = [self calcDetectDistanceAt: aCell];
+
+   depth = [aCell getPolyCellDepth];
+   minValue = (aDetectDistance < depth) ? detectDistance : depth;
+   aCaptureArea = 2.0*aDetectDistance*minValue;
+
+   return aCaptureArea;
+}
+
+//////////////////////////////////////////////////////////////
+//
+// calcDetectDistanceAt
+//
+// We do this for each cell because a fish may be looking 
+// at cell that is in a reach different than the one a fish
+// is currently in
+//
+//  Effect of night included here.
+//////////////////////////////////////////////////////////////
+- (double)  calcDetectDistanceAt: (FishCell *) aCell
+{
+   double habTurbidity;
+   double turbidityFunction = 1.0;
+   double aDetectDistance;
+   double expFunction = -LARGEINT;
+   double fishTurbidThreshold = fishParams->fishTurbidThreshold;
+
+   if(aCell == nil)
+   {
+      fprintf(stderr, "ERROR: Trout >>>> calcDetectDistance >>>> aCell is nil\n");
+      fflush(0);
+      exit(1);
+   }
+
+   //
+   // getTurbidity is a pass through to the habitatSpace 
+   //
+   habTurbidity = [aCell getTurbidity];
+
+   //
+   // The following if block modified 4/13/06 SKJ
+   //
+   if(habTurbidity > fishTurbidThreshold)
+   {
+      expFunction = exp(fishParams->fishTurbidExp * (habTurbidity - fishTurbidThreshold));
+      
+      turbidityFunction = (expFunction >= fishParams->fishTurbidMin) ? expFunction 
+                                                                     : fishParams->fishTurbidMin;
+   }
+
+   aDetectDistance =   (fishParams->fishDetectDistParamA 
+                     + (fishLength * fishParams->fishDetectDistParamB))
+                     * turbidityFunction;
+					 
+	// Effect of night on drift detection
+   if(currentPhase == NIGHT)
+   {
+      aDetectDistance *= fishParams->fishSearchNightFactor;
+   }
+ 
+   return aDetectDistance;
+}
+
+
+///////////////////////////////////////////////
+//
+// calcCaptureSuccess
+//
+//////////////////////////////////////////////
+- (double) calcCaptureSuccess: (FishCell *) aCell
+{
+   double aCaptureSuccess;
+   double velocity = 0.0;
+   double aMaxSwimSpeed = [self calcMaxSwimSpeedAt: aCell];
+   
+   if(captureLogistic == nil)
+   {
+      fprintf(stderr, "ERROR: Trout >>>> calcCaptureSuccess >>>> captureLogistic is nil\n");
+      fflush(0);
+      exit(1);
+   }
+
+   if(aCell == nil)
+   {
+      fprintf(stderr, "ERROR: Trout >>>> calcCaptureSuccess >>>> aCell is nil\n");
+      fflush(0);
+      exit(1);
+   }
+
+   velocity = [aCell getPolyCellVelocity];
+
+   aCaptureSuccess = [captureLogistic evaluateFor: (velocity/aMaxSwimSpeed)];
+
+   return aCaptureSuccess;
+}
 
 
 /////////////////////////////////////////
@@ -3004,20 +3019,37 @@
 //
 ////////////////////////////////////////
 //
-// updateMaxSwimSpeed
+// calcMaxSwimSpeedAt:
+//
+// updateMaxSwimSpeed replaced with inSTREAM 5 method, SFR 4/2013
 //
 ///////////////////////////////////////
-- updateMaxSwimSpeed
+- (double) calcMaxSwimSpeedAt: (FishCell *) aCell 
 {
-  double fSPA=0.0,fSPB=0.0;
+  double fMSPA = fishParams->fishMaxSwimParamA;
+  double fMSPB = fishParams->fishMaxSwimParamB;
+  double fMSPC = fishParams->fishMaxSwimParamC;
+  double fMSPD = fishParams->fishMaxSwimParamD;
+  double fMSPE = fishParams->fishMaxSwimParamE;
+  double T = [aCell getTemperature];
+  double aMaxSwimSpeed;
 
-  fSPA = fishParams->fishSwimParamA;
-  fSPB = fishParams->fishSwimParamB;
+  //fprintf(stdout, "Trout >>>> calcMaxSwimSpeedAt >>>> temperature = %f \n", T);
+  //fflush(0);
 
-  maxSwimSpeed = fSPA * fishLength + fSPB;
+  aMaxSwimSpeed =   (fMSPA*fishLength + fMSPB)
+                 * (fMSPC*T*T + fMSPD*T + fMSPE);
 
-  return self;
+  if(aMaxSwimSpeed <= 0.0)
+  {
+      fprintf(stderr, "ERROR: Trout >>>> calcMaxSwimSpeed >>>> aMaxSwimSpeed is less than or equal to 0\n");
+      fflush(0); 
+      exit(1); 
+  }
+
+  return aMaxSwimSpeed;
 } 
+
 
 - (double) getMaxSwimSpeed
 {
@@ -3035,21 +3067,21 @@
   double fSA;
   double velocity=0.0;
   double habSearchProd=0.0;
+  double aMaxSwimSpeed = [self calcMaxSwimSpeedAt: aCell];
   
   fSA = fishParams->fishSearchArea;
 
   velocity = [aCell getPolyCellVelocity];
   habSearchProd = [aCell getHabSearchProd];
  
-  if(velocity > maxSwimSpeed) 
+  if(velocity > aMaxSwimSpeed) 
   {
      aSearchIntake = 0.0;
   }
   else 
   {
-     aSearchIntake = habSearchProd * fSA * (maxSwimSpeed - velocity)/maxSwimSpeed;
+     aSearchIntake = habSearchProd * fSA * (aMaxSwimSpeed - velocity)/aMaxSwimSpeed;
   }
-
 
   if(currentPhase == NIGHT)
   {
