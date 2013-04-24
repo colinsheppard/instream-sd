@@ -3056,6 +3056,12 @@
    return maxSwimSpeed;
 }
 
+- setMaxSwimSpeed: (double) aSwimSpeed 
+{
+  maxSwimSpeed = aSwimSpeed;
+  return self;
+}
+
 ////////////////////////////////////////////////////
 //
 //calcSearchIntakeAt

@@ -1,5 +1,9 @@
 # Calibrated rainbow trout parameters for Tailrace
 @begin	
+
+fishCaptureParam1                  1.6
+fishCaptureParam9                  0.5
+
 fishCmaxParamA	0.628
 fishCmaxParamB	-0.3
 fishCmaxTempF1	0.05
@@ -85,15 +89,12 @@ fishSpawnVSuitV5	100
 fishSpawnVSuitV6	1000
 fishSpawnWtLossFraction	0.2
 
-fishSwimParamA	1.83
-fishSwimParamB	33
-
 fishTurbidMin	5
 fishTurbidExp                  -0.0711
 fishTurbidMin                      0.1
 fishTurbidThreshold                5.0
 
-fishSwimParamA	1.83
+fishWeightParamA	0.0185
 fishWeightParamB	2.9
 
 mortFishAngleFracKeptIllegal	0.05

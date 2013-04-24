@@ -466,6 +466,7 @@ id toggledFishForHabSurvUpdate;
 
 - (double) calcMaxSwimSpeedAt: (FishCell *) aCell;
 - (double) getMaxSwimSpeed;
+- setMaxSwimSpeed: (double) aSwimSpeed;
 - (double) calcSearchIntakeAt: (FishCell *) aCell;
 
 

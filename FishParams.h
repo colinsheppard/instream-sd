@@ -93,6 +93,9 @@ double fishMaxSwimParamC;
 double fishMaxSwimParamD;
 double fishMaxSwimParamE;
 
+double fishCaptureParam1;
+double fishCaptureParam9;
+
 double fishRespParamA;
 double fishRespParamB;
 double fishRespParamC;

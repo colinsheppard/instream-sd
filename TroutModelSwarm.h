@@ -221,6 +221,7 @@ id <List> fishStockList;
 // FishParameters
 //
 id <Map> fishParamsMap; //One for each species
+id <Map> captureLogisticMap; //One for each species
 
 //
 // Variables added for the breakout reports
@@ -323,6 +324,8 @@ double checkParam;
 - createCMaxInterpolators;
 - createSpawnDepthInterpolators;
 - createSpawnVelocityInterpolators;
+- createCaptureLogistics;
+
 - (HabitatManager *) getHabitatManager;
 - toggleCellsColorRepIn: aHabitatSpace;
 - (id <List>) getListOfMortalityCounts;
