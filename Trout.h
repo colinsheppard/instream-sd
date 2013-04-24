@@ -96,7 +96,7 @@ double hourlySearchConRate;
 //
 double totalFoodConsumptionThisStep;
 
-double reactiveDistance;
+//double reactiveDistance;
 double captureArea;
 double cMax;
 double cMaxFT;
