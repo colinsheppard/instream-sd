@@ -53,7 +53,6 @@ fishRespParamD	0.03
 fishSearchArea	20000
 
 fishSearchNightFactor	0.5
-fishShelterSpeedFrac	0.5
 
 fishSpawnDSuitD1	0
 fishSpawnDSuitD2	5

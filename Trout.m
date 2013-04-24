@@ -3369,7 +3369,7 @@
 {
   if(([self getIsShelterAvailable: aCell] == YES) && (aFeedStrategy == DRIFT))
   {
-      return ([aCell getPolyCellVelocity] * fishParams->fishShelterSpeedFrac); 
+      return ([aCell getPolyCellVelocity] * [aCell getHabShelterSpeedFrac]); 
      
   }
   else if(aFeedStrategy == HIDE)

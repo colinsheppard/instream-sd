@@ -100,7 +100,6 @@ double fishRespParamA;
 double fishRespParamB;
 double fishRespParamC;
 double fishRespParamD;
-double fishShelterSpeedFrac;
 double fishSearchArea;
 int   fishSpawnMinAge;
 double fishSpawnDSuitD1;
