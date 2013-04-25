@@ -88,7 +88,6 @@ fishSpawnVSuitV5	100
 fishSpawnVSuitV6	1000
 fishSpawnWtLossFraction	0.2
 
-fishTurbidMin	5
 fishTurbidExp                  -0.0711
 fishTurbidMin                      0.1
 fishTurbidThreshold                5.0
