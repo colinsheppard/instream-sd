@@ -240,6 +240,18 @@
     return self;
 }
 
+//////////////////////////////////////////////
+//
+// resetFishActualDailyIntake
+//
+/////////////////////////////////////////////
+- resetFishActualDailyIntake
+{
+    fishActualDailyIntake = 0.0;
+    return self;
+}
+
+
 
 
 
@@ -2048,7 +2060,8 @@
 	return -1.0;
  }
  
- // Update standard resp. and CMax
+ // Update standard resp. and CMax. CMax is re-calculated each time because
+ // it is temperature-dependent and hence could differ among reaches.
  [self calcStandardRespirationAt: aCell];
  [self calcCmax: [aCell getTemperature]];
 
@@ -2436,7 +2449,6 @@
 //  Added for TMII paper: total food consumption
 //
           totalFoodConsumptionThisStep = (hourlyDriftConRate + hourlySearchConRate) * (numHoursSinceLastStep - fishParams->fishMovePenaltyTime);
-//
       }
       else 
       {
@@ -2465,12 +2477,15 @@
 //  Added for TMII paper: total food consumption
 //
       totalFoodConsumptionThisStep = (hourlyDriftConRate + hourlySearchConRate) * (numHoursSinceLastStep);
-//
   }
+
 
   fishLength = [self getLengthForNewWeight: fishWeight];
   fishCondition = [self getConditionForWeight: fishWeight andLength: fishLength];
   fishFracMature = [self getFracMatureForLength: fishLength];
+
+  //  Added to implement cMax:
+  fishActualDailyIntake += totalFoodConsumptionThisStep;
 
   //
   // Added 6/13/2001 SKJ
@@ -3254,12 +3269,19 @@
    {
        minvalue = anAvailableFood;
    }
-   if(cMax < minvalue) 
+   if((cMax - fishActualDailyIntake) < minvalue) 
    {
-      minvalue = cMax;
+      minvalue = (cMax - fishActualDailyIntake);
    }
 
    aDriftFoodIntake = minvalue;
+
+   if(aDriftFoodIntake < 0.0)
+   {
+        fprintf(stderr, "ERROR: Trout >>>> calcDriftFoodIntakeAt: Negative drift food intake\n");
+        fflush(0);
+        exit(1);
+    }
 
    return aDriftFoodIntake; 
 }
@@ -3375,12 +3397,19 @@
    {
       minvalue = anAvailableSearchFood;
    }
-   if(cMax < minvalue) 
+   if((cMax - fishActualDailyIntake) < minvalue) 
    {
-      minvalue = cMax;
+      minvalue = (cMax - fishActualDailyIntake);
    }
 
    aSearchFoodIntake = minvalue;
+   
+   if(aSearchFoodIntake < 0.0)
+   {
+        fprintf(stderr, "ERROR: Trout >>>> calcSearchFoodIntakeAt: Negative search food intake\n");
+        fflush(0);
+        exit(1);
+    }
 
    return aSearchFoodIntake;
 }
@@ -3583,7 +3612,7 @@
       if((mvRptPtr = fopen(mvRptFName,"w+")) != NULL ) 
       {
 
-     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-17s\n",
+     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-15s%-17s\n",
                                                             "Date",
                                                             "Hour",
                                                             "FishID",
@@ -3628,6 +3657,7 @@
 							    "searchNetEnergy",
 							    "feedStrategy",
 							    "nonStarvSurv",
+							    "dailyIntake",
 							    "ntEnrgyFrBstCll");
      mR++;
  fclose(mvRptPtr);
@@ -3648,7 +3678,7 @@ else
      exit(1);
 
   }
-  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15s%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E\n",
+  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15s%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E%-15E\n",
                                                    date,
                                                    hour,
                                                    self,
@@ -3693,6 +3723,7 @@ else
 						   searchNetEnergy,
 						   feedStrategy,
 						   nonStarvSurvival,
+						   fishActualDailyIntake,
 						   netEnergyForBestCell);
 
 

@@ -100,6 +100,7 @@ double totalFoodConsumptionThisStep;
 double captureArea;
 double cMax;
 double cMaxFT;
+double fishActualDailyIntake;
 
 double starvPa;
 double starvPb;
@@ -344,6 +345,8 @@ id toggledFishForHabSurvUpdate;
 - (id <Symbol>) getCauseOfDeath;
 - (time_t) getTimeOfDeath;
 
+- resetFishActualDailyIntake;
+
 //
 // added to implement the survival manager
 //
@@ -474,7 +477,6 @@ id toggledFishForHabSurvUpdate;
 
 //- (double) calcCmax: (double) aTemperature;
 - calcCmax: (double) aTemperature;
-
 
 // FOOD INTAKE: FOOD AVAILABILITY
 

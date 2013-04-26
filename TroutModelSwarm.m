@@ -1818,6 +1818,7 @@ char **speciesStocking;
   //
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
+  // Also reset the fishs' daily total consumption to zero.
   //
   timeTillDaytimeStarts  = modelTime - [[reachList getFirst] getDaytimeStartTime];
  
@@ -1828,6 +1829,8 @@ char **speciesStocking;
       [reddList forEach: M(develop)];
       [reddList forEach: M(emerge)];
       [self processEmptyReddList];
+
+      [liveFish forEach: M(resetFishActualDailyIntake)];
 
       #ifdef REDD_SURV_REPORT
       //
@@ -2678,6 +2681,8 @@ char **speciesStocking;
   [newFish setSpawnDepthInterpolator: aSpawnDepthInterpolator];
   [newFish setSpawnVelocityInterpolator: aSpawnVelocityInterpolator];
   [newFish setCaptureLogistic: aCaptureLogistic];
+  
+  [newFish resetFishActualDailyIntake];
 
   fishCounter++;  // Give each fish a serial number ID
   [newFish setFishID: fishCounter];
@@ -2916,6 +2921,7 @@ char **speciesStocking;
 
   [newFish calcStarvPaAndPb];
 
+  [newFish resetFishActualDailyIntake];
 
   newFish = [newFish createEnd];
         
