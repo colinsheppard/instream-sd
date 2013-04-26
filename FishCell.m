@@ -1391,6 +1391,8 @@ Boston, MA 02111-1307, USA.
   [fishIContain addLast: aFish];
   [aFish setCell: self];
 
+  [aFish setHabitatSpace: reach];
+
   numberOfFish = [fishIContain getCount];
 
   return self;

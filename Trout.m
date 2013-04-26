@@ -1899,8 +1899,6 @@
    // (which depends on whether it feeds)
    //
 
-    iAmPiscivorous = NO;
-
    switch(fishFeedingStrategy) 
    {
      case DRIFT: 
@@ -1920,12 +1918,6 @@
                       inShelter = "NO";
                 }
 
-		if(fishLength >= fishParams->fishPiscivoryLength)
-		{
-			iAmPiscivorous = YES;
-			[habitatSpace incrementNumPiscivorousFish];
-		}
-
         break;
      
      case SEARCH:
@@ -1939,15 +1931,8 @@
          hidingCover = NO;
          feedStrategy = "SEARCH";  //Probe Variable
 
-		if(fishLength >= fishParams->fishPiscivoryLength)
-		{
-			iAmPiscivorous = YES;
-			[habitatSpace incrementNumPiscivorousFish];
-		}
-
 		break;
 
-     
      case HIDE:
 
          hourlyDriftConRate = 0.0;
@@ -1975,21 +1960,6 @@
                  break;
     }
 
-
-    // The variable toggledFishForHabSurvUpdate is set each day by the model swarm
-    // method setUpdateAqPredToYes, part of the updateActions.
-    // It is set to yes if this fish is either (a) the smallest
-    // piscivory-length fish or (b) the last fish. The aquatic predation
-    // survival probabilities in all reaches need to be updated when this fish moves. 
-    
-    if(toggledFishForHabSurvUpdate == self)
-    {
-		//fprintf(stdout, "TROUT >>>> moveTo >>>> I triggered aq pred update with length = %f\n", fishLength);
-		//fflush(0);
-       [habitatManager updateAqPredProbs];
-	   // Now untoggle myself
-	   toggledFishForHabSurvUpdate = nil;
-    }
 
     //
     // Added for breakout report 3/8/2002
@@ -2024,9 +1994,38 @@
 
    [fishCell removeFish: self];
    [bestDest moveHere: self]; 
-   fishCell = bestDest;
+   // fishCell = bestDest;  Done by cell in addFish
 
    CellNumber = [bestDest getPolyCellNumber];
+   
+   // Now that we're in the new reach, update pisciv. fish density
+  iAmPiscivorous = NO;
+
+  if(fishActivity == FEED)
+    {
+		if(fishLength >= fishParams->fishPiscivoryLength)
+		{
+			iAmPiscivorous = YES;
+			[habitatSpace incrementNumPiscivorousFish];
+		}
+    }
+
+	// The variable toggledFishForHabSurvUpdate is set each day by the model swarm
+	// method setUpdateAqPredToYes, part of the updateActions.
+	// It is set to yes if this fish is either (a) the smallest
+	// piscivory-length fish or (b) the last fish. The aquatic predation
+	// survival probabilities in all reaches need to be updated when this fish moves. 
+    if(toggledFishForHabSurvUpdate == self)
+    {
+		//fprintf(stdout, "TROUT >>>> moveTo >>>> I triggered aq pred update with length = %f\n", fishLength);
+		//fflush(0);
+       [habitatManager updateAqPredProbs];
+	   // Now untoggle myself
+	   toggledFishForHabSurvUpdate = nil;
+    }
+
+
+
 
    //fprintf(stdout, "Trout >>>> moveTo >>>> END\n");
    //fflush(0);
@@ -2539,11 +2538,11 @@
 
     /*
            The mortality risks in the probMap are defined in Cell.m
-           where the survival manager is set up. They occure in this 
+           where the survival manager is set up. They occur in this 
            order:
-               0. High Velocity
-               1. Stranding
-               2. Spawning
+               0. High temperature
+			   1. High Velocity
+               2. Stranding
                3. Aquatic predation
                4. Terrestial Predation
                5. Poor Condition
@@ -2571,10 +2570,10 @@
      
        while(([lstNdx getLoc] != End) && ((aProb = [lstNdx next]) != nil))
        {
-           //fprintf(stdout, "Trout >>>> die >>>> probName = %s\n", [aProb getName]);
-           //fflush(0);
+           // fprintf(stdout, "Trout >>>> die >>>> probName = %s survCount = %d\n", [aProb getName], survCount);
+           // fflush(0);
 
-           if(survCount < 7)
+           if(survCount < 6)
            {
                if([uniformDist getDoubleSample]  >  pow([aProb getSurvivalProb], (((double) numHoursSinceLastStep)/24.0)))
                {
@@ -2598,6 +2597,8 @@
            }
            else
            {
+           // fprintf(stdout, "Trout >>>> die >>>> probName = %s survCount = %d\n", [aProb getName], survCount);
+           // fflush(0);
                if([uniformDist getDoubleSample]  >  [aProb getSurvivalProb])
                {
                    char* deathName = (char *) [aProb getName];
