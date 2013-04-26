@@ -59,7 +59,6 @@ OBJECTS=GraphDataObject.o \
 	Rainbow.o \
 	Brown.o \
 	UTMRedd.o \
-	UTMInterpolatorFactory.o \
 	InterpolationTable.o \
 	TimeSeriesInputManager.o\
 	YearShuffler.o\
@@ -124,7 +123,6 @@ Trout.o : Trout.[hm]
 Rainbow.o : Rainbow.[hm]
 Brown.o : Brown.[hm]
 UTMRedd.o : UTMRedd.[hm]
-UTMInterpolatorFactory.o : UTMInterpolatorFactory.[hm]
 InterpolationTable.o : InterpolationTable.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
