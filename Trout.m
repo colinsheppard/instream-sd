@@ -2539,11 +2539,11 @@
 
     /*
            The mortality risks in the probMap are defined in Cell.m
-           where the survival manager is set up. They occure in this 
+           where the survival manager is set up. They occur in this 
            order:
-               0. High Velocity
-               1. Stranding
-               2. Spawning
+               0. High temperature
+			   1. High Velocity
+               2. Stranding
                3. Aquatic predation
                4. Terrestial Predation
                5. Poor Condition
@@ -2571,10 +2571,10 @@
      
        while(([lstNdx getLoc] != End) && ((aProb = [lstNdx next]) != nil))
        {
-           //fprintf(stdout, "Trout >>>> die >>>> probName = %s\n", [aProb getName]);
-           //fflush(0);
+           // fprintf(stdout, "Trout >>>> die >>>> probName = %s survCount = %d\n", [aProb getName], survCount);
+           // fflush(0);
 
-           if(survCount < 7)
+           if(survCount < 6)
            {
                if([uniformDist getDoubleSample]  >  pow([aProb getSurvivalProb], (((double) numHoursSinceLastStep)/24.0)))
                {
@@ -2598,6 +2598,8 @@
            }
            else
            {
+           // fprintf(stdout, "Trout >>>> die >>>> probName = %s survCount = %d\n", [aProb getName], survCount);
+           // fflush(0);
                if([uniformDist getDoubleSample]  >  [aProb getSurvivalProb])
                {
                    char* deathName = (char *) [aProb getName];
