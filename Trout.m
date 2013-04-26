@@ -1826,9 +1826,6 @@
 	//fflush(0);
 
 	
-  // FOR NOW ...
-  //netEnergyForBestCell = [self calcNetEnergyForCell: bestDest];
-
   expectedMaturityForBestCell = [self expectedMaturityAt: bestDest];
 
   netEnergyForBestCell = [self calcNetEnergyAt: bestDest
@@ -1854,8 +1851,6 @@
   //fprintf(stdout, "\n");
   //fflush(0);
   
-
-
 
   captureArea = [self calcCaptureArea: bestDest];
   //cMax = [self calcCmax: [bestDest getTemperature] ];
@@ -2488,7 +2483,7 @@
   fishActualDailyIntake += totalFoodConsumptionThisStep;
 
   //
-  // Added 6/13/2001 SKJ
+  // Added 6/13/2001 SKJ because swim speed changes when fish grow
   //
   
   maxSwimSpeed = [self calcMaxSwimSpeedAt: fishCell];
