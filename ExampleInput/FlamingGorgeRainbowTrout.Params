@@ -1,5 +1,9 @@
 # Calibrated rainbow trout parameters for Tailrace
 @begin	
+
+fishCaptureParam1                  1.6
+fishCaptureParam9                  0.5
+
 fishCmaxParamA	0.628
 fishCmaxParamB	-0.3
 fishCmaxTempF1	0.05
@@ -16,26 +20,40 @@ fishCmaxTempT4	22
 fishCmaxTempT5	23
 fishCmaxTempT6	25
 fishCmaxTempT7	100
+
+fishDetectDistParamA                 4.0
+fishDetectDistParamB                 2.0
+
 fishEnergyDensity	5900
+
 fishFecundParamA	0.109
 fishFecundParamB	2.54
+
 fishFitnessHorizon	90
+
+fishMaxSwimParamA                  2.8
+fishMaxSwimParamB                   21
+fishMaxSwimParamC              -0.0029
+fishMaxSwimParamD                0.084
+fishMaxSwimParamE                 0.37
+
 fishMoveDistParamA	200
 fishMoveDistParamB	1
 fishMovePenaltyTime	0.25
+
 fishPiscivoryLength	40
+
 fishReactDistNightFactor	0.5
-fishReactParamA	-5.91
-fishReactParamB	0.847
-fishReactParamC	-0.0473
-fishReactParamD	1.74
+
 fishRespParamA	30
 fishRespParamB	0.784
 fishRespParamC	0.0693
 fishRespParamD	0.03
+
 fishSearchArea	20000
+
 fishSearchNightFactor	0.5
-fishShelterSpeedFrac	0.5
+
 fishSpawnDSuitD1	0
 fishSpawnDSuitD2	5
 fishSpawnDSuitD3	50
@@ -48,14 +66,13 @@ fishSpawnDSuitS4	1
 fishSpawnDSuitS5	0
 fishSpawnEggViability	0.8
 fishSpawnEndDate	5/31
-fishSpawnMaxFlow	60
 fishSpawnMaxFlowChange	0.2
 fishSpawnMaxTemp	13
 fishSpawnMinAge	1
 fishSpawnMinCond	0.95
 fishSpawnMinLength	25
 fishSpawnMinTemp	8
-fishSpawnProb	0.004
+fishSpawnProb	0.04
 fishSpawnStartDate	4/1
 fishSpawnVSuitS1	0
 fishSpawnVSuitS2	0
@@ -70,14 +87,14 @@ fishSpawnVSuitV4	75
 fishSpawnVSuitV5	100
 fishSpawnVSuitV6	1000
 fishSpawnWtLossFraction	0.2
-fishSppDomFactor	1
-fishSwimParamA	1.83
-fishSwimParamB	33
-fishTurbidMin	5
-fishTurbidParamA	-0.0227
-fishTurbidParamB	1.12
+
+fishTurbidExp                  -0.0711
+fishTurbidMin                      0.1
+fishTurbidThreshold                5.0
+
 fishWeightParamA	0.0185
 fishWeightParamB	2.9
+
 mortFishAngleFracKeptIllegal	0.05
 mortFishAngleFracKeptLegal	0.2
 mortFishAngleHookSurvRate	0.8

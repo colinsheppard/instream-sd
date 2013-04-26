@@ -18,5 +18,7 @@ habDriftRegenDist	1000
 habLatitude	41
 habPreyEnergyDensity	4000
 habSearchProd	1.00E-06
+habShelterSpeedFrac    0.5
 habTwilightLength	0.5
+habMaxSpawnFlow	60
 @end	

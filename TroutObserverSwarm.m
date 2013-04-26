@@ -888,14 +888,31 @@
 {
   char filename[256];
   id pixID;
+  id raster = nil;
 
-  sprintf(filename, "Model%03d_Frame%03ld.png", modelNumber, getCurrentTime());
+  // fprintf(stdout, "TroutObserverSwarm >>>> writeFrame >>>> BEGIN\n");
+  // fflush(0);
 
-  pixID =  [Pixmap createBegin: [self getZone]];
-  [pixID  setWidget: utmWorldRaster];
-  pixID = [pixID createEnd];
-  [pixID save: filename];
-  [pixID drop];
+  if([habitatRasterList getCount] > 0)
+  {
+      raster = [habitatRasterList getFirst];
+ 
+      if(raster == nil)
+      {
+         fprintf(stderr, "ERROR: TroutModelSwarm >>>> writeFrame >>>> raster is nil\n");
+         fflush(0);
+         exit(1);
+      }
+
+      sprintf(filename, "Model%03d_Frame%03ld.png", modelNumber, getCurrentTime());
+
+      pixID =  [Pixmap createBegin: [self getZone]];
+	  // Comment out following statement to capture whole screen
+      [pixID  setWidget: raster];
+      pixID = [pixID createEnd];
+      [pixID save: filename];
+      [pixID drop];
+  }
 
 }
 

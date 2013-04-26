@@ -87,15 +87,19 @@ double fishFecundParamA;
 double fishFecundParamB;
 double fishFitnessHorizon;
 
-double fishReactParamA;
-double fishReactParamB;
-double fishReactParamC;
-double fishReactParamD;
+double fishMaxSwimParamA;
+double fishMaxSwimParamB;
+double fishMaxSwimParamC;
+double fishMaxSwimParamD;
+double fishMaxSwimParamE;
+
+double fishCaptureParam1;
+double fishCaptureParam9;
+
 double fishRespParamA;
 double fishRespParamB;
 double fishRespParamC;
 double fishRespParamD;
-double fishShelterSpeedFrac;
 double fishSearchArea;
 int   fishSpawnMinAge;
 double fishSpawnDSuitD1;
@@ -110,7 +114,6 @@ double fishSpawnDSuitS4;
 double fishSpawnDSuitS5;
 double fishSpawnEggViability;
 char * fishSpawnEndDate;
-double fishSpawnMaxFlow;
 double fishSpawnMaxFlowChange;
 double fishSpawnMaxTemp;
 double fishSpawnMinCond;
@@ -131,17 +134,14 @@ double fishSpawnVSuitV4;
 double fishSpawnVSuitV5;
 double fishSpawnVSuitV6;
 double fishSpawnWtLossFraction;
-double fishSppDomFactor;
-double fishSwimParamA;
-double fishSwimParamB;
 double fishWeightParamA;
 double fishWeightParamB;
 
-
 double fishTurbidMin;
-double fishTurbidParamA;
-double fishTurbidParamB;
-
+double fishTurbidExp;
+double fishDetectDistParamA;
+double fishDetectDistParamB;
+double fishTurbidThreshold;
 
 double mortFishAqPredDayMin;
 double mortFishAqPredNightMin;

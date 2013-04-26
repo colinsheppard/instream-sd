@@ -302,7 +302,7 @@ char **speciesStocking;
   }
 
   //
-  // Create the space in which the fish will live
+  // Create the spaces in which the fish will live
   //
   [habitatManager setTimeManager: timeManager];
 
@@ -426,12 +426,12 @@ char **speciesStocking;
   cmaxInterpolatorMap = [Map create: modelZone];
   spawnDepthInterpolatorMap = [Map create: modelZone];
   spawnVelocityInterpolatorMap = [Map create: modelZone];
+  captureLogisticMap = [Map create: modelZone];
   [self createCMaxInterpolators];
   [self createSpawnDepthInterpolators];
   [self createSpawnVelocityInterpolators];
+  [self createCaptureLogistics];
 
-      //fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> before breakoutReporters\n");
-      //fflush(0);
   //
   // Breakout reporters... 
   //
@@ -807,8 +807,8 @@ char **speciesStocking;
      biggestFishLength = [[liveFish getFirst] getFishLength];
   }
 
-  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs BEGIN\n");
-  //fflush(0);
+  // fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs BEGIN\n");
+  // fflush(0);
 
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != (FishParams *) nil))
   {
@@ -831,9 +831,9 @@ char **speciesStocking;
 
   [mapNdx drop];
 
-  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs biggestFishLength = %f\n", biggestFishLength);
-  //fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs END\n");
-  //fflush(0);
+  // fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs biggestFishLength = %f\n", biggestFishLength);
+  // fprintf(stdout, "TroutModelSwarm >>>> updateReproFuncs END\n");
+  // fflush(0);
 
   return self;
 
@@ -849,6 +849,10 @@ char **speciesStocking;
 - (double) getReproFuncFor: aFish 
                 withLength: (double) aLength
 {
+	//fprintf(stdout, "ModelSwarm >> getReproFuncFor fish with length: %f returns: %f\n",aLength,
+	//	[[reproLogisticFuncMap at: [aFish getSpecies]]
+    //                      evaluateFor: aLength] );
+	//fflush(0);
       return [[reproLogisticFuncMap at: [aFish getSpecies]]
                           evaluateFor: aLength];
 }
@@ -918,6 +922,39 @@ char **speciesStocking;
   return self;
 }
 
+
+/////////////////////////////////////////////////
+//
+// createCaptureLogistics
+//
+/////////////////////////////////////////////////
+- createCaptureLogistics
+{
+  id <Index> mapNdx;
+  FishParams* fishParams;
+
+  mapNdx = [fishParamsMap mapBegin: scratchZone];
+ 
+  while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
+  {
+      //
+      // getCellVelocity is not actually used;
+      // it is there because the logistic
+      // needs an input method. The fish
+      // evaluates for velocity/aMaxSwimSpeed
+      //
+      LogisticFunc* aCaptureLogistic = [LogisticFunc createBegin: modelZone 
+                                                 withInputMethod: M(getPolyCellVelocity) 
+                                                      usingIndep: fishParams->fishCaptureParam1
+                                                             dep: 0.1
+                                                           indep: fishParams->fishCaptureParam9
+                                                             dep: 0.9];
+
+     [captureLogisticMap at: [fishParams getFishSpecies] insert: aCaptureLogistic]; 
+  }
+
+  return self;
+}
 
 /////////////////////////////////////////////////////////////////
 //
@@ -1027,7 +1064,9 @@ char **speciesStocking;
                                                        Age: age
                                                     Length: length ];
 
-          [liveFish addLast: newFish];
+		  // Calculate max swim speed, which is needed below but depends on temperature, which it gets from cell
+          [newFish setMaxSwimSpeed: [newFish calcMaxSwimSpeedAt: [polyCellList getFirst]]];
+		  [liveFish addLast: newFish];
           
 	   //   fishParams = [newFish getFishParams];  Not used
 
@@ -1312,7 +1351,9 @@ char **speciesStocking;
 
 
                    [newFish setStockedFishActivity: Feed];
-  
+				// Calculate max swim speed, which depends on temperature, which it gets from cell
+				   [newFish setMaxSwimSpeed: [newFish calcMaxSwimSpeedAt: [polyCellList getFirst]]];
+
                    [liveFish addLast: newFish];
 
                     //
@@ -1760,8 +1801,6 @@ char **speciesStocking;
   //
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
-  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update fish repro func\n");
-  //fflush(0);
       [self updateFish];      //increments fish age if date is 1/1
       [self updateReproFuncs];
   }
@@ -1779,6 +1818,7 @@ char **speciesStocking;
   //
   // Fifth, determine if it is the first hour of daytime,
   // if so, conduct trout spawning and and redd actions.
+  // Also reset the fishs' daily total consumption to zero.
   //
   timeTillDaytimeStarts  = modelTime - [[reachList getFirst] getDaytimeStartTime];
  
@@ -1789,6 +1829,8 @@ char **speciesStocking;
       [reddList forEach: M(develop)];
       [reddList forEach: M(emerge)];
       [self processEmptyReddList];
+
+      [liveFish forEach: M(resetFishActualDailyIntake)];
 
       #ifdef REDD_SURV_REPORT
       //
@@ -1849,25 +1891,21 @@ char **speciesStocking;
 
      }
 
-     // 
-     // The following update method uses
-     // the flow obtained in shouldFishMoveAt:
-     //
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update hab manager\n");
       //fflush(0);
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
 
-	 //Optional outputs -- Need to be after habitatManager update:
-		if(writeCellFishReport == YES){
-			[habitatManager outputCellFishInfoReport];
-		}
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before toggle and move\n");
       //fflush(0);
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
 
+	 //Optional outputs -- Need to be after habitatManager update:
+		if(writeCellFishReport == YES){
+			[habitatManager outputCellFishInfoReport];
+		}
      //
      // Finally, re-set the number of hours 
      // since last step.
@@ -2577,6 +2615,7 @@ char **speciesStocking;
   id <InterpolationTable> aCMaxInterpolator = nil;
   id <InterpolationTable> aSpawnDepthInterpolator = nil;
   id <InterpolationTable> aSpawnVelocityInterpolator = nil;
+  LogisticFunc* aCaptureLogistic = nil;
 
   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
   //fflush(0);
@@ -2617,7 +2656,7 @@ char **speciesStocking;
 
   [newFish calcStarvPaAndPb];
 
-  [newFish updateMaxSwimSpeed];
+ // [newFish updateMaxSwimSpeed]; This is now done at createInitialFish because it depends on the cell
 
   [newFish calcMaxMoveDistance];
 
@@ -2636,10 +2675,14 @@ char **speciesStocking;
   aCMaxInterpolator = [cmaxInterpolatorMap at: species];
   aSpawnDepthInterpolator = [spawnDepthInterpolatorMap at: species];
   aSpawnVelocityInterpolator = [spawnVelocityInterpolatorMap at: species];
-  
+   aCaptureLogistic = [captureLogisticMap at: species];
+ 
   [newFish setCMaxInterpolator: aCMaxInterpolator];
   [newFish setSpawnDepthInterpolator: aSpawnDepthInterpolator];
   [newFish setSpawnVelocityInterpolator: aSpawnVelocityInterpolator];
+  [newFish setCaptureLogistic: aCaptureLogistic];
+  
+  [newFish resetFishActualDailyIntake];
 
   fishCounter++;  // Give each fish a serial number ID
   [newFish setFishID: fishCounter];
@@ -2857,15 +2900,13 @@ char **speciesStocking;
   [newFish setFishLength: fishLength];
   [newFish setFishCondition: 1.0];
   [newFish setFishWeightFromLength: fishLength andCondition: 1.0]; 
-  [newFish setFishDominance];
-
 
   //
   // Set time last spawned to modelTime - 5 years
   //
   [newFish setTimeTLastSpawned: (modelTime - (time_t) 157600000)];    
 
-  [newFish updateMaxSwimSpeed];
+  //[newFish updateMaxSwimSpeed]; This must now be done later because it depends on the cell
 
   [newFish calcMaxMoveDistance];
 
@@ -2880,6 +2921,7 @@ char **speciesStocking;
 
   [newFish calcStarvPaAndPb];
 
+  [newFish resetFishActualDailyIntake];
 
   newFish = [newFish createEnd];
         

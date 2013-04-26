@@ -49,7 +49,6 @@
   int   age;
   double fishLength;  // cm
   double fishWeight;  // grams
-  double fishDominance;
   double fishCondition;
   double domValue;
   double searchParameter; // cm/hr
@@ -83,6 +82,7 @@
 
 double driftFoodIntake;
 double driftNetEnergy;
+double detectDistance;
 double searchFoodIntake;
 double searchNetEnergy;
 double standardResp;
@@ -96,10 +96,11 @@ double hourlySearchConRate;
 //
 double totalFoodConsumptionThisStep;
 
-double reactiveDistance;
+//double reactiveDistance;
 double captureArea;
 double cMax;
 double cMaxFT;
+double fishActualDailyIntake;
 
 double starvPa;
 double starvPb;
@@ -340,11 +341,11 @@ id toggledFishForHabSurvUpdate;
 
 - setFishWeightFromLength: (double) aLength andCondition: (double) aCondition;
 - setFishLength: (double) aFloat;
-- setFishDominance;
-- (double) getFishDominance;
 
 - (id <Symbol>) getCauseOfDeath;
 - (time_t) getTimeOfDeath;
+
+- resetFishActualDailyIntake;
 
 //
 // added to implement the survival manager
@@ -366,7 +367,6 @@ id toggledFishForHabSurvUpdate;
 
 - (double) getWeightWithIntake: (double) anEnergyIntake;
 - (double) getLengthForNewWeight: (double) aWeight;
-- (double) getDominanceForLength: (double) aLength;
 - (double) getFracMatureForLength: (double) aLength;
 
 - (double) getConditionForWeight: (double) aWeight andLength: (double) aLength;
@@ -459,15 +459,17 @@ id toggledFishForHabSurvUpdate;
 
 // FOOD INTAKE: DRIFT FEEDING STRATEGY
 
-- (double) calcReactDistance: (FishCell *) aCell;
+- (double) calcDetectDistanceAt: (FishCell *) aCell;
 - (double) calcCaptureArea: (FishCell *) aCell;
+- (double) calcCaptureSuccess: (FishCell *) aCell;
 - (double) calcDriftIntake: (FishCell *) aCell;
 
 
 //FOOD INTAKE: ACTIVE FEEDING STRATEGY
 
-- updateMaxSwimSpeed;
+- (double) calcMaxSwimSpeedAt: (FishCell *) aCell;
 - (double) getMaxSwimSpeed;
+- setMaxSwimSpeed: (double) aSwimSpeed;
 - (double) calcSearchIntakeAt: (FishCell *) aCell;
 
 
@@ -475,8 +477,6 @@ id toggledFishForHabSurvUpdate;
 
 //- (double) calcCmax: (double) aTemperature;
 - calcCmax: (double) aTemperature;
-- (double) calcCmaxTempFunction: (double) aTemperature;
-
 
 // FOOD INTAKE: FOOD AVAILABILITY
 
