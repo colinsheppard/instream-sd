@@ -1,12 +1,30 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+EcoSwarm library for individual-based modeling, last revised February 2012.
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
+Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Development sponsored by US Bureau of Reclamation under the 
+Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Copyright (C) 2004-2012 Lang, Railsback & Associates.
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
+
+#include <stdlib.h>
 
 
 #import "TimeSeriesInputManager.h"
@@ -50,8 +68,8 @@
           exit(1);
      }
 
-
-     timeSeriesInputManager->inputFileName = (char *) [timeSeriesInputManager->timeSeriesInputZone allocBlock: strlen(aFileName) + 1];
+     timeSeriesInputManager->inputFileName = (char *) [timeSeriesInputManager->timeSeriesInputZone 
+                                                                       alloc: strlen(aFileName) + 1];
 
      strcpy(timeSeriesInputManager->inputFileName, aFileName);
 
@@ -149,6 +167,9 @@
    BOOL ERROR = YES;
    double returnVal = -LARGEINT;
 
+   //fprintf(stdout, "TimeSeriesInputManager >>>> getValueForTime >>>> BEGIN\n");
+   //fflush(0);
+
    if((startTime <= aTime) && (aTime <= endTime))
    {
        ERROR = NO;
@@ -176,10 +197,6 @@
    //
    if(ERROR)
    {
-       //for(i=0; i<numRecords; i++){
-	  //fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> time %ld \n",inputRecord[i][0]);
-       //}
-       fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> starttime %ld endTime %ld \n",startTime,endTime);
        fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> getValueForTime >>>> No data with time %ld  Date %s\n with Hour %d\n with Minute %d\n with Second %d inputFileName = %s\n",
                                                                                   aTime,
                                                                                   [timeManager getDateWithTimeT: aTime],
@@ -191,6 +208,22 @@
        exit(1);
 
    }
+
+   /*
+   if(strstr(inputFileName, "Flow") != NULL)
+   {
+          fprintf(stdout, "TimeSeriesInputManager >>>> getValueForTime >>>> data with time %ld  Date %s\n with Hour %d\n with Minute %d\n with Second %d data = %f inputFileName = %s\n",
+                                                                                         aTime,
+                                                                                         [timeManager getDateWithTimeT: aTime],
+                                                                                         [timeManager getHourWithTimeT: aTime],
+                                                                                         [timeManager getMinuteWithTimeT: aTime],
+                                                                                         [timeManager getSecondWithTimeT: aTime],
+                                                                                         returnVal,
+                                                                                         inputFileName);
+   }
+   */
+   //fprintf(stdout, "TimeSeriesInputManager >>>> getValueForTime >>>> END\n");
+   //fflush(0);
 
   return returnVal; 
 
@@ -677,9 +710,7 @@
 // printDataToFileNamed
 //
 ///////////////////////////////////////////
-- printDataToFileNamed: (char *) aFileName
-{
-
+- printDataToFileNamed: (char *) aFileName{
     FILE* filePtr=NULL;
     int ndx=0;
     time_t aCurrentTime =0;
@@ -691,60 +722,40 @@
 
     double data;    
 
-    if(filePtr==NULL)
-    {
-      if((filePtr = fopen(aFileName, "w")) == NULL)
-      {
+    if(filePtr==NULL){
+      if((filePtr = fopen(aFileName, "w")) == NULL){
            [InternalError raiseEvent: "ERROR opening file %s for writing\n", aFileName];
       }
-
     }
-
 
     aCurrentTime = [timeManager getCurrentTimeT]; 
 
-
-    for(ndx=0; ndx < numRecords; ndx++)
-    {
+    for(ndx=0; ndx < numRecords; ndx++){
          strncpy(date, [timeManager getDateWithTimeT: (time_t) inputRecord[ndx][0]],11);
          hour = [timeManager getHourWithTimeT: (time_t) inputRecord[ndx][0]];
          minute = [timeManager getMinuteWithTimeT: (time_t) inputRecord[ndx][0]];
          second = [timeManager getSecondWithTimeT: (time_t) inputRecord[ndx][0]];
          data = inputRecord[ndx][1];
 
-         if(log10OfValuesOn == YES)
-         {
+         if(log10OfValuesOn == YES){
              data = pow(10, data);
          } 
-          
-
-         if(inputDataType == DAILY)
-         {
+         if(inputDataType == DAILY){
              fprintf(filePtr, "%ld %s %f\n", (long) inputRecord[ndx][0], date, data);
              fflush(filePtr);
-         }
-         else if (inputDataType == HOURLY)
-         {
+         }else if (inputDataType == HOURLY){
              fprintf(filePtr, "%ld %s %d %f\n", (long) inputRecord[ndx][0], date, hour, data);
              fflush(filePtr);
-         }
-         else if(inputDataType == OTHER)
-         {
+         }else if(inputDataType == OTHER){
              fprintf(filePtr, "%ld %s %d %d %d %f\n", (long) inputRecord[ndx][0], date, hour, minute, second, data);
              fflush(filePtr);
-         }
-         else
-         {
+         }else{
              fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> printDataToFileNamed >>>> unknown data type\n");
              fflush(0);
              exit(1);
          } 
-
-
-       
-    } 
-
-
+  } 
+  fclose(filePtr);
   return self;
 }
 
@@ -778,6 +789,30 @@
 
   int lineNumber = 3;
 
+  BOOL CSV = NO;
+
+   //
+   // Check the input filename to see if it is a .csv file
+   //
+  if((inputFP = fopen(inputFileName, "r")) != NULL){
+    fgets(tempString, 200, inputFP);
+    fgets(tempString, 200, inputFP);
+    fgets(tempString, 200, inputFP);
+    fgets(tempString, 200, inputFP);
+    if(strchr(tempString,',')!=NULL){
+       CSV = YES;
+    }
+    fclose(inputFP);
+  }else{
+    fprintf(stderr,  "ERROR: TimeSeriesInputManager >>>>> readInputRecords >>>> Unable to open time series input file  %s\n", inputFileName);
+    fflush(0);
+    exit(1);
+  }
+
+   //fprintf(stdout, "TimeSeriesInputManager >>>>  readInputRecords >>>> CSV = %d\n", (int) CSV);
+   //fflush(0);
+   //exit(0);
+
   numRecords = 0;
 
   if((inputFP = fopen(inputFileName, "r")) != NULL)
@@ -792,12 +827,46 @@
 
           if(inputDataType == DAILY)
           {
-              sscanf(tempString,"%s%lf", date, &inputData);
+              if(CSV == NO)
+              {
+                  sscanf(tempString,"%s%lf", date, &inputData);
+              }
+              else
+              {
+                char sInputData[15];
+                char * inputFormat = "%[0-9/] %*1[,] \
+                                      %[0-9.] %*1[,]";
+
+                    sscanf(tempString, inputFormat, date,
+                                                   sInputData);
+                    inputData = atof(sInputData);
+              }
+
               anInputTime = (double) [timeManager getTimeTWithDate: date];
+
           }
           else if(inputDataType == HOURLY)
           {
-              sscanf(tempString,"%s%d%lf", date, &hour, &inputData);
+              if(CSV == NO)
+              {
+                  sscanf(tempString,"%s%d%lf", date, &hour, &inputData);
+              }
+              else
+              {
+                char sInputData[15];
+                char sHour[15]; 
+                char * inputFormat = "%[0-9/] %*1[,] \
+                                      %[0-9]  %*1[,] \
+                                      %[0-9.] %*1[,]";
+
+                    sscanf(tempString, inputFormat, date,
+                                                    sHour,
+                                                    sInputData);
+                    hour = atoi(sHour);
+                    inputData = atof(sInputData);
+              }
+              
+
               anInputTime = (double) [timeManager getTimeTWithDate: date
                                                           withHour: hour
                                                         withMinute: minute
@@ -805,17 +874,39 @@
           }
           else  //OTHER
           {
-              sscanf(tempString,"%s%d%d%d%lf", date, &hour, &minute, &second, &inputData);  
+              if(CSV == NO)
+              {
+                  sscanf(tempString,"%s%d%d%d%lf", date, &hour, &minute, &second, &inputData);  
+              }
+              else
+              {
+                char sInputData[15];
+                char sHour[15]; 
+                char sMinute[15]; 
+                char sSecond[15]; 
+                char * inputFormat = "%[0-9/] %*1[,] \
+                                      %[0-9]  %*1[,] \
+                                      %[0-9]  %*1[,] \
+                                      %[0-9]  %*1[,] \
+                                      %[0-9.] %*1[,]";
+
+                    sscanf(tempString, inputFormat, date,
+                                                    sHour,
+                                                    sMinute,
+                                                    sSecond,
+                                                    sInputData);
+                    hour = atoi(sHour);
+                    minute = atoi(sMinute);
+                    second = atoi(sSecond);
+                    inputData = atof(sInputData);
+              }
+
               anInputTime = (double) [timeManager getTimeTWithDate: date
                                                           withHour: hour
                                                         withMinute: minute
                                                         withSecond: second];
           }
     
-	  if(anInputTime > 970356400 && anInputTime < 970359900){
-	    fprintf(stdout,"start %d end %d input %d data %f \n", startTime, endTime, anInputTime, inputData);
-	    fflush(0);
-	  }
 
           if((startTime <= anInputTime) && (anInputTime <= endTime))
           {
@@ -840,8 +931,7 @@
           fgets(header1,HCOMMENTLENGTH,inputFP);
           fgets(header1,HCOMMENTLENGTH,inputFP);
 
-          inputRecord = (double **)[ZoneAllocMapper allocBlockIn: timeSeriesInputZone
-                                                      ofSize: numRecords*sizeof(double *)];
+          inputRecord = (double **)[timeSeriesInputZone alloc: numRecords*sizeof(double *)];
     
 
               while(fgets(tempString, 200, inputFP) != NULL)
@@ -850,26 +940,84 @@
 
                   if(inputDataType == DAILY)
                   {
-                      sscanf(tempString,"%s%lf", date, &inputData);
+                      if(CSV == NO)
+                      {
+                          sscanf(tempString,"%s%lf", date, &inputData);
+                      }
+                      else
+                      {
+                        char sInputData[15];
+                        char * inputFormat = "%[0-9/] %*1[,] \
+                                              %[0-9.] %*1[,]";
+
+                            sscanf(tempString, inputFormat, date,
+                                                           sInputData);
+                            inputData = atof(sInputData);
+                      }
+
                       anInputTime = (double) [timeManager getTimeTWithDate: date];
                   }
                   else if(inputDataType == HOURLY)
                   {
-                      sscanf(tempString,"%s%d%lf", date, &hour, &inputData);
-                      anInputTime = (double) [timeManager getTimeTWithDate: date
-                                                                  withHour: hour
-                                                                withMinute: minute
-                                                                withSecond: second];
+                        if(CSV == NO)
+                        {
+                            sscanf(tempString,"%s%d%lf", date, &hour, &inputData);
+                        }
+                        else
+                        {
+                          char sInputData[15];
+                          char sHour[15]; 
+                          char * inputFormat = "%[0-9/] %*1[,] \
+                                                %[0-9]  %*1[,] \
+                                                %[0-9.] %*1[,]";
+
+                              sscanf(tempString, inputFormat, date,
+                                                              sHour,
+                                                              sInputData);
+                              hour = atoi(sHour);
+                              inputData = atof(sInputData);
+                        }
+              
+
+                        anInputTime = (double) [timeManager getTimeTWithDate: date
+                                                                    withHour: hour
+                                                                  withMinute: minute
+                                                                  withSecond: second];
                   }
                   else //OTHER
                   {
-                      sscanf(tempString,"%s%d%d%d%lf", date, &hour, &minute, &second, &inputData);
-                      anInputTime = (double) [timeManager getTimeTWithDate: date
-                                                                  withHour: hour
-                                                                withMinute: minute
-                                                                withSecond: second];
+                       if(CSV == NO)
+                       {
+                           sscanf(tempString,"%s%d%d%d%lf", date, &hour, &minute, &second, &inputData);  
+                       }
+                       else
+                       {
+                         char sInputData[15];
+                         char sHour[15]; 
+                         char sMinute[15]; 
+                         char sSecond[15]; 
+                         char * inputFormat = "%[0-9/] %*1[,] \
+                                               %[0-9]  %*1[,] \
+                                               %[0-9]  %*1[,] \
+                                               %[0-9]  %*1[,] \
+                                               %[0-9.] %*1[,]";
+
+                             sscanf(tempString, inputFormat, date,
+                                                             sHour,
+                                                             sMinute,
+                                                             sSecond,
+                                                             sInputData);
+                             hour = atoi(sHour);
+                             minute = atoi(sMinute);
+                             second = atoi(sSecond);
+                             inputData = atof(sInputData);
+                       }
+
+                       anInputTime = (double) [timeManager getTimeTWithDate: date
+                                                                   withHour: hour
+                                                                 withMinute: minute
+                                                                 withSecond: second];
                   }
-        
         
                   if(inputNdx == 0)
                   {
@@ -882,6 +1030,8 @@
                   else
                   {
                       fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> readInputRecords >>>> Data file %s not increasing in time; Check lineNumber %d\n", inputFileName, lineNumber);
+                      fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> readInputRecords >>>> prevInputTime = %ld >>>> anInputTime = %ld\n", prevInputTime, anInputTime);
+                      fprintf(stderr, "ERROR: TimeSeriesInputManager >>>> readInputRecords >>>> date = %s \n", date);
                       fflush(0);
                       exit(1);
                   }
@@ -889,8 +1039,7 @@
                  if((startTime <= anInputTime) && (anInputTime <= endTime))
                  {
         
-                     inputRecord[inputNdx] = (double *)[ZoneAllocMapper allocBlockIn: timeSeriesInputZone  
-                                                                   ofSize: 2*sizeof(double)];
+                     inputRecord[inputNdx] = (double *)[timeSeriesInputZone  alloc: 2*sizeof(double)];
           
                      inputRecord[inputNdx][0] = anInputTime;
                    
@@ -920,8 +1069,8 @@
               }
 
     
-              fprintf(stdout, "TimeSeriesInputManager >>>>> readInputRecords >>>> number data records created = %d\n", inputNdx);
-              fflush(0);
+              //fprintf(stdout, "TimeSeriesInputManager >>>>> readInputRecords >>>> number data records created = %d\n", inputNdx);
+              //fflush(0);
     
           }
           else //numRecords == 0
@@ -945,6 +1094,8 @@
   return self;
     
 }
+
+
 
 /////////////////////////////////////////////////////
 //
@@ -1453,7 +1604,7 @@
 
          if(ERROR)
          {
-             fprintf(stdout, "%s", outString);
+             fprintf(stderr, "%s", outString);
              fflush(0);
              WASERROR = ERROR;
              ERROR = FALSE;
@@ -1500,6 +1651,17 @@
 {
    if(timeSeriesInputZone != nil)
    {
+       int i = 0;
+
+       [timeSeriesInputZone free: inputFileName];  
+
+       for(i = 0; i < numRecords; i++)
+       {
+            [timeSeriesInputZone  free: inputRecord[i]];
+       }
+
+       [timeSeriesInputZone free: inputRecord];
+
        [timeSeriesInputZone drop];
        timeSeriesInputZone  = nil;
    }

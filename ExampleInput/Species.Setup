@@ -4,13 +4,13 @@ SFR 3/02
 
 Rainbow
 FlamingGorgeRainbowTrout.Params
-TestRainbowInitPops.Data
+TailraceRainbowInitPops.Data
 cyan
 Stocking_Tailrace_Rainbow.Data
 
 Brown
 FlamingGorgeBrownTrout.Params
-TestBrownInitPops.Data
+TailraceBrownInitPops.Data
 firebrick
 NoStocking
 
