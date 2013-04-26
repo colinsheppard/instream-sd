@@ -3246,7 +3246,7 @@
 //
 // calcDriftFoodIntakeAt
 //
-// Note: this now returns an HOURLY net energy
+// Note: this now returns an HOURLY food intake
 //
 ///////////////////////////////////////////////////////////////
 - (double) calcDriftFoodIntakeAt: (FishCell *) aCell
@@ -3276,11 +3276,14 @@
 
    aDriftFoodIntake = minvalue;
 
-   if(aDriftFoodIntake < 0.0)
+   if(aDriftFoodIntake < 0.0) // This can happen because cMax changes with weight, among reaches
    {
-        fprintf(stderr, "ERROR: Trout >>>> calcDriftFoodIntakeAt: Negative drift food intake\n");
-        fflush(0);
-        exit(1);
+        // fprintf(stderr, "Warning: Trout >>>> calcDriftFoodIntakeAt: Negative drift food intake\n");
+        // fprintf(stderr, "calcDriftIntake: %f availableDrift: %f cMax: %f fishActualIntake: %f drift intake: %f\n",
+		                // [self calcDriftIntake: aCell], anAvailableFood, cMax, fishActualDailyIntake, minvalue);
+        // fflush(0);
+	 
+	    aDriftFoodIntake = 0.0;
     }
 
    return aDriftFoodIntake; 
@@ -3384,6 +3387,11 @@
    double aSearchFoodIntake;
    double anAvailableSearchFood;
    double minvalue=0.0;
+   
+   if([aCell getPolyCellDepth] <= 0.0)  //This could happen if no wet cells are nearby
+   {
+	return 0.0;
+	}
 
    anAvailableSearchFood = [aCell getHourlyAvailSearchFood];
  
@@ -3404,11 +3412,14 @@
 
    aSearchFoodIntake = minvalue;
    
-   if(aSearchFoodIntake < 0.0)
+   if(aSearchFoodIntake < 0.0) // This can happen because cMax changes with weight, among reaches
    {
-        fprintf(stderr, "ERROR: Trout >>>> calcSearchFoodIntakeAt: Negative search food intake\n");
-        fflush(0);
-        exit(1);
+        // fprintf(stderr, "Warning: Trout >>>> calcSearchFoodIntakeAt: Negative search food intake\n");
+        // fprintf(stderr, "calcSearchIntake: %f availableSearch: %f cMax: %f fishActualIntake: %f search intake: %f\n",
+		                // [self calcSearchIntakeAt: aCell], anAvailableSearchFood, cMax, fishActualDailyIntake, minvalue);
+		
+		aSearchFoodIntake = 0.0;
+  //      exit(1);
     }
 
    return aSearchFoodIntake;
