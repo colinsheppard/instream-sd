@@ -3346,12 +3346,13 @@ return self;
    while(([polyCellListNdx getLoc] != End)
             && ((fishCell = [polyCellListNdx next]) != nil))
   {
-      double polyCellDepth = [fishCell getPolyCellArea];
-      if(polyCellDepth > 0.0)
+      if([fishCell getPolyCellDepth] > 0.0)
       {
-         habWettedArea += polyCellDepth;
+         habWettedArea += [fishCell getPolyCellArea];
       }
   }
+    // fprintf(stdout, "HabitatSpace >>>> calcWettedArea >>>> wetted area = %f\n", habWettedArea);
+    // fflush(0);
 
   return self;
 }
