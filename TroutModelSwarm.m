@@ -1888,25 +1888,21 @@ char **speciesStocking;
 
      }
 
-     // 
-     // The following update method uses
-     // the flow obtained in shouldFishMoveAt:
-     //
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update hab manager\n");
       //fflush(0);
      [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
 
 
-	 //Optional outputs -- Need to be after habitatManager update:
-		if(writeCellFishReport == YES){
-			[habitatManager outputCellFishInfoReport];
-		}
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before toggle and move\n");
       //fflush(0);
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
 
+	 //Optional outputs -- Need to be after habitatManager update:
+		if(writeCellFishReport == YES){
+			[habitatManager outputCellFishInfoReport];
+		}
      //
      // Finally, re-set the number of hours 
      // since last step.

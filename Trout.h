@@ -18,7 +18,7 @@
 #import "LogisticFunc.h"
 
 
-//#define MOVE_REPORT_ON
+#define MOVE_REPORT_ON
 //#define MOVE_DISTANCE_REPORT_ON
 //#define SURVIVAL_REPORT_ON
 //#define SPAWN_REPORT_ON seems to be superceded by SPAWN_CELL_RPT
@@ -474,7 +474,6 @@ id toggledFishForHabSurvUpdate;
 
 //- (double) calcCmax: (double) aTemperature;
 - calcCmax: (double) aTemperature;
-- (double) calcCmaxTempFunction: (double) aTemperature;
 
 
 // FOOD INTAKE: FOOD AVAILABILITY

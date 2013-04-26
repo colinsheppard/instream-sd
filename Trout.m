@@ -1847,7 +1847,7 @@
 
   captureArea = [self calcCaptureArea: bestDest];
   //cMax = [self calcCmax: [bestDest getTemperature] ];
-  cMaxFT = [self calcCmaxTempFunction: [bestDest getTemperature]];
+  cMaxFT = [cmaxInterpolator getValueFor: [bestDest getTemperature]];
   detectDistance = [self calcDetectDistanceAt: bestDest]; 
   driftFoodIntake = [self calcDriftFoodIntakeAt: bestDest];
   driftNetEnergy = [self calcDriftNetEnergyAt: bestDest];
@@ -1865,13 +1865,12 @@
   nonStarvSurvival = [self getNonStarvSPAt: bestDest
                               withActivity: fishActivity];
 
-  fishSwimSpeed = cellSwimSpeed;       // cellSwimSpeed is set in -calcNetEnergyForCell
-
-
   fishFeedingStrategy = cellFeedingStrategy; //cellFeedingStrategy is set in -calcNetEnergyForCell
 
+  fishSwimSpeed = [self getSwimSpeedAt: bestDest forStrategy: fishFeedingStrategy]; // For probes & opt. output
+
   activeResp = [self calcActivityRespirationAt: bestDest 
-                                 withSwimSpeed: [self getSwimSpeedAt: bestDest forStrategy: fishFeedingStrategy] ];
+                                 withSwimSpeed: fishSwimSpeed];
 
   
   
@@ -3107,9 +3106,8 @@
 //////////////////////////////////////////////////////////
 //calcCmax
 //
-// Note: that CMax is now an HOURLY maximum consumption rate
-// The CMax equations & parameters calc max DAILY 
-// consumption. We divide it by 24 to get an hourly value.
+// Note that in inSTREAM 6.0 CMax is a DAILY maximum consumption rate
+// The CMax equations & parameters calc max DAILY, not hourly. 
 // 
 ///////////////////////////////////////////////////////////
 - calcCmax: (double) aTemperature 
@@ -3128,88 +3126,14 @@
      exit(1);
   } 
 
-  cmaxTempFunction = [self calcCmaxTempFunction: aTemperature];
-
+  cmaxTempFunction = [cmaxInterpolator getValueFor: aTemperature];
   //
   //Note the  instance variables cMax and fishWeight in the following
   //
-  cMax = (fCPA * pow(fishWeight,(1+fCPB)) * cmaxTempFunction)/24.0;
+  cMax = (fCPA * pow(fishWeight,(1+fCPB)) * cmaxTempFunction);
 
   return self;
 
-}
-
-////////////////////////////////////////////////////
-//
-// calcCmaxTempFunction
-//
-///////////////////////////////////////////////////
-- (double) calcCmaxTempFunction: (double) aTemperature 
-{
-   double cmaxTempFunction = 0.0;
-
-   double fCTT1,fCTT2,fCTT3,fCTT4,fCTT5,fCTT6,fCTT7;
-   double fCTF1,fCTF2,fCTF3,fCTF4,fCTF5,fCTF6,fCTF7;
-
-   fCTT1 = fishParams->fishCmaxTempT1;
-   fCTT2 = fishParams->fishCmaxTempT2;
-   fCTT3 = fishParams->fishCmaxTempT3;
-   fCTT4 = fishParams->fishCmaxTempT4;
-   fCTT5 = fishParams->fishCmaxTempT5;
-   fCTT6 = fishParams->fishCmaxTempT6;
-   fCTT7 = fishParams->fishCmaxTempT7;
-
-   fCTF1 = fishParams->fishCmaxTempF1;
-   fCTF2 = fishParams->fishCmaxTempF2;
-   fCTF3 = fishParams->fishCmaxTempF3;
-   fCTF4 = fishParams->fishCmaxTempF4;
-   fCTF5 = fishParams->fishCmaxTempF5;
-   fCTF6 = fishParams->fishCmaxTempF6;
-   fCTF7 = fishParams->fishCmaxTempF7;
-
-   //fprintf(stdout, "Trout >>>> calcCmaxTempFunction >>>> aTemperature = %f\n", aTemperature);
-   //fflush(0);
-
-
-   //Do the Interpolating 
-
-   if(aTemperature < fCTT1) 
-   { 
-       aTemperature = fCTT1;
-   }
-   if((aTemperature >= fCTT1) && (aTemperature <= fCTT2)) 
-   {
-       cmaxTempFunction = fCTF1 + (fCTF2 - fCTF1) * ((aTemperature - fCTT1)/(fCTT2 - fCTT1));
-   }
-   else if((aTemperature > fCTT2) && (aTemperature <= fCTT3)) 
-   {
-       cmaxTempFunction = fCTF2 + (fCTF3 - fCTF2) * ((aTemperature - fCTT2)/(fCTT3 - fCTT2));
-   }
-   else if((aTemperature > fCTT3) && (aTemperature <= fCTT4)) 
-   {
-       cmaxTempFunction = fCTF3 + (fCTF4 - fCTF3) * ((aTemperature - fCTT3)/(fCTT4 - fCTT3));
-   }
-   else if((aTemperature > fCTT4) && (aTemperature <= fCTT5)) 
-   {
-       cmaxTempFunction = fCTF4 + (fCTF5 - fCTF4) * ((aTemperature - fCTT4)/(fCTT5 - fCTT4));
-   }
-   else if((aTemperature > fCTT5) && (aTemperature <= fCTT6)) 
-   {
-       cmaxTempFunction = fCTF5 + (fCTF6 - fCTF5) * ((aTemperature - fCTT5)/(fCTT6 - fCTT5));
-   }
-   else if((aTemperature > fCTT6) && (aTemperature <= fCTT7)) 
-   {
-       cmaxTempFunction = fCTF6 + (fCTF7 - fCTF6) * ((aTemperature - fCTT6)/(fCTT7 - fCTT6));
-   }
-   else 
-   {
-        fprintf(stderr, "ERROR: Trout >>>> calcCmaxTempFunction >>>>> Temperature out of range)\n");
-        fprintf(stderr, "ERROR: Trout >>>> calcCmaxTempFunction >>>>> aTemperature = %f\n", aTemperature);
-        fflush(0);
-        exit(1);
-   }
-
-   return cmaxTempFunction;
 }
 
 ///////////////////////////////////////////
@@ -3605,6 +3529,7 @@
   const char *mvRptFName = "MoveTest.rpt";
   static int mR=0;
   double velocity, depth, temp, turbidity, availableDrift, availableSearch;
+  double captureSuccess; 
   const char *mySpecies;
 
   char date[12];
@@ -3622,6 +3547,7 @@
   turbidity = [aCell getTurbidity];
   availableDrift = [aCell getHourlyAvailDriftFood];
   availableSearch = [aCell getHourlyAvailSearchFood];
+  captureSuccess = [self calcCaptureSuccess: aCell];
 
   strncpy(date, [timeManager getDateWithTimeT: modelTime], 12);
   hour = [timeManager getHourWithTimeT: modelTime];
@@ -3657,7 +3583,7 @@
       if((mvRptPtr = fopen(mvRptFName,"w+")) != NULL ) 
       {
 
-     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-17s\n",
+     fprintf(mvRptPtr,"%-15s%-15s%-15s%-15s%-15s%-15s%-19s%-19s%-15s%-15s%-15s%-15s%-15s%-15s%-23s%-15s%-23s%-15s%-15s%-15s%-15s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-30s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-17s%-19s%-15s%-17s\n",
                                                             "Date",
                                                             "Hour",
                                                             "FishID",
@@ -3677,12 +3603,14 @@
                                                             "NumberofDaylightHours",
 							    "fishLength",
 							    "fishWeight",
+							    "captureSuccess",
+							    "fishSwimSpeed",
                                                             "NetEnergyForFeedingLastPhase",
                                                             "NetEnergyForHidingLastPhase",
                                                             "SurvivalForFeedingLastPhase",
                                                             "SurvivalForHidingLastPhase",
-                                                            "HourlyNetEnergyIfFeed",
-                                                            "HourlyNetEnergyIfHide",
+// not updated                                              "HourlyNetEnergyIfFeed",
+// not updated                                              "HourlyNetEnergyIfHide",
                                                             "DailySurvivalIfFeed",
                                                             "DailySurvivalIfHide",
                                                             "DayFeedNightHideERM",
@@ -3720,7 +3648,7 @@ else
      exit(1);
 
   }
-  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15s%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E\n",
+  fprintf(mvRptPtr, "%-15s%-15d%-15p%-15s%-15p%-15d%-19E%-19E%-15E%-15E%-15E%-15E%-15E%-15E%-23d%-15d%-23f%-15E%-15E%-15E%-15E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-30E%-15E%-15E%-15E%-15E%-15E%-15s%-15s%-17E%-19E%-15s%-15E%-15E\n",
                                                    date,
                                                    hour,
                                                    self,
@@ -3740,12 +3668,14 @@ else
                                                    numberOfDaylightHours,
 						   fishLength,
 						   fishWeight,
+						  captureSuccess,
+							fishSwimSpeed,
                                                    netEnergyForFeedingLastPhase,
                                                    netEnergyForHidingLastPhase,
                                                    survivalForFeedingLastPhase,
                                                    survivalForHidingLastPhase,
-                                                   hourlyNetEnergyIfFeed,
-                                                   hourlyNetEnergyIfHide,
+// not updated                                     hourlyNetEnergyIfFeed,
+// not updated                                     hourlyNetEnergyIfHide,
                                                    dailySurvivalIfFeed,
                                                    dailySurvivalIfHide,
                                                    dayFeedNightHideERM,
