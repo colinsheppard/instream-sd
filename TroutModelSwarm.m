@@ -9,7 +9,6 @@
 
 
 
-
 #import <math.h>
 #import <string.h>
 #import <simtools.h>
@@ -666,6 +665,8 @@ char **speciesStocking;
 - createFishParameters
 {
    int speciesNdx;
+   id <ListIndex> lstNdx = nil;
+   SpeciesSetup* speciesSetup = (SpeciesSetup *) nil;
 
    //fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> BEGIN\n");
    //fflush(0);
@@ -690,6 +691,11 @@ char **speciesStocking;
       [fishParamsMap at: [fishParams getFishSpecies] insert: fishParams]; 
    }
 
+  lstNdx = [speciesSetupList listBegin: scratchZone];
+  while (([lstNdx getLoc] != End) && ((speciesSetup = (SpeciesSetup *) [lstNdx next]) != (SpeciesSetup *) nil)) 
+  {
+	  speciesSetup->fishParams = [fishParamsMap at: speciesSetup->speciesSymbol];
+  }
 
    //fprintf(stdout, "TroutMOdelSwarm >>>> createFishParameters >>>> END\n");
    //fflush(0);
@@ -1214,19 +1220,19 @@ char **speciesStocking;
               fishStockRecord->fishParams = speciesSetup->fishParams;
 	      strncpy(fishStockRecord->reach, aReach, 35);
 
-              /*
-              fprintf(stdout, "%s %d %d %f %f\n", date, age, numOfFish, meanLength, stdDevLength);
-              fprintf(stdout, "%ld %s %d %d %d %f %f \n", fishStockRecord->fishStockTime,
-	                                                  [fishStockRecord->speciesSymbol getName],
-                                                          fishStockRecord->speciesNdx,
-                                                          fishStockRecord->age,
-                                                          fishStockRecord->numberOfFishThisAge,
-                                                          fishStockRecord->meanLength,
-                                                          fishStockRecord->stdDevLength);
-              fflush(0);
-              */
-
-
+	      //fprintf(stdout, "TroutModelSwarm >>>> readFishStockingRecords: ");
+              //fprintf(stdout, "%s %d %d %f %f\n", date, age, numOfFish, meanLength, stdDevLength);
+              //fflush(0);
+	      //fprintf(stdout, "TroutModelSwarm >>>> readFishStockingRecords: ");
+              //fprintf(stdout, "%ld %s %s %d %d %d %f %f \n", fishStockRecord->fishStockTime,
+	                                                  //[fishStockRecord->speciesSymbol getName],
+							  //[[fishStockRecord->fishParams getFishSpecies] getName],
+                                                          //fishStockRecord->speciesNdx,
+                                                          //fishStockRecord->age,
+                                                          //fishStockRecord->numberOfFishThisAge,
+                                                          //fishStockRecord->meanLength,
+                                                          //fishStockRecord->stdDevLength);
+              //fflush(0);
 
               [fishStockList addLast: (void *) fishStockRecord];
         
@@ -1315,6 +1321,8 @@ char **speciesStocking;
 					   setIntegerMin: 0
 						  setMax: [polyCellList getCount] - 1];
 
+	       /*
+	       fprintf(stdout, "TroutModelSwarm >>>> stock: ");
                 fprintf(stdout, "%ld %s %d %d %d %f %f \n", 
                                       fishStockRecord->fishStockTime,
 	                              [fishStockRecord->speciesSymbol getName],
@@ -1324,6 +1332,7 @@ char **speciesStocking;
                                       fishStockRecord->meanLength,
                                       fishStockRecord->stdDevLength);
                 fflush(0);
+		*/
          
 
                 for (fishNdx=0;fishNdx<fishStockRecord->numberOfFishThisAge;fishNdx++)
@@ -2627,6 +2636,9 @@ char **speciesStocking;
 
   [newFish setFishParams: [fishParamsMap at: species]];
 
+  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> fishParams >> fishSpecies %s \n",[[fishParams getFishSpecies] getName]);
+  //fflush(0);
+
   //
   // set properties of the new Trout
   //
@@ -2855,10 +2867,9 @@ char **speciesStocking;
    //
    Trout* newFish = (Trout *) nil;
 
-   // fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
-   // fflush(0);
+   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams... >>>> BEGIN\n");
+   //fflush(0);
    
-
    newFish = [aTroutClass createBegin: modelZone];
 
    // set properties of the new Trout
@@ -2879,6 +2890,9 @@ char **speciesStocking;
      fprintf(stderr, "TroutModelSwarm >>>> createNewFishWithFishParams >>>> species is nil\n");
      fflush(0);
      exit(1);
+  }else{
+     //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithFishParams >>>> species is %s \n",[[aFishParams getFishSpecies] getName]);
+     //fflush(0);
   }
 
   [newFish setSpecies: [aFishParams getFishSpecies]];
