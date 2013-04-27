@@ -93,6 +93,12 @@ Boston, MA 02111-1307, USA.
      return self;
 }
 
+- setReachLengthInM: (double) aLength
+{
+     habReachLengthInCM = aLength * 100; // convert length from m to cm
+     return self;
+}
+
 - setReachName: (char *) aReachName
 {
    strcpy(reachName, aReachName);
@@ -223,6 +229,11 @@ Boston, MA 02111-1307, USA.
 - (int) getHabUStreamJNumber
 {
     return habUpStreamJunctionNumber;
+}
+
+- (double) getReachLength
+{
+    return habReachLengthInCM;
 }
 
 

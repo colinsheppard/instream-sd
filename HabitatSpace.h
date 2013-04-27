@@ -361,6 +361,8 @@ long int maxYCoordinate;
 - setHabUpstreamLinksToDS: anUSLinkToDS;
 - setHabUpstreamLinksToUS: anUSLinkToUS;
 
+- setReachLength: (double) aLength;
+
 - (id <List>) getHabDownstreamLinksToDS;
 - (id <List>) getHabDownstreamLinksToUS;
 - (id <List>) getHabUpstreamLinksToDS;
