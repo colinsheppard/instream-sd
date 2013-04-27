@@ -1,4 +1,5 @@
 #!/bin/bash.exe
+set -e
 
 cd ..
 make
