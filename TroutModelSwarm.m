@@ -2861,7 +2861,8 @@ char **speciesStocking;
                                     Age: (int) age
                                  Length: (float) fishLength 
 {
- 
+  id <Symbol> aSpecies;
+  
    //
    // The newFish color is currently being set in the observer swarm
    //
@@ -2895,7 +2896,8 @@ char **speciesStocking;
      //fflush(0);
   }
 
-  [newFish setSpecies: [aFishParams getFishSpecies]];
+  aSpecies = [aFishParams getFishSpecies];
+  [newFish setSpecies: aSpecies];
   [newFish setSpeciesNdx: [aFishParams getFishSpeciesIndex]];
 
   //
@@ -2920,6 +2922,12 @@ char **speciesStocking;
   [newFish setTimeTLastSpawned: (modelTime - (time_t) 157600000)];    
 
   //[newFish updateMaxSwimSpeed]; This must now be done later because it depends on the cell
+  [newFish setCMaxInterpolator: [cmaxInterpolatorMap at: aSpecies]];
+  [newFish setSpawnDepthInterpolator: [spawnDepthInterpolatorMap at: aSpecies]];
+  [newFish setSpawnVelocityInterpolator: [spawnVelocityInterpolatorMap at: aSpecies]];
+  [newFish setCaptureLogistic: [captureLogisticMap at: aSpecies]];
+ 
+  [newFish resetFishActualDailyIntake];
 
   [newFish calcMaxMoveDistance];
 
@@ -2933,8 +2941,9 @@ char **speciesStocking;
  
 
   [newFish calcStarvPaAndPb];
-
   [newFish resetFishActualDailyIntake];
+  fishCounter++;  // Give each fish a serial number ID
+  [newFish setFishID: fishCounter];
 
   newFish = [newFish createEnd];
         
