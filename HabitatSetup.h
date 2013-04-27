@@ -39,6 +39,8 @@ Boston, MA 02111-1307, USA.
   id <Symbol> reachSymbol;
   int habDownStreamJunctionNumber;
   int habUpStreamJunctionNumber;
+  
+  double habReachLengthInCM;
 
   char habParamFile[50];
 
@@ -65,6 +67,8 @@ Boston, MA 02111-1307, USA.
 - setHabDStreamJNumber: (int) aJunctionNum;
 - setHabUStreamJNumber: (int) aJunctionNum;
 
+- setReachLengthInM: (double) aReachLength;
+
 - setHabParamFile: (char *) aHabParamFile;
 - setCellGeomFile: (char *) aCellGeomFile;
 - setHydraulicFile: (char *) aHydraulicFile;
@@ -80,6 +84,8 @@ Boston, MA 02111-1307, USA.
 
 - (int) getHabDStreamJNumber;
 - (int) getHabUStreamJNumber;
+
+- (double) getReachLength;
 
 - (char *) getHabParamFile;
 - (char *) getCellGeomFile;

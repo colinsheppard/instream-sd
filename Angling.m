@@ -73,7 +73,7 @@
     FishParams* fishParams = (FishParams *) nil;
     FishCell* habitatObj;
     unsigned int timesHooked = 0;
-    int speciesNdx;
+  //  int speciesNdx;
     double fishLength;
     
     int i;
@@ -84,10 +84,10 @@
 
     if([aTrout getAmIInHidingCover])
     {
+		//fprintf(stdout, "ANGLINGSP >>>> fish is in hiding cover\n");
         [aTrout setTimesHooked: 0];
         return 1.0;
     }
-
 
     fishParams = [aTrout getFishParams];
     habitatObj = [survMgr getHabitatObject];
@@ -96,11 +96,13 @@
 
     if(anglePressure <= 0.0)
     {
+		//fprintf(stdout, "ANGLINGSP >>>> angle pressure is zero\n");
         [aTrout setTimesHooked: 0];
         return 1.0;
     }
 
-    speciesNdx = [aTrout getSpeciesNdx];
+
+  //  speciesNdx = [aTrout getSpeciesNdx];
 
     captureRate =   fishParams->mortFishAngleSuccess
                   * anglePressure
@@ -110,6 +112,7 @@
     timeInterval = 
         (double) [[[habitatObj getSpace] getModel] getNumHoursSinceLastStep]/24;
 
+	//fprintf(stdout, "ANGLINGSP >>>> capture rate: %f\n", captureRate);
 
     timesHooked = [poissonDist  getUnsignedSampleWithOccurRate: (double) captureRate
                                                   withInterval: (double) timeInterval];
@@ -154,7 +157,7 @@
         {
             fprintf(anglingFP,"%-20p%-15d%-15p%-15E%-15E%-15E%-15E%-15E%-15E%-15E\n", 
                                          self, 
-                                         [habitatObj getUTMCellNumber], 
+                                         [habitatObj getPolyCellNumber], 
                                          aTrout, 
                                          (double) [aTrout getCurrentPhase],
                                          fishLength, 
