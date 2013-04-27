@@ -998,8 +998,8 @@ char **speciesStocking;
 
    while(([initPopLstNdx getLoc] != End) && ((initialFishRecord = (TroutInitializationRecord *) [initPopLstNdx next]) != (TroutInitializationRecord *) nil)) 
    {
-	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
-	  fflush(0);
+	  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
+	  //fflush(0);
       //
       //Begin species loop
       //
@@ -1120,7 +1120,8 @@ char **speciesStocking;
     }
 
   [lengthDist drop];
-  [randCellDist drop];
+
+  if(randCellDist != nil)[randCellDist drop];
 
   [initPopLstNdx drop];
 
@@ -1267,8 +1268,8 @@ char **speciesStocking;
    id aHabitatSpace;
    id <List> polyCellList = nil;
 
-   fprintf(stdout, "TroutModelSwarm >>>> stock >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> BEGIN\n");
+   //fflush(0);
 
    if([fishStockList getCount] == 0) return self;
 
@@ -1305,7 +1306,6 @@ char **speciesStocking;
 		    fflush(0);
 		    continue;
 	       }
-
 
 
 	       polyCellList = [aHabitatSpace getPolyCellList];
@@ -1402,8 +1402,7 @@ char **speciesStocking;
    }
 
    [listNdx drop];
-
-   [randCellDist drop];
+   if(randCellDist != nil)[randCellDist drop];
    [lengthNormalDist drop];
 
    //
@@ -1428,8 +1427,8 @@ char **speciesStocking;
 
    }
            
-   fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
-   fflush(0);
+   //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
+   //fflush(0);
 
    return self;
 }
@@ -1774,7 +1773,7 @@ char **speciesStocking;
      numHoursSinceLastStep++;
   }
 
-  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before shouldfishmoveat \n");
+  //fprintf(stdout,"TroutModelSwarm >>>> step >>>> Date: %s \n",modelDate);
   //fflush(0);
   //
   // Second, check to see if the fish should move. This habitat method
