@@ -965,6 +965,24 @@ Boston, MA 02111-1307, USA.
     return self;
 }
 
+/////////////////////////////////////
+//
+// isDryAtDailyMeanFlow
+//
+/////////////////////////////////////
+- (BOOL) isDryAtDailyMeanFlow
+{
+   BOOL isDry = NO;
+
+   if(meanDepth <= 0.0)
+   {
+      isDry = YES;
+   }
+
+   return isDry;
+}
+
+
 ///////////////////////////////////////
 //
 // getAnglingPressure
@@ -1939,9 +1957,9 @@ Boston, MA 02111-1307, USA.
 
     [survMgr addBoolSwitchFuncToProbWithSymbol: [model getReddMortalitySymbolWithName: "ReddDewater"]
                            withInputObjectType: 0
-                             withInputSelector: M(isDepthGreaterThan0)
-                                  withYesValue: 1.0
-		                   withNoValue: fishParams->mortReddDewaterSurv];
+                             withInputSelector: M(isDryAtDailyMeanFlow)
+                                  withYesValue: fishParams->mortReddDewaterSurv
+		                           withNoValue: 1.0];
 
      //
      // Scouring

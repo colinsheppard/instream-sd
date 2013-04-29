@@ -216,6 +216,7 @@ Boston, MA 02111-1307, USA.
 
 // for instream-sd
 - calcDailyMeanDepthAndVelocityFor: (double) aMeanFlow;
+- (BOOL) isDryAtDailyMeanFlow;
 - (double) getAnglingPressure;
 - (double) getDailyMeanFlow;
 - (double) getDailyMaxFlow;
