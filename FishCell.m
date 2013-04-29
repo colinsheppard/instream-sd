@@ -2022,7 +2022,7 @@ Boston, MA 02111-1307, USA.
                            withInputSelector: M(getCell)];
 
      [survMgr setLogisticFuncLimiterTo: 20.0];
-     //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
+     //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"]; This isn't working with scour
      survMgr = [survMgr createEnd];
   }
  

@@ -518,6 +518,9 @@
        //
        if(numberOfEggs <= 0) 
        {
+		   if([model getWriteReddMortReport] == YES){
+			 [self printReport]; // Added 2/28/04 skj
+		   }
            [self removeWhenEmpty];
        }
   }
@@ -774,74 +777,49 @@
 
 
 
-
-//This is broken wrt the changes in 
-//the survival manager
-
-
 //////////////////////////////////////////////////////////
 //
-// printReddSurvReport
+//printReddSurvReport
 //
 /////////////////////////////////////////////////////
-- printReddSurvReport: (FILE *) printRptPtr 
-{
-   if(printMortalityFlag == YES)
-   {
-       id <ListIndex> printNdx;
-       char* nextString;
-       const char *formatString;
+- printReddSurvReport: (FILE *) printRptPtr {
+  id <ListIndex> printNdx;
+  id nextString;
+  const char *formatString;
 
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> BEGIN\n");
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> printRptPtr = %p\n", printRptPtr);
-       //fflush(0);
+  fprintf(printRptPtr,"\n\n%s %p\n","BEGIN SURVIVAL REPORT for Redd", self);
 
-       fprintf(printRptPtr,"\n\n%s %p\n","BEGIN SURVIVAL REPORT for Redd", self);
+  fprintf(printRptPtr,"Redd: %p Species: %s  CellNumber: %d\n", self,
+                                                                [species getName],
+                                                                cellNumber);
 
-       fprintf(printRptPtr,"Redd: %p Species: %s  CellNo: %d\n",self,
-                                                   [species getName],
-                                                      cellNumber);
-       fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
+  fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
+  formatString = "\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n";
 
-       formatString = "\n%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n";
+  fprintf(printRptPtr,formatString, "Redd",
+                                    "Species",
+                                    "Temperature",
+                                    "Flow",
+                                    "Depth",
+                                    "Dewatering", 
+                                    "Scouring",
+                                    "LowTemp",
+                                    "HiTemp",
+                                    "Superimposition");
 
-       fprintf(printRptPtr,formatString, "Redd",
-                                         "Species",
-                                         "Temperature",
-                                         "Flow",
-                                         "Depth",
-                                         "Dewatering", 
-                                         "Scouring",
-                                         "LowTemp",
-                                         "HiTemp",
-                                         "Superimposition");
+  printNdx = [survPrintList listBegin: [self getZone]];
 
-
-       printNdx = [survPrintList listBegin: [self getZone]];
-
-       while(([printNdx getLoc] != End) && ((nextString = (char *) [printNdx next]) != (char *) nil))
-       {
-         fprintf(printRptPtr,"%s",(char *) nextString);
-         fflush(printRptPtr);
-         //[[self getZone] free: (void *) nextString];
-       }
-
-       [printNdx setLoc: Start];
-       while(([printNdx getLoc] != End) && ((nextString = (char *) [printNdx next]) != (char *) nil))
-       {
-         [reddZone freeBlock: (void *) nextString blockSize: 300*sizeof(char)];
-       }
-
-       fprintf(printRptPtr,"\n\n%s %p\n","END SURVIVAL REPORT for Redd", self);
-
-       [printNdx drop];
-       [survPrintList drop];
-
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> END\n");
-       //fflush(0);
-     
+  while( ([printNdx getLoc] != End) && ( (nextString = [printNdx next]) != nil) ) {
+    fprintf(printRptPtr,"%s",(char *) nextString);
+    [[self getZone] free: (void *) nextString];
   }
-  return self;
+
+  fprintf(printRptPtr,"\n\n%s %p\n","END SURVIVAL REPORT for Redd", self);
+
+[printNdx drop];
+[survPrintList drop];
+
+return self;
 }
 
 

@@ -3113,7 +3113,7 @@ char **speciesStocking;
 
       while(([reddListNdx getLoc] != End) && ( (redd = [reddListNdx next]) != nil ) ) 
       {
-         [redd printReport: printRptPtr];
+         [redd printReport];
       }
 
      [reddListNdx drop];
