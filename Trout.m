@@ -64,9 +64,6 @@
   newTrout->dailySurvivalIfFeed = -LARGEINT;
   newTrout->dailySurvivalIfHide = -LARGEINT;
 
-  newTrout->survivalDay = -LARGEINT;
-  newTrout->survivalNight = -LARGEINT;
-  
   newTrout->currentPhase = DNERROR;
   newTrout->prevPhase = INITPHASE;
 
@@ -78,7 +75,8 @@
   newTrout->fishCumulativeDistanceMoved = 0.0;
 
   newTrout->toggledFishForHabSurvUpdate = nil;
- 
+  newTrout->imImmortal = NO;
+
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
     //fflush(0);
@@ -2508,6 +2506,11 @@
     //fprintf(stdout, "Trout >>>> die >>>> BEGIN\n");
     //fflush(0);
 
+    if(imImmortal == YES)
+    {
+        return self;
+    }
+
     //
     // if numHoursSinceLastStep < 1 crash and burn...
     //
@@ -3551,6 +3554,20 @@
   return self;
 }
 
+///////////////////////////////
+//
+// makeMeImmortal
+//
+//////////////////////////////
+- makeMeImmortal
+{
+   if(imImmortal == NO)
+   {
+       imImmortal = YES;
+   }
+
+   return self;
+}
 
 
 #ifdef MOVE_REPORT_ON

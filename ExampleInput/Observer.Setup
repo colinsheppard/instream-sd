@@ -16,7 +16,7 @@ rasterColorVariable         depth
 maxShadeVelocity 	        100
 maxShadeDepth 	            200
 
-tagFishColor                LimeGreen
+tagFishColor                YellowGreen
 tagCellColor                DeepPink1
 dryCellColor                white
 

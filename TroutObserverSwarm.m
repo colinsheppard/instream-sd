@@ -215,11 +215,11 @@
                                      "captureArea",
                                      "maxSwimSpeed",
                                      "nonStarvSurvival",
-                                     "TransectNumber",
                                      "CellNumber",
                                      ":",
                                      "tagFish",
                                      "killFish",
+									 "makeMeImmortal",
                                       NULL];
                                      
    listNdx = [[troutModelSwarm getSpeciesClassList] listBegin: [self getZone]];

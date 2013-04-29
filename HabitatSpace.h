@@ -239,7 +239,6 @@ long int maxYCoordinate;
   // The following is used for a work around in the 
   // cellFishInfoReporter (BreakoutReport)
   //
-  int    habCellTransectNumber;
   int    habCellNumber;
   double habCellArea;
   double habCellDepth;

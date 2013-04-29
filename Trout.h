@@ -73,9 +73,9 @@
   Color myColor;
   Color myOldColor;
   unsigned myRasterX, myRasterY;
-  unsigned TransectNumber, CellNumber;
-
-
+  unsigned CellNumber;
+  
+  BOOL imImmortal;
 
 // ENERGETICS VARIABLES
 // These are set in move
@@ -187,8 +187,6 @@ double dayHideNightHideERM;
 double dayHideNightFeedERM;
 
 double dailyNonStarveSurvival;
-double survivalDay;
-double survivalNight;
 
 
 //
@@ -276,6 +274,7 @@ id toggledFishForHabSurvUpdate;
 - setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator;
 - setCaptureLogistic: (LogisticFunc *) aLogisticFunc;
 - (int) getFishCount;
+- makeMeImmortal;
 
 + createBegin: aZone;
 - createEnd;

@@ -3466,7 +3466,7 @@ char **speciesStocking;
                                                  "Replicate",
                                                  "ReddID",
                                                  "Species",
-                                                 "Transect",
+                                                 "CellNo",
                                                  "CreateDate",
                                                  "InitialNumberOfEggs",
                                                  "EmptyDate",
