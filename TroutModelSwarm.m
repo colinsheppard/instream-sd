@@ -450,6 +450,8 @@ char **speciesStocking;
 
   [self createReproLogistics];
 
+  reddBinomialDist = [BinomialDist create: modelZone setGenerator: randGen];
+
   //
   // the following was added here 3/20/2000  
   // numAge3PlusFish needed in the habitat->SpaceCell->survProbs
@@ -1840,12 +1842,6 @@ char **speciesStocking;
 
       [liveFish forEach: M(resetFishActualDailyIntake)];
 
-      #ifdef REDD_SURV_REPORT
-      //
-      // Added 19Feb2008
-      //
-      [self printReddSurvReport]; 
-      #endif
   }
 
 
@@ -2238,13 +2234,9 @@ char **speciesStocking;
         [self printReddReport];
      #endif
 
-     #ifdef REDD_SURV_REPORT
-        //
-        // This is broken wrt the changes in 
-        // the survival manager
-        //
-        [self printReddSurvReport];
-     #endif
+    if(writeReddSurvReport == YES){
+      [self printReddSurvReport];
+    }
 
      //fprintf(stdout,"TroutModelSwarm >>>> stop >>>>\n");
      //fflush(stdout);
@@ -3138,60 +3130,34 @@ char **speciesStocking;
 #endif
 
 
-#ifdef REDD_SURV_REPORT
-
 //////////////////////////////////////////////////////////
 //
 // printReddSurvReport
 //
 /////////////////////////////////////////////////////////
-- printReddSurvReport 
-{
-   FILE *printRptPtr = NULL;
-   const char * reddSurvFile = "ReddSurvivalTest.rpt";
-   id <ListIndex> reddListNdx = nil;
-   id redd = nil;
- 
-   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> BEGIN\n");
-   //fflush(0);
+- printReddSurvReport { 
+    FILE *printRptPtr=NULL;
+    const char * reddSurvFile = "Redd_Survival_Test_Out.csv";
+    id <ListIndex> reddListNdx;
+    id redd;
 
+    if((printRptPtr = fopen(reddSurvFile,"w+")) != NULL){
+        if([[self getReddRemovedList] getCount] != 0){
+            reddListNdx = [removedRedds listBegin: modelZone];
 
-    if((printRptPtr = fopen(reddSurvFile,"w+")) == NULL) 
-    {
-       fprintf(stderr, "ERROR: Couldn't open %s\n", reddSurvFile);
+            while(([reddListNdx getLoc] != End) && ((redd = [reddListNdx next]) != nil)){
+               [redd printReddSurvReport: printRptPtr];
+            }
+            [reddListNdx drop];
+        }
+   }else{
+       fprintf(stderr, "ERROR: TroutModelSwarm >>>> printReddSurvReport >>>> Couldn't open %s\n", reddSurvFile);
        fflush(0);
        exit(1);
-    }
-
-    if([removedRedds getCount] > 0) 
-    {
-       reddListNdx = [removedRedds listBegin: modelZone];
-
-       while(([reddListNdx getLoc] != End) && ((redd = [reddListNdx next]) != nil)) 
-       {
-         [redd printReddSurvReport: printRptPtr];
-       }
-
-       [reddListNdx drop];
-    }
-
-    if(printRptPtr != NULL)
-    {
-       fclose(printRptPtr);
-       printRptPtr = NULL;
-    }
-
-   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> END\n");
-   //fflush(0);
-
-    return self;
+   }
+   fclose(printRptPtr);
+   return self;
 }
-
-#endif
-
-
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -4003,6 +3969,9 @@ char **speciesStocking;
   [reproLogisticFuncMap deleteAll];
   [reproLogisticFuncMap drop];
   
+	 [reddBinomialDist drop];
+	 reddBinomialDist = nil;
+        
   //[deathMap deleteAll];
   //[deathMap drop];
 

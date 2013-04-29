@@ -1377,6 +1377,7 @@
   [newRedd setCell: aCell];
   [newRedd setReddColor: myColor];
   [newRedd setSpecies: species]; 
+  [newRedd setReddBinomialDist: [model getReddBinomialDist]];
 
   [newRedd setNumberOfEggs: fishParams->fishFecundParamA
          * pow(fishLength, fishParams->fishFecundParamB)

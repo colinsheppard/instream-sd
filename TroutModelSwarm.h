@@ -28,10 +28,6 @@
 //#define INIT_FISH_REPORT
 //#define REDD_REPORT            // If Commented out will lose 
                                // main redd output file
-//
-// The following is broken wrt the changes
-// in the survival manager ...
-//#define REDD_SURV_REPORT
 
 struct SpeciesSetupStruct {
                               Class troutClass;
@@ -479,7 +475,7 @@ double checkParam;
 - openReddSummaryFilePtr;
 - (FILE *) getReddSummaryFilePtr;
 
-
+- printReddSurvReport;
 
 
 - dropFishMortObjs;

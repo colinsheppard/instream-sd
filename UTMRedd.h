@@ -50,9 +50,11 @@
   int numberOfEggsLostToSuperimp;
 
   id <NormalDist> reddNormalDist;
+  id <BinomialDist> reddBinomialDist;
+  
 
-  FishCell* fishCell;
-  int polyCellNumber;
+  FishCell* myCell;
+  int cellNumber;
   Color myColor;
   unsigned myRasterX, myRasterY;
 
@@ -70,10 +72,9 @@
 
 + createBegin: aZone;
 - createEnd;
-- createPrintList;
-- createSurvPrintList;
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
+- setReddBinomialDist: (id <BinomialDist>) aBinomialDist;
 - setModel: aModel;
 - setFishParams: (FishParams *) aFishParams;
 - (FishParams *) getFishParams;
@@ -114,13 +115,19 @@
 - setPrintSummaryFlagToYes;
 - setPrintMortalityFlagToYes;
 
-- printReport: (FILE *) printRptPtr;
+- printReport;
 - createPrintString: (int) eggsLostToDewatering
                    : (int) eggsLostToScouring
                    : (int) eggsLostToLowTemp
                    : (int) eggsLostToHiTemp
                    : (int) eggsLostToSuperimp
                    : (time_t) aModelTime_t;
+
+				   - createSurvPrintStringWithDewaterSF: (double) aDewaterSF
+                         withScourSF: (double) aScourSF
+                        withLoTempSF: (double) aLoTempSF
+                        withHiTempSF: (double) aHiTempSF
+                      withSuperimpSF: (double) aSuperimpSF;
 
 //
 // The following are broken wrt the changes
