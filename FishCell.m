@@ -2153,6 +2153,8 @@ Boston, MA 02111-1307, USA.
   //fflush(0);
 
   [survMgrMap forEach: M(updateForHabitat)];
+  
+  // Redd survival managers are now updated in [redd survive]
   [survMgrReddMap forEach: M(updateForHabitat)];
 
   //fprintf(stdout, "FishCell >>>> updateHabitatSurvivalProb >>>> END\n");
@@ -2208,7 +2210,10 @@ Boston, MA 02111-1307, USA.
    [[survMgrReddMap at: [aRedd getSpecies]] 
                updateForAnimal: aRedd]; 
 
-  //fprintf(stdout, "FishCell >>>> updateReddSurvivalProbFor >>>> BEGIN\n");
+   [[survMgrReddMap at: [aRedd getSpecies]] 
+               updateForHabitat]; 
+
+			   //fprintf(stdout, "FishCell >>>> updateReddSurvivalProbFor >>>> BEGIN\n");
   //fflush(0);
 
    return self;

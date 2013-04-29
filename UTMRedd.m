@@ -298,7 +298,8 @@
         id <SurvProb> aProb;
 
 	// I think the following is redundant of updateReddSurvivalProbFor --colin
-        // [myCell updateReddHabitatSurvProb];
+	// It wasn't before but is now... updates for both redd and cell --Steve
+       // [myCell updateReddHabitatSurvProb];
         [myCell updateReddSurvivalProbFor: self];
 
         listOfSurvProbs = [myCell getReddListOfSurvProbsFor: self];

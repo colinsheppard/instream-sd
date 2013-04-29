@@ -42,7 +42,7 @@
 {
    //double inputValue = -1;
   
-   int speciesNdx;
+  // int speciesNdx;
 
    double scourParam=0;
    double shearStress=0;
@@ -85,7 +85,7 @@
 
    cell = [aRedd getCell];
 
-   speciesNdx = [aRedd getSpeciesNdx];
+   //speciesNdx = [aRedd getSpeciesNdx];
    fishParams = [aRedd getFishParams];
 
 
