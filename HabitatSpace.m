@@ -3655,7 +3655,6 @@ return self;
      exit(1);
   }
 
-
   if((scenario == 0) || (replicate == 0))
   {
      fprintf(stderr, "ERROR: HabitatSpace >>>> buildCellFishInfoReporter >>>> scenario or replicate is 0\n");
@@ -3791,9 +3790,7 @@ return self;
        exit(1);
    }
 
-
    cellNdx = [polyCellList listBegin: scratchZone];
-
 
    while(([cellNdx getLoc] != End) && ((aCell = [cellNdx next]) != nil))
    {

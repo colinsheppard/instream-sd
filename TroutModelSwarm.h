@@ -232,7 +232,11 @@ id <List> ageSymbolList;
 id <List> fishActivitySymbolList;
 id <List> reachSymbolList;
 
-
+id <Symbol> Age0;
+id <Symbol> Age1;
+id <Symbol> Age2;
+id <Symbol> Age3Plus;
+ 
 id <List> reddList;
 id <List> emptyReddList;
 id <List> removedRedds;

@@ -19,7 +19,6 @@
 #import "TroutModelSwarm.h"
 
 id <Symbol> Female, Male;  // sex of fish
-id <Symbol> Age0, Age1, Age2, Age3Plus;
 
 id <Symbol> *mySpecies;
 id <Symbol> Feed, Hide;
@@ -323,9 +322,9 @@ char **speciesStocking;
 
   [habitatManager finishBuildingTheHabitatSpaces];
   
-  if(writeCellFishReport == YES){
-      [habitatManager buildHabSpaceCellFishInfoReporter];
-  }
+  // if(writeCellFishReport == YES){
+      // [habitatManager buildHabSpaceCellFishInfoReporter];
+  // }
 
   [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
@@ -435,6 +434,10 @@ char **speciesStocking;
   // Breakout reporters... 
   //
   [self createBreakoutReporters];
+
+  if(writeCellFishReport == YES){
+      [habitatManager buildHabSpaceCellFishInfoReporter];
+  }
 
 
   if(theColormaps != nil) 
