@@ -31,6 +31,7 @@
 @interface Trout: SwarmObject
 {
 
+  id troutZone;
   id model;
   id habitatSpace;
   id habitatManager;
@@ -227,7 +228,6 @@ id toggledFishForHabSurvUpdate;
   double sensoryRadiusFactor; 
 
   id troutRandGen;
-  id dieDist;
   id spawnDist;
 
 

@@ -302,9 +302,6 @@
   id mapNdx;  
   id <VarProbe> aProbe;
   char buffer[300];
-  //size_t strLength = (size_t) 25;
-  //char* outputFileName = (char *) [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                         //ofSize: strLength]; 
   char outputFileName[25];
 
   FILE* filePtr = NULL;

@@ -13,7 +13,7 @@
 
 #import "SurvProb.h"
 #import "globals.h"
-#import "ZoneAllocMapper.h"
+//#import "ZoneAllocMapper.h"
 #import "BooleanSwitchFunc.h"
 #import "LogisticFunc.h"
 #import "ConstantFunc.h"

@@ -47,10 +47,11 @@
 
   newTrout = [super createBegin: aZone];
 
+  newTrout->troutZone = [Zone create: aZone];
   newTrout->causeOfDeath = nil;
 
   //
-  // initilaize these 4 per 
+  // initialize these 4 per 
   // Green river model formulation spec
   //
   newTrout->netEnergyForFeedingLastPhase = 0.0;
@@ -70,7 +71,6 @@
   newTrout->isHideCoverAvailable = NO;
   newTrout->hidingCover = NO;
 
-  newTrout->destCellList = [List create: aZone];
   newTrout->fishDistanceLastMoved = 0.0;
   newTrout->fishCumulativeDistanceMoved = 0.0;
 
@@ -110,17 +110,12 @@
   }
   else 
   {
-    spawnDist = [UniformDoubleDist create: [self getZone]
+    spawnDist = [UniformDoubleDist create: troutZone
 				   setGenerator: troutRandGen
 				   setDoubleMin: 0.0
 				   setMax: 1.0];
 
-    dieDist = [UniformDoubleDist create: [self getZone]
-				   setGenerator: troutRandGen
-				   setDoubleMin: 0.0
-				   setMax: 1.0];
-
-    uniformDist = [UniformDoubleDist create: [self getZone]
+    uniformDist = [UniformDoubleDist create: troutZone
                                setGenerator: troutRandGen
                                setDoubleMin: 0.0
                                      setMax: 1.0];
@@ -132,6 +127,8 @@
    deadOrAlive = "ALIVE";
  
    spawnedThisSeason = NO;
+
+   destCellList = [List create: troutZone];
 
    return self;
 }
@@ -1302,7 +1299,7 @@
 ////////////////////////////////////////////
 - (FishCell *) findCellForNewRedd 
 {
-  id <List> potentialCells = [List create: scratchZone];
+  id <List> potentialCells = [List create: troutZone];
   id <ListIndex> cellNdx = nil;
   FishCell* bestCell = (FishCell *) nil;
   FishCell* nextCell = (FishCell *) nil;
@@ -2581,13 +2578,12 @@
            {
                if([uniformDist getDoubleSample]  >  pow([aProb getSurvivalProb], (((double) numHoursSinceLastStep)/24.0)))
                {
-                   char* deathName = (char *) [aProb getName];
+                   char* deathName = (char *) [[aProb getProbSymbol] getName];
                    size_t strLen = strlen(deathName) + 1;
   
                    causeOfDeath = [aProb getProbSymbol];
 
-                   deathCausedBy = [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                ofSize: strLen];
+                   deathCausedBy = (char *) [troutZone alloc: strLen*sizeof(char)];
                    strncpy(deathCausedBy, deathName, strLen);
 
                    deadOrAlive = "DEAD";
@@ -2605,13 +2601,12 @@
            // fflush(0);
                if([uniformDist getDoubleSample]  >  [aProb getSurvivalProb])
                {
-                   char* deathName = (char *) [aProb getName];
+                   char* deathName = (char *) [[aProb getProbSymbol] getName];
                    size_t strLen = strlen(deathName) + 1;
   
                    causeOfDeath = [aProb getProbSymbol];
 
-                   deathCausedBy = [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                ofSize: strLen];
+                   deathCausedBy = (char *) [troutZone alloc: strLen*sizeof(char)];
                    strncpy(deathCausedBy, deathName, strLen);
 
                    deadOrAlive = "DEAD";
@@ -4342,13 +4337,24 @@ return self;
 
 - (void) drop
 {
-     [destCellList drop];
 
      [spawnDist drop];
-     [dieDist drop];
      [uniformDist drop];
 
+     [destCellList drop];
+     destCellList = nil; 
+
+     if(causeOfDeath != nil)
+     {
+         [troutZone free: deathCausedBy];
+         deathCausedBy = NULL;
+     }
+
+     [troutZone drop];
+     troutZone = nil;
+
     [super drop];
+     self = nil;
 
 }
 

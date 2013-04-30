@@ -14,8 +14,6 @@ OBJECTS=GraphDataObject.o \
 	ExperBatchSwarm.o \
 	TroutBatchSwarm.o \
 \
-	ZoneAllocMapper.o \
-\
 	ObjectValueFunc.o \
 	SurvProb.o \
 	SingleFuncProb.o \
@@ -82,8 +80,6 @@ TimeManager.o : TimeManager.[hm]
 #
 ExperBatchSwarm.o : ExperBatchSwarm.[hm]
 TroutBatchSwarm.o : TroutBatchSwarm.[hm]
-#
-ZoneAllocMapper.o : ZoneAllocMapper.[hm]
 #
 ObjectValueFunc.o : ObjectValueFunc.[hm]
 SurvProb.o : SurvProb.[hm]

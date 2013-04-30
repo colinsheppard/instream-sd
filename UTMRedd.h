@@ -14,7 +14,7 @@
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"
 #import "FishParams.h"
-#import "ZoneAllocMapper.h"
+//#import "ZoneAllocMapper.h"
 
 @interface UTMRedd: SwarmObject
 {

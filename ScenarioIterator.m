@@ -276,8 +276,7 @@ struct updateVar {
          case _C_FLT:    {
                  
                  float *aNewFlt;
-                 aNewFlt = (float *) [ZoneAllocMapper allocBlockIn: scenarioIterZone
-                                                            ofSize: sizeof(float)];
+                 aNewFlt = (float *) [[self getZone] alloc: sizeof(float)];
                  //aNewFlt = (float *) [[self getZone] alloc: sizeof(float)];
                  *aNewFlt = *((float *) paramValue);
 

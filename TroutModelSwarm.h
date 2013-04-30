@@ -18,7 +18,7 @@
 #import "HabitatManager.h"
 #import "FishParams.h"
 #import "TimeManagerProtocol.h"
-#import "ZoneAllocMapper.h"
+//#import "ZoneAllocMapper.h"
 #import "GraphDataObject.h"
 #import "YearShufflerP.h"
 #import "BreakoutReporter.h"
@@ -425,8 +425,9 @@ double checkParam;
 //
 - step;
 
--           printZone:(id <Zone>) aZone 
-       withPrintLevel: (int) level;
+// Commented out; obsolete
+//-           printZone:(id <Zone>) aZone 
+//       withPrintLevel: (int) level;
 
 - toggleFishForHabSurvUpdate;
 

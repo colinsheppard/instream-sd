@@ -1208,8 +1208,7 @@ char **speciesStocking;
                  continue;
               }
               
-              fishStockRecord = (FishStockStruct *) [ZoneAllocMapper allocBlockIn: modelZone 
-                                                                           ofSize: sizeof(FishStockStruct)];
+              fishStockRecord = (FishStockStruct *) [modelZone alloc: sizeof(FishStockStruct)];
                      
               fishStockRecord->fishStockTime = aStockTime;
 	      fishStockRecord->speciesSymbol = speciesSetup->speciesSymbol;
@@ -1944,8 +1943,9 @@ char **speciesStocking;
 ///////////////////////////////////////
 //
 // printZone
-//
+// Commented out 4/29/2013 SFR
 ///////////////////////////////////////
+/*
 -           printZone:(id <Zone>) aZone 
        withPrintLevel: (int) level
 {
@@ -1996,7 +1996,7 @@ char **speciesStocking;
 
    return self;
 }
-
+*/
 /////////////////////////////////////////////////////////
 //
 // toggleCellsColorRepIn
@@ -2997,8 +2997,7 @@ char **speciesStocking;
 	      //fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
 	      //fflush(0);
 
-         SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
-                                                                              ofSize: sizeof(SpeciesSetup)];
+         SpeciesSetup* speciesSetup = (SpeciesSetup *) [modelZone alloc: sizeof(SpeciesSetup)];
          speciesSetup->speciesSymbol = [Symbol create: modelZone
                                               setName: speciesName[speciesIDX]];
 	 mySpecies[speciesIDX] = speciesSetup->speciesSymbol;
