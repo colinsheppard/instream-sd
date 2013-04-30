@@ -12,6 +12,7 @@
 #import <objectbase/SwarmObject.h>
 #import <defobj.h>
 #import "globals.h"
+#include <stdlib.h>
 
 @interface Func : SwarmObject
 {

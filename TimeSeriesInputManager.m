@@ -713,7 +713,6 @@ Boston, MA 02111-1307, USA.
 - printDataToFileNamed: (char *) aFileName{
     FILE* filePtr=NULL;
     int ndx=0;
-    time_t aCurrentTime =0;
  
     char date[12];
     int hour;
@@ -727,8 +726,6 @@ Boston, MA 02111-1307, USA.
            [InternalError raiseEvent: "ERROR opening file %s for writing\n", aFileName];
       }
     }
-
-    aCurrentTime = [timeManager getCurrentTimeT]; 
 
     for(ndx=0; ndx < numRecords; ndx++){
          strncpy(date, [timeManager getDateWithTimeT: (time_t) inputRecord[ndx][0]],11);

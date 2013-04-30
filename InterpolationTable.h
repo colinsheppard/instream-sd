@@ -13,7 +13,7 @@
 #import <collections.h>
 //#import "ZoneAllocMapper.h"
 #import <math.h>
-
+#include <stdlib.h>
 #define LARGEINT 2147483647
 
 
