@@ -18,7 +18,7 @@
 #import "LogisticFunc.h"
 
 
-//#define MOVE_REPORT_ON
+//#define MOVE_REPORT_ON  This switch replaced by Model.Setup variable
 //#define MOVE_DISTANCE_REPORT_ON
 //#define SURVIVAL_REPORT_ON
 //#define SPAWN_REPORT_ON seems to be superceded by SPAWN_CELL_RPT
@@ -525,9 +525,7 @@ id toggledFishForHabSurvUpdate;
 
 
 //REPORTS
-#ifdef MOVE_REPORT_ON
 - moveReport: (FishCell *)  aCell;
-#endif
 
 #ifdef MOVE_DISTANCE_REPORT_ON
 - moveDistanceReport: (FishCell *)  aCell;

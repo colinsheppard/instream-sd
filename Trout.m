@@ -1977,9 +1977,9 @@
 
 
 //PRINT THE MOVE REPORT
-#ifdef MOVE_REPORT_ON
-[self moveReport: bestDest];
-#endif
+  if([model getWriteMoveReport] == YES){
+    [self moveReport: bestDest];
+  }
 
 #ifdef MOVE_DISTANCE_REPORT_ON
    [self moveDistanceReport: bestDest];
@@ -3565,7 +3565,6 @@
 }
 
 
-#ifdef MOVE_REPORT_ON
 
 ///////////////////////////////////////////////////////////////
 //
@@ -3753,7 +3752,6 @@ return self;
 
 }
 
-#endif
 
 #ifdef MOVE_DISTANCE_REPORT_ON
 
