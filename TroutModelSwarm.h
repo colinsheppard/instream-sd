@@ -296,7 +296,7 @@ double checkParam;
   int endMonth;
   int endYear;
   int numSimDays;
-  int simCounter;
+  int simHourCounter;
   time_t popInitTime;
   id <List> fishInitializationRecords;
   id <List> listOfMortalityCounts;

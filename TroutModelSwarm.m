@@ -281,6 +281,9 @@ char **speciesStocking;
   reddMortSymbolList = [List create: modelZone];
   [self buildFishClass];
 
+  numSimDays = [timeManager getNumberOfDaysBetween: runStartTime and: runEndTime] + 1;
+  simHourCounter = 1;
+
   if(shuffleYears == YES){
      //
      // Create the year shuffler and the data start and end times.
@@ -1271,9 +1274,9 @@ char **speciesStocking;
 
    id lengthNormalDist = nil;
 
-   int arraySize = [fishStockList getCount];
-   time_t nextTimeArray[arraySize];
-   int i = 0;
+   //int arraySize = [fishStockList getCount];
+   //time_t nextTimeArray[arraySize];
+   //int i = 0;
 
    id aHabitatSpace;
    id <List> polyCellList = nil;
@@ -1283,13 +1286,6 @@ char **speciesStocking;
 
    if([fishStockList getCount] == 0) return self;
 
-   //
-   // set up the distribution to draw fish lengths
-   //
-
-   lengthNormalDist = [NormalDist create: modelZone 
-                      setGenerator: randGen];
-
 
    listNdx = [fishStockList listBegin: scratchZone];
 
@@ -1298,14 +1294,21 @@ char **speciesStocking;
    while(([listNdx getLoc] != End) && ((fishStockRecord = (FishStockStruct *) [listNdx next]) != (FishStockStruct *) nil))
    {
 
-          nextTimeArray[i++] = fishStockRecord->fishStockTime;
+          //nextTimeArray[i++] = fishStockRecord->fishStockTime;
         
-          if(fishStockRecord->fishStockTime == nextFishStockTime)
+          if(fishStockRecord->fishStockTime == modelTime)
           {
 
                 int fishNdx;
 	       aHabitatSpace = nil;
 	       aHabitatSpace = [habitatManager getReachWithName: fishStockRecord->reach];
+		   //
+		   // set up the distribution to draw fish lengths
+		   //
+
+		   lengthNormalDist = [NormalDist create: modelZone 
+							  setGenerator: randGen];
+
 		
 	       if(aHabitatSpace == nil)
 	       {
@@ -1416,29 +1419,30 @@ char **speciesStocking;
 
    [listNdx drop];
    if(randCellDist != nil)[randCellDist drop];
-   [lengthNormalDist drop];
+   if(lengthNormalDist != nil)[lengthNormalDist drop];
 
    //
    // Now, get the next trout stocking time
-   //
-   {
+   // We no longer need this because we check whether date = a stocking date
+   // each day (to make yearshuffler work).
+   // {
 
-       time_t smallestNextFishStockTime = runEndTime;
+       // time_t smallestNextFishStockTime = runEndTime;
 
-       for(i = 0;i < arraySize; i++)
-       {
+       // for(i = 0;i < arraySize; i++)
+       // {
 
-           if(nextTimeArray[i] <= nextFishStockTime) continue;
+           // if(nextTimeArray[i] <= nextFishStockTime) continue;
 
-           smallestNextFishStockTime = (smallestNextFishStockTime < nextTimeArray[i]) ?
-                                        smallestNextFishStockTime : nextTimeArray[i];
+           // smallestNextFishStockTime = (smallestNextFishStockTime < nextTimeArray[i]) ?
+                                        // smallestNextFishStockTime : nextTimeArray[i];
 
  
-       }
+       // }
 
-       nextFishStockTime = smallestNextFishStockTime;
+       // nextFishStockTime = smallestNextFishStockTime;
 
-   }
+   // }
            
    //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
@@ -1764,6 +1768,7 @@ char **speciesStocking;
 {
   time_t timeTillDaytimeStarts = (time_t) 0;
   time_t anHour = (time_t) 3600; 
+  time_t newYearTime = (time_t) 0;
 
   BOOL moveFish = NO;
   id aHabitatSpace;
@@ -1774,6 +1779,8 @@ char **speciesStocking;
   //
   // First, advance the model clock by one hour
   // if isFirstStep is FALSE 
+  // If it is midnight and we're shuffling years, check whether
+  // it's time to jump to a new year
   //
   if(isFirstStep == TRUE)
   {
@@ -1782,6 +1789,17 @@ char **speciesStocking;
   else
   { 
      modelTime = [timeManager stepTimeWithControllerObject: self];
+	 if(shuffleYears == YES && [timeManager getHourWithTimeT: modelTime] == 0)
+	  {
+			newYearTime = [yearShuffler checkForNewYearAt: modelTime];
+
+          if(newYearTime != modelTime)
+          {
+              [timeManager setCurrentTime: newYearTime];
+              modelTime = newYearTime;
+          }
+	  }
+
      strcpy(modelDate, [timeManager getDateWithTimeT: modelTime]);
      numHoursSinceLastStep++;
   }
@@ -1810,7 +1828,6 @@ char **speciesStocking;
   //
   // Third, if it is midnight, call the method that updates
   // fish variables: age, time till next spawning period.
-  //
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
       [self updateFish];      //increments fish age if date is 1/1
@@ -1820,7 +1837,7 @@ char **speciesStocking;
   //
   // Fourth, simulate stocking of hatchery fish, if it is time.
   //
-  if(nextFishStockTime <= modelTime)
+  if([timeManager getHourWithTimeT: modelTime] == 10)
   {
   //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before stock\n");
   //fflush(0);
@@ -2223,12 +2240,12 @@ char **speciesStocking;
 ////////////////////////////////////////////////////////
 - (BOOL) whenToStop 
 { 
-  BOOL STOP;
+  BOOL STOP = NO;
   
      // fprintf(stdout,"TroutModelSwarm >>>> whenToStop >>>>\n");
      // fflush(stdout);
 
-  if(modelTime >= runEndTime) 
+  if(simHourCounter >= (numSimDays * 24))  
   {
      STOP = YES;
      [self dropFishMortObjs];
@@ -2247,7 +2264,8 @@ char **speciesStocking;
   }
   else
   {
-     STOP = NO;
+    STOP = NO;
+    simHourCounter++;
   }
 
   return STOP;
