@@ -382,7 +382,7 @@ Boston, MA 02111-1307, USA.
 // setVelocityInterpolator
 //
 ////////////////////////////////////////////////
--  setVelocityInterpolator: (id <InterpolationTable>) aVelocityInterpolator
+-  setVelocityInterpolator: (id <InterpolationTableSD>) aVelocityInterpolator
 {
     velocityInterpolator = aVelocityInterpolator;
     return self;
@@ -394,7 +394,7 @@ Boston, MA 02111-1307, USA.
 // getVelocityInterpolator
 //
 ////////////////////////////////////////////////////
--  (id <InterpolationTable>) getVelocityInterpolator
+-  (id <InterpolationTableSD>) getVelocityInterpolator
 {
    return velocityInterpolator;
 }
@@ -405,7 +405,7 @@ Boston, MA 02111-1307, USA.
 // setDepthInterpolator
 //
 ////////////////////////////////////////////////
--  setDepthInterpolator: (id <InterpolationTable>) aDepthInterpolator
+-  setDepthInterpolator: (id <InterpolationTableSD>) aDepthInterpolator
 {
     depthInterpolator = aDepthInterpolator;
     return self;
@@ -415,7 +415,7 @@ Boston, MA 02111-1307, USA.
 // getDepthInterpolator
 //
 /////////////////////////////////////////////////////
--  (id <InterpolationTable>) getDepthInterpolator
+-  (id <InterpolationTableSD>) getDepthInterpolator
 {
     return depthInterpolator;
 }

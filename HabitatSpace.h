@@ -35,7 +35,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "TimeSeriesInputManagerP.h"
 #import "math.h"
-#import "InterpolationTableP.h"
+#import "InterpolationTableSDP.h"
 #import "TroutModelSwarmP.h"
 #import "PolyInputData.h"
 //#import "PolyInterpolatorFactory.h"
@@ -134,7 +134,7 @@ long int maxYCoordinate;
   int spaceDimX, spaceDimY;
 
   id <Array> flowArray;
-  id <InterpolationTable> flowInterpolator;
+  id <InterpolationTableSD> flowInterpolator;
 
   double maxCellY;
   double minCellY;

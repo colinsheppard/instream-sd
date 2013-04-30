@@ -57,7 +57,7 @@ OBJECTS=GraphDataObject.o \
 	Rainbow.o \
 	Brown.o \
 	UTMRedd.o \
-	InterpolationTable.o \
+	InterpolationTableSD.o \
 	TimeSeriesInputManager.o\
 	YearShuffler.o\
 	TroutMortalityCount.o\
@@ -119,7 +119,7 @@ Trout.o : Trout.[hm]
 Rainbow.o : Rainbow.[hm]
 Brown.o : Brown.[hm]
 UTMRedd.o : UTMRedd.[hm]
-InterpolationTable.o : InterpolationTable.[hm]
+InterpolationTableSD.o : InterpolationTableSD.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
 TroutObserverSwarm.o  : TroutObserverSwarm.[hm]

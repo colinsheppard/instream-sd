@@ -1422,7 +1422,7 @@
 // setCMaxInterpolator
 //
 ///////////////////////////////////////////////////////////////
-- setCMaxInterpolator: (id <InterpolationTable>) anInterpolator
+- setCMaxInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
    cmaxInterpolator = anInterpolator;
    return self;
@@ -1435,7 +1435,7 @@
 // setSpawnDepthInterpolator
 //
 //////////////////////////////////////////
-- setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator
+- setSpawnDepthInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
    spawnDepthInterpolator = anInterpolator;
    return self;
@@ -1448,7 +1448,7 @@
 // setSpawnVelocityInterpolator
 //
 ///////////////////////////////////////////
-- setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator
+- setSpawnVelocityInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
     spawnVelocityInterpolator = anInterpolator;
     return self;

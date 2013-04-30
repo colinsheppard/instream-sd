@@ -17,7 +17,7 @@
 #define LARGEINT 2147483647
 
 
-@interface InterpolationTable : SwarmObject
+@interface InterpolationTableSD : SwarmObject
 {
 
   id <Zone> interpolationZone;
@@ -30,6 +30,9 @@
   id <Array> yValues;
 
   double maxX;
+  
+  double previousX;
+  double previousResult;
 
 }
 

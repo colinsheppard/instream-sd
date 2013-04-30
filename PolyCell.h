@@ -33,7 +33,7 @@ Boston, MA 02111-1307, USA.
 #import <math.h>
 #import <stdlib.h>
 #import "globals.h"
-#import "InterpolationTableP.h"
+#import "InterpolationTableSDP.h"
 #import "PolyPoint.h"
 
 

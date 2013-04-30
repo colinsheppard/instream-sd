@@ -259,9 +259,9 @@ id toggledFishForHabSurvUpdate;
   
   // Stuff from Instream 5.0
   int fishID;
-  id <InterpolationTable> cmaxInterpolator;
-  id <InterpolationTable> spawnDepthInterpolator;
-  id <InterpolationTable> spawnVelocityInterpolator;
+  id <InterpolationTableSD> cmaxInterpolator;
+  id <InterpolationTableSD> spawnDepthInterpolator;
+  id <InterpolationTableSD> spawnVelocityInterpolator;
   LogisticFunc* captureLogistic;
 
 }
@@ -269,9 +269,9 @@ id toggledFishForHabSurvUpdate;
 // Stuff from Instream 5.0
 - setFishID: (int) anIDNum;
 - (int) getFishID;
-- setCMaxInterpolator: (id <InterpolationTable>) anInterpolator;
-- setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator;
-- setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator;
+- setCMaxInterpolator: (id <InterpolationTableSD>) anInterpolator;
+- setSpawnDepthInterpolator: (id <InterpolationTableSD>) anInterpolator;
+- setSpawnVelocityInterpolator: (id <InterpolationTableSD>) anInterpolator;
 - setCaptureLogistic: (LogisticFunc *) aLogisticFunc;
 - (int) getFishCount;
 - makeMeImmortal;

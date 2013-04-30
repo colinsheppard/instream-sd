@@ -2524,7 +2524,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> cmaxInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> cmaxInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [cmaxInterpolationTable addX: fishParams->fishCmaxTempT1 Y: fishParams->fishCmaxTempF1];
      [cmaxInterpolationTable addX: fishParams->fishCmaxTempT2 Y: fishParams->fishCmaxTempF2];
@@ -2554,7 +2554,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> spawnDepthInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> spawnDepthInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [spawnDepthInterpolationTable addX: fishParams->fishSpawnDSuitD1 Y: fishParams->fishSpawnDSuitS1];
      [spawnDepthInterpolationTable addX: fishParams->fishSpawnDSuitD2 Y: fishParams->fishSpawnDSuitS2];
@@ -2583,7 +2583,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> spawnVelocityInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> spawnVelocityInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [spawnVelocityInterpolationTable addX: fishParams->fishSpawnVSuitV1 Y: fishParams->fishSpawnVSuitS1];
      [spawnVelocityInterpolationTable addX: fishParams->fishSpawnVSuitV2 Y: fishParams->fishSpawnVSuitS2];
@@ -2612,9 +2612,9 @@ char **speciesStocking;
 
   id newFish;
   id <Symbol> ageSymbol = nil;
-  id <InterpolationTable> aCMaxInterpolator = nil;
-  id <InterpolationTable> aSpawnDepthInterpolator = nil;
-  id <InterpolationTable> aSpawnVelocityInterpolator = nil;
+  id <InterpolationTableSD> aCMaxInterpolator = nil;
+  id <InterpolationTableSD> aSpawnDepthInterpolator = nil;
+  id <InterpolationTableSD> aSpawnVelocityInterpolator = nil;
   LogisticFunc* aCaptureLogistic = nil;
 
   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");

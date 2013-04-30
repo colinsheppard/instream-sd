@@ -39,7 +39,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "TroutModelSwarmP.h"
 #import "SurvMGRProtocol.h"
-#import "InterpolationTableP.h"
+#import "InterpolationTableSDP.h"
 
 #import "PolyCell.h"
 
@@ -67,8 +67,8 @@ Boston, MA 02111-1307, USA.
   id <Symbol> ANIMAL;
   id <Symbol> HABITAT;
 
-  id <InterpolationTable> velocityInterpolator;
-  id <InterpolationTable> depthInterpolator;
+  id <InterpolationTableSD> velocityInterpolator;
+  id <InterpolationTableSD> depthInterpolator;
 
   double cellFracSpawn;
   double cellFracShelter;
@@ -132,11 +132,11 @@ Boston, MA 02111-1307, USA.
 - setRandGen: aRandGen;
 - getRandGen;
 
--  setVelocityInterpolator: (id <InterpolationTable>) aVelocityInterpolator;
--  (id <InterpolationTable>) getVelocityInterpolator;
+-  setVelocityInterpolator: (id <InterpolationTableSD>) aVelocityInterpolator;
+-  (id <InterpolationTableSD>) getVelocityInterpolator;
 - checkVelocityInterpolator;
--  setDepthInterpolator: (id <InterpolationTable>) aDepthInterpolator;
--  (id <InterpolationTable>) getDepthInterpolator;
+-  setDepthInterpolator: (id <InterpolationTableSD>) aDepthInterpolator;
+-  (id <InterpolationTableSD>) getDepthInterpolator;
 - checkDepthInterpolator;
 
 //- updatePolyCellDepthWith: (double) aFlow;

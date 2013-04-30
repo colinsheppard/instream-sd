@@ -1442,7 +1442,7 @@ return self;
   int numFlowsInFile=0,flowDataPos,polyID,flowNdx,lineNum=0;
   double * flows;
   double depth,velocity;
-  id <InterpolationTable> depthInterpolator = nil,velocityInterpolator = nil;
+  id <InterpolationTableSD> depthInterpolator = nil,velocityInterpolator = nil;
   FishCell* polyCell = nil;
   
   //fprintf(stdout, "HabitatSpace >>>> createPolyInterpolationTables >>>> BEGIN\n");
@@ -1533,8 +1533,8 @@ return self;
 
     // Initialize counters and interpolators
     flowNdx = 0;
-    depthInterpolator    = [InterpolationTable create: habitatZone];
-    velocityInterpolator = [InterpolationTable create: habitatZone];
+    depthInterpolator    = [InterpolationTableSD create: habitatZone];
+    velocityInterpolator = [InterpolationTableSD create: habitatZone];
     [velocityInterpolator addX: 0.0 Y: 0.0];
 
     [polyCell setDepthInterpolator: depthInterpolator];
@@ -3253,8 +3253,8 @@ return self;
 {
    id <ListIndex> ndx = [polyCellList listBegin: scratchZone];
    FishCell* fishCell = nil;
-   id <InterpolationTable> aVelInterpolator = [[polyCellList getFirst] getVelocityInterpolator];
-   id <InterpolationTable> aDepthInterpolator = [[polyCellList getFirst] getDepthInterpolator];
+   id <InterpolationTableSD> aVelInterpolator = [[polyCellList getFirst] getVelocityInterpolator];
+   id <InterpolationTableSD> aDepthInterpolator = [[polyCellList getFirst] getDepthInterpolator];
 
    //fprintf(stdout, "HabitatSpace >>>> updateFishCells >>>> BEGIN\n");
    //fflush(0);
