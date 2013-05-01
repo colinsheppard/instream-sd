@@ -96,8 +96,8 @@
    if( (yesterdaysMaxFlow < todaysMaxFlow) && (todaysMaxFlow > tomorrowsMaxFlow) ) 
    {
 
-       mortReddShearParamA = fishParams->mortReddShearParamA;
-       mortReddShearParamB = fishParams->mortReddShearParamB;
+       mortReddShearParamA = [cell getHabShearParamA];
+       mortReddShearParamB = [cell getHabShearParamB];
        mortReddScourDepth = fishParams->mortReddScourDepth;
 
        shearStress = mortReddShearParamA*pow(todaysMaxFlow, mortReddShearParamB);

@@ -197,11 +197,7 @@ double mortReddHiTT9;
 double mortReddLoTT1;
 double mortReddLoTT9;
 
-
-double mortReddShearParamA;
-double mortReddShearParamB;
 double mortReddScourDepth;
-
 
 double reddDevelParamA;
 double reddDevelParamB;

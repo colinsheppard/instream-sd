@@ -143,8 +143,6 @@ mortReddHiTT9	16
 mortReddLoTT1	-0.8
 mortReddLoTT9	0
 mortReddScourDepth	10
-mortReddShearParamA	0
-mortReddShearParamB	9.999
 
 reddDevelParamA	0.00313
 reddDevelParamB	3.07E-05

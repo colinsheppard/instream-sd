@@ -1109,6 +1109,8 @@ return self;
               [newPolyCell setNumberOfSpecies: numberOfSpecies];
               [newPolyCell setFishParamsMap: fishParamsMap];
               [newPolyCell setTimeManager: timeManager];
+              [newPolyCell setHabShearParamA: habShearParamA
+							  habShearParamB: habShearParamB];
 
 	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before buildObjects\n");
 	      //fflush(0);
