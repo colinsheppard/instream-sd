@@ -5,24 +5,29 @@
 
 @begin
 
-randGenSeed                         62324
-numberOfSpecies                         2
-habParamFile                     TailraceHabitat.Params
+randGenSeed                  62324
+numberOfSpecies              2
 
-runStartDate                     10/01/2001
-runEndDate                       9/30/2002
+runStartDate                 10/01/2001
+runEndDate                   9/30/2002
 
-fishOutputFile                   LiveFishOut.csv
-fishMortalityFile                DeadFishOut.csv
-reddMortalityFile                DeadRedds.Out
-reddOutputFile                   Redds.Out
-popInitDate                      10/1/2000
-appendFiles				 		 0
+fishOutputFile               LiveFishOut.csv
+fishMortalityFile            DeadFishOut.csv
+reddMortalityFile            DeadRedds.Out
+reddOutputFile               Redds.Out
+popInitDate                  10/1/2000
+appendFiles				 	 0
 
 siteLatitude                 40.9
 fracFlowChangeForMovement	 0.1
 
+shuffleYears                 0
+shuffleYearReplace           0
+shuffleYearSeed              4685
+
 writeCellFishReport			0
+writeReddSurvReport			0
+writeReddMortReport			0
+writeMoveReport				0
 
 @end
-
