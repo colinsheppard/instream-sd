@@ -82,7 +82,6 @@
 
   char* tagFishColor;
   char* tagCellColor;
-  char* dryCellColor;
 
   int maxShadeDepth;
   int maxShadeVelocity;
