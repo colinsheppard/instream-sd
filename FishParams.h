@@ -169,7 +169,6 @@ double mortFishHiTT9;
 
 double mortFishConditionK1;
 double mortFishConditionK9;
-double mortFishSpawn;
 double mortFishStrandD1;
 double mortFishStrandD9;
 
