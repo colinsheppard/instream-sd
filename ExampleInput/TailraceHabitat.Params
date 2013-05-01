@@ -15,7 +15,6 @@ habAnglePressDec	2
 habAngleNightFactor	0
 	
 habDriftRegenDist	1000
-habLatitude	41
 habPreyEnergyDensity	4000
 habSearchProd	1.00E-06
 habShelterSpeedFrac    0.5

@@ -166,7 +166,7 @@ char **speciesStocking;
 
   habitatManager = [HabitatManager createBegin: modelZone];
   [habitatManager instantiateObjects];
-  [habitatManager setSiteLatitude: siteLatitude];
+  [habitatManager setSiteLatitude: siteLatitude]; 
   [habitatManager setModel: self];
   [habitatManager readReachSetupFile: "Reach.Setup"];
   [habitatManager setNumberOfSpecies: numberOfSpecies];

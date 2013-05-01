@@ -378,6 +378,7 @@ long int maxYCoordinate;
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
 - setFishParamsMap: (id <Map>) aMap;
+- setHabLatitude: (double) aLatitude;
 - setNumberOfSpecies: (int) aNumberOfSpecies;
 
 - (id <List>) getNeighborsWithin: (double) aRange 

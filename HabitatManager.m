@@ -560,6 +560,7 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setReachLength: [habSetup getReachLength]];
 
      [habitatSpace setFishParamsMap: fishParamsMap];
+     [habitatSpace setHabLatitude: siteLatitude];
 
   fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before buildObj \n");
   fflush(0); 
