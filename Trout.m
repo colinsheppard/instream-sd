@@ -321,10 +321,10 @@
 
   if (age > 0)
   {
-  [aRaster fillRectangleX0: anX - (1 * age) 
-                  Y0: aY - age 
-                  X1: anX + (1 * age) 
-                  Y1: aY + age
+  [aRaster fillRectangleX0: anX 
+                  Y0: aY
+                  X1: anX + age 
+                  Y1: aY + ((int) age / 2)
            //    Width: 3 
                Color: myColor];  
   }
