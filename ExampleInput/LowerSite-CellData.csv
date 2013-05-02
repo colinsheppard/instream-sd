@@ -1,5 +1,5 @@
-Little Hole final habitat variables file,,,,,
-SFR,6/12/2009 20:50,,,,
+Lower Site habitat input
+inSTREAM 6.0 default project
 CellNumber,FracShelt,DistHide,FracSpawn,FracHide,ReachEnd
 1,0.2,0.5,0,0.2,I
 2,0.2,0.5,0,0.2,I

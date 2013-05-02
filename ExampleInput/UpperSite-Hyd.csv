@@ -1,6 +1,6 @@
-Hydraulic input for inSTREAM 5,"Tailrace site, Green River"
-Created from 2008-09 inSTREAM-SD-2D code and input,SF Railsback 11/15/2012,Fixed cm- m conversion 4/12/2013
-flows,17,,23,,30,,35,,40,,60,,70,,85,,100,,115,,130,,142,
+Hydraulic input file for inSTREAM, Upper Site
+inSTREAM 6.0 default project
+Flows,17,,23,,30,,35,,40,,60,,70,,85,,100,,115,,130,,142,
 CellNumber,Depth@17,Vel@17,Depth@23,Vel@23,Depth@30,Vel@30,Depth@35,Vel@35,Depth@40,Vel@40,Depth@60,Vel@60,Depth@70,Vel@70,Depth@85,Vel@85,Depth@100,Vel@100,Depth@115,Vel@115,Depth@130,Vel@130,Depth@142,Vel@142
 1,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.04,0.05,0.07,0.07,0.12,0.09,0.16,0.11,0.21,0.11,0.27,0.36,0.27,0.36
 2,0.00,0.02,0.02,0.05,0.05,0.11,0.07,0.14,0.10,0.18,0.27,0.34,0.32,0.40,0.41,0.47,0.50,0.52,0.59,0.52,0.62,0.69,0.62,0.69

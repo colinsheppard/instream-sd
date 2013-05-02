@@ -1,10 +1,11 @@
 @begin
-#
+# Default Observer input for inSTREAM 6.0
 # Make sure there are no trailing spaces
 # following text input!
-#
-rasterResolutionX  60
-rasterResolutionY  60
+# Lower the raster resolution to make display bigger (and slower)
+
+rasterResolutionX  100
+rasterResolutionY  100
 
 rasterOutputFrequency   1
 modelNumber       1
