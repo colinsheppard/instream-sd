@@ -1,12 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 #import <math.h>
@@ -19,7 +36,6 @@
 #import "TroutModelSwarm.h"
 
 id <Symbol> Female, Male;  // sex of fish
-id <Symbol> Age0, Age1, Age2, Age3Plus;
 
 id <Symbol> *mySpecies;
 id <Symbol> Feed, Hide;
@@ -167,7 +183,7 @@ char **speciesStocking;
 
   habitatManager = [HabitatManager createBegin: modelZone];
   [habitatManager instantiateObjects];
-  [habitatManager setSiteLatitude: siteLatitude];
+  [habitatManager setSiteLatitude: siteLatitude]; 
   [habitatManager setModel: self];
   [habitatManager readReachSetupFile: "Reach.Setup"];
   [habitatManager setNumberOfSpecies: numberOfSpecies];
@@ -282,6 +298,9 @@ char **speciesStocking;
   reddMortSymbolList = [List create: modelZone];
   [self buildFishClass];
 
+  numSimDays = [timeManager getNumberOfDaysBetween: runStartTime and: runEndTime] + 1;
+  simHourCounter = 1;
+
   if(shuffleYears == YES){
      //
      // Create the year shuffler and the data start and end times.
@@ -323,9 +342,9 @@ char **speciesStocking;
 
   [habitatManager finishBuildingTheHabitatSpaces];
   
-  if(writeCellFishReport == YES){
-      [habitatManager buildHabSpaceCellFishInfoReporter];
-  }
+  // if(writeCellFishReport == YES){
+      // [habitatManager buildHabSpaceCellFishInfoReporter];
+  // }
 
   [habitatManager updateHabitatManagerWithTime: modelTime
                          andWithModelStartFlag: initialDay];
@@ -436,6 +455,10 @@ char **speciesStocking;
   //
   [self createBreakoutReporters];
 
+  if(writeCellFishReport == YES){
+      [habitatManager buildHabSpaceCellFishInfoReporter];
+  }
+
 
   if(theColormaps != nil) 
   {
@@ -449,6 +472,8 @@ char **speciesStocking;
   [QSort reverseOrderOf: liveFish];
 
   [self createReproLogistics];
+
+  reddBinomialDist = [BinomialDist create: modelZone setGenerator: randGen];
 
   //
   // the following was added here 3/20/2000  
@@ -1090,8 +1115,7 @@ char **speciesStocking;
                         double aMortFishVelocityV9 = [newFish getFishParams]->mortFishVelocityV9;
                         if([randSelectedCell getPolyCellVelocity] > [newFish getMaxSwimSpeed] * aMortFishVelocityV9)
                         {
-                             // Be sure to UNCOMMENT this...
-                             //continue;
+                             continue;
                         }
 
                         [randSelectedCell addFish: newFish];
@@ -1106,11 +1130,42 @@ char **speciesStocking;
                }
           }
 
-          if(counter >= MAX_COUNT){
-                  fprintf(stderr, "ERROR >>>> TroutModelSwarm >>>> createInitialFish >>>> Failed to put fish at nonzero depth cell after %d attempts\n",counter);
-                  fflush(0);
-                  exit(1);
-          }
+	     if(counter >= MAX_COUNT)
+             {
+	         fprintf(stderr, "WARNING: TroutModelSwarm >>>> createInitialFish >>>> Failed to put fish in cell with acceptable depth and velocity after %d attempts, for fish with length %f\nWill put fish in any cell with non-zero depth\n", counter, length);
+                 fflush(0);
+             //
+             // So..., if we can't find a cell with BOTH non-zero depth and acceptable velocity
+             // just find a cell with non-zero depth and put the fish in it...
+             //
+             //
+			 for(counter=0; counter <= MAX_COUNT; counter++) 
+				 {
+				 randSelectedCell = [polyCellList atOffset: [randCellDist getIntegerSample]];
+
+				 if(randSelectedCell != nil)
+				 {
+						 if([randSelectedCell getPolyCellDepth] > 0.0)
+				 {
+					[randSelectedCell addFish: newFish];
+					numFish++;
+					break;                      //break out of the for MAX_COUNT statement
+				 }
+				 }
+				 else
+				 {
+					continue;
+				 }
+
+			 } //for MAX_COUNT
+           }
+
+	     if(counter >= MAX_COUNT)
+             {
+	         fprintf(stderr, "ERROR: TroutModelSwarm >>>> createInitialFish >>>> Failed to put fish in cell with non-zero depth after %d attempts\n", counter);
+                 fflush(0);
+                 exit(1);
+             }
 
         }  //for
    }  // while
@@ -1206,8 +1261,7 @@ char **speciesStocking;
                  continue;
               }
               
-              fishStockRecord = (FishStockStruct *) [ZoneAllocMapper allocBlockIn: modelZone 
-                                                                           ofSize: sizeof(FishStockStruct)];
+              fishStockRecord = (FishStockStruct *) [modelZone alloc: sizeof(FishStockStruct)];
                      
               fishStockRecord->fishStockTime = aStockTime;
 	      fishStockRecord->speciesSymbol = speciesSetup->speciesSymbol;
@@ -1267,9 +1321,9 @@ char **speciesStocking;
 
    id lengthNormalDist = nil;
 
-   int arraySize = [fishStockList getCount];
-   time_t nextTimeArray[arraySize];
-   int i = 0;
+   //int arraySize = [fishStockList getCount];
+   //time_t nextTimeArray[arraySize];
+   //int i = 0;
 
    id aHabitatSpace;
    id <List> polyCellList = nil;
@@ -1279,13 +1333,6 @@ char **speciesStocking;
 
    if([fishStockList getCount] == 0) return self;
 
-   //
-   // set up the distribution to draw fish lengths
-   //
-
-   lengthNormalDist = [NormalDist create: modelZone 
-                      setGenerator: randGen];
-
 
    listNdx = [fishStockList listBegin: scratchZone];
 
@@ -1294,14 +1341,21 @@ char **speciesStocking;
    while(([listNdx getLoc] != End) && ((fishStockRecord = (FishStockStruct *) [listNdx next]) != (FishStockStruct *) nil))
    {
 
-          nextTimeArray[i++] = fishStockRecord->fishStockTime;
+          //nextTimeArray[i++] = fishStockRecord->fishStockTime;
         
-          if(fishStockRecord->fishStockTime == nextFishStockTime)
+          if(fishStockRecord->fishStockTime == modelTime)
           {
 
                 int fishNdx;
 	       aHabitatSpace = nil;
 	       aHabitatSpace = [habitatManager getReachWithName: fishStockRecord->reach];
+		   //
+		   // set up the distribution to draw fish lengths
+		   //
+
+		   lengthNormalDist = [NormalDist create: modelZone 
+							  setGenerator: randGen];
+
 		
 	       if(aHabitatSpace == nil)
 	       {
@@ -1412,29 +1466,30 @@ char **speciesStocking;
 
    [listNdx drop];
    if(randCellDist != nil)[randCellDist drop];
-   [lengthNormalDist drop];
+   if(lengthNormalDist != nil)[lengthNormalDist drop];
 
    //
    // Now, get the next trout stocking time
-   //
-   {
+   // We no longer need this because we check whether date = a stocking date
+   // each day (to make yearshuffler work).
+   // {
 
-       time_t smallestNextFishStockTime = runEndTime;
+       // time_t smallestNextFishStockTime = runEndTime;
 
-       for(i = 0;i < arraySize; i++)
-       {
+       // for(i = 0;i < arraySize; i++)
+       // {
 
-           if(nextTimeArray[i] <= nextFishStockTime) continue;
+           // if(nextTimeArray[i] <= nextFishStockTime) continue;
 
-           smallestNextFishStockTime = (smallestNextFishStockTime < nextTimeArray[i]) ?
-                                        smallestNextFishStockTime : nextTimeArray[i];
+           // smallestNextFishStockTime = (smallestNextFishStockTime < nextTimeArray[i]) ?
+                                        // smallestNextFishStockTime : nextTimeArray[i];
 
  
-       }
+       // }
 
-       nextFishStockTime = smallestNextFishStockTime;
+       // nextFishStockTime = smallestNextFishStockTime;
 
-   }
+   // }
            
    //fprintf(stdout, "TroutModelSwarm >>>> stock >>>> END\n");
    //fflush(0);
@@ -1760,6 +1815,7 @@ char **speciesStocking;
 {
   time_t timeTillDaytimeStarts = (time_t) 0;
   time_t anHour = (time_t) 3600; 
+  time_t newYearTime = (time_t) 0;
 
   BOOL moveFish = NO;
   id aHabitatSpace;
@@ -1770,6 +1826,8 @@ char **speciesStocking;
   //
   // First, advance the model clock by one hour
   // if isFirstStep is FALSE 
+  // If it is midnight and we're shuffling years, check whether
+  // it's time to jump to a new year
   //
   if(isFirstStep == TRUE)
   {
@@ -1778,6 +1836,17 @@ char **speciesStocking;
   else
   { 
      modelTime = [timeManager stepTimeWithControllerObject: self];
+	 if(shuffleYears == YES && [timeManager getHourWithTimeT: modelTime] == 0)
+	  {
+			newYearTime = [yearShuffler checkForNewYearAt: modelTime];
+
+          if(newYearTime != modelTime)
+          {
+              [timeManager setCurrentTime: newYearTime];
+              modelTime = newYearTime;
+          }
+	  }
+
      strcpy(modelDate, [timeManager getDateWithTimeT: modelTime]);
      numHoursSinceLastStep++;
   }
@@ -1806,7 +1875,6 @@ char **speciesStocking;
   //
   // Third, if it is midnight, call the method that updates
   // fish variables: age, time till next spawning period.
-  //
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
       [self updateFish];      //increments fish age if date is 1/1
@@ -1816,7 +1884,7 @@ char **speciesStocking;
   //
   // Fourth, simulate stocking of hatchery fish, if it is time.
   //
-  if(nextFishStockTime <= modelTime)
+  if([timeManager getHourWithTimeT: modelTime] == 10)
   {
   //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before stock\n");
   //fflush(0);
@@ -1840,12 +1908,6 @@ char **speciesStocking;
 
       [liveFish forEach: M(resetFishActualDailyIntake)];
 
-      #ifdef REDD_SURV_REPORT
-      //
-      // Added 19Feb2008
-      //
-      [self printReddSurvReport]; 
-      #endif
   }
 
 
@@ -1948,8 +2010,9 @@ char **speciesStocking;
 ///////////////////////////////////////
 //
 // printZone
-//
+// Commented out 4/29/2013 SFR
 ///////////////////////////////////////
+/*
 -           printZone:(id <Zone>) aZone 
        withPrintLevel: (int) level
 {
@@ -2000,7 +2063,7 @@ char **speciesStocking;
 
    return self;
 }
-
+*/
 /////////////////////////////////////////////////////////
 //
 // toggleCellsColorRepIn
@@ -2224,12 +2287,12 @@ char **speciesStocking;
 ////////////////////////////////////////////////////////
 - (BOOL) whenToStop 
 { 
-  BOOL STOP;
+  BOOL STOP = NO;
   
      // fprintf(stdout,"TroutModelSwarm >>>> whenToStop >>>>\n");
      // fflush(stdout);
 
-  if(modelTime >= runEndTime) 
+  if(simHourCounter >= (numSimDays * 24))  
   {
      STOP = YES;
      [self dropFishMortObjs];
@@ -2238,13 +2301,9 @@ char **speciesStocking;
         [self printReddReport];
      #endif
 
-     #ifdef REDD_SURV_REPORT
-        //
-        // This is broken wrt the changes in 
-        // the survival manager
-        //
-        [self printReddSurvReport];
-     #endif
+    if(writeReddSurvReport == YES){
+      [self printReddSurvReport];
+    }
 
      //fprintf(stdout,"TroutModelSwarm >>>> stop >>>>\n");
      //fflush(stdout);
@@ -2252,7 +2311,8 @@ char **speciesStocking;
   }
   else
   {
-     STOP = NO;
+    STOP = NO;
+    simHourCounter++;
   }
 
   return STOP;
@@ -2532,7 +2592,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> cmaxInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> cmaxInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [cmaxInterpolationTable addX: fishParams->fishCmaxTempT1 Y: fishParams->fishCmaxTempF1];
      [cmaxInterpolationTable addX: fishParams->fishCmaxTempT2 Y: fishParams->fishCmaxTempF2];
@@ -2562,7 +2622,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> spawnDepthInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> spawnDepthInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [spawnDepthInterpolationTable addX: fishParams->fishSpawnDSuitD1 Y: fishParams->fishSpawnDSuitS1];
      [spawnDepthInterpolationTable addX: fishParams->fishSpawnDSuitD2 Y: fishParams->fishSpawnDSuitS2];
@@ -2591,7 +2651,7 @@ char **speciesStocking;
  
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-     id <InterpolationTable> spawnVelocityInterpolationTable = [InterpolationTable create: modelZone];
+     id <InterpolationTableSD> spawnVelocityInterpolationTable = [InterpolationTableSD create: modelZone];
 
      [spawnVelocityInterpolationTable addX: fishParams->fishSpawnVSuitV1 Y: fishParams->fishSpawnVSuitS1];
      [spawnVelocityInterpolationTable addX: fishParams->fishSpawnVSuitV2 Y: fishParams->fishSpawnVSuitS2];
@@ -2620,9 +2680,9 @@ char **speciesStocking;
 
   id newFish;
   id <Symbol> ageSymbol = nil;
-  id <InterpolationTable> aCMaxInterpolator = nil;
-  id <InterpolationTable> aSpawnDepthInterpolator = nil;
-  id <InterpolationTable> aSpawnVelocityInterpolator = nil;
+  id <InterpolationTableSD> aCMaxInterpolator = nil;
+  id <InterpolationTableSD> aSpawnDepthInterpolator = nil;
+  id <InterpolationTableSD> aSpawnVelocityInterpolator = nil;
   LogisticFunc* aCaptureLogistic = nil;
 
   //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
@@ -2861,7 +2921,8 @@ char **speciesStocking;
                                     Age: (int) age
                                  Length: (float) fishLength 
 {
- 
+  id <Symbol> aSpecies;
+  
    //
    // The newFish color is currently being set in the observer swarm
    //
@@ -2895,7 +2956,8 @@ char **speciesStocking;
      //fflush(0);
   }
 
-  [newFish setSpecies: [aFishParams getFishSpecies]];
+  aSpecies = [aFishParams getFishSpecies];
+  [newFish setSpecies: aSpecies];
   [newFish setSpeciesNdx: [aFishParams getFishSpeciesIndex]];
 
   //
@@ -2920,6 +2982,12 @@ char **speciesStocking;
   [newFish setTimeTLastSpawned: (modelTime - (time_t) 157600000)];    
 
   //[newFish updateMaxSwimSpeed]; This must now be done later because it depends on the cell
+  [newFish setCMaxInterpolator: [cmaxInterpolatorMap at: aSpecies]];
+  [newFish setSpawnDepthInterpolator: [spawnDepthInterpolatorMap at: aSpecies]];
+  [newFish setSpawnVelocityInterpolator: [spawnVelocityInterpolatorMap at: aSpecies]];
+  [newFish setCaptureLogistic: [captureLogisticMap at: aSpecies]];
+ 
+  [newFish resetFishActualDailyIntake];
 
   [newFish calcMaxMoveDistance];
 
@@ -2933,8 +3001,9 @@ char **speciesStocking;
  
 
   [newFish calcStarvPaAndPb];
-
   [newFish resetFishActualDailyIntake];
+  fishCounter++;  // Give each fish a serial number ID
+  [newFish setFishID: fishCounter];
 
   newFish = [newFish createEnd];
         
@@ -2996,8 +3065,7 @@ char **speciesStocking;
 	      //fprintf(stdout, "TroutModelSwarm >>>> readSpeciesSetup >>>> Myfiles are: %s %s %s %s \n", speciesName[speciesIDX],speciesParameter[speciesIDX], speciesPopFile[speciesIDX],speciesStocking[speciesIDX]);
 	      //fflush(0);
 
-         SpeciesSetup* speciesSetup = (SpeciesSetup *) [ZoneAllocMapper allocBlockIn: modelZone
-                                                                              ofSize: sizeof(SpeciesSetup)];
+         SpeciesSetup* speciesSetup = (SpeciesSetup *) [modelZone alloc: sizeof(SpeciesSetup)];
          speciesSetup->speciesSymbol = [Symbol create: modelZone
                                               setName: speciesName[speciesIDX]];
 	 mySpecies[speciesIDX] = speciesSetup->speciesSymbol;
@@ -3112,7 +3180,7 @@ char **speciesStocking;
 
       while(([reddListNdx getLoc] != End) && ( (redd = [reddListNdx next]) != nil ) ) 
       {
-         [redd printReport: printRptPtr];
+         [redd printReport];
       }
 
      [reddListNdx drop];
@@ -3129,60 +3197,34 @@ char **speciesStocking;
 #endif
 
 
-#ifdef REDD_SURV_REPORT
-
 //////////////////////////////////////////////////////////
 //
 // printReddSurvReport
 //
 /////////////////////////////////////////////////////////
-- printReddSurvReport 
-{
-   FILE *printRptPtr = NULL;
-   const char * reddSurvFile = "ReddSurvivalTest.rpt";
-   id <ListIndex> reddListNdx = nil;
-   id redd = nil;
- 
-   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> BEGIN\n");
-   //fflush(0);
+- printReddSurvReport { 
+    FILE *printRptPtr=NULL;
+    const char * reddSurvFile = "Redd_Survival_Test_Out.csv";
+    id <ListIndex> reddListNdx;
+    id redd;
 
+    if((printRptPtr = fopen(reddSurvFile,"w+")) != NULL){
+        if([[self getReddRemovedList] getCount] != 0){
+            reddListNdx = [removedRedds listBegin: modelZone];
 
-    if((printRptPtr = fopen(reddSurvFile,"w+")) == NULL) 
-    {
-       fprintf(stderr, "ERROR: Couldn't open %s\n", reddSurvFile);
+            while(([reddListNdx getLoc] != End) && ((redd = [reddListNdx next]) != nil)){
+               [redd printReddSurvReport: printRptPtr];
+            }
+            [reddListNdx drop];
+        }
+   }else{
+       fprintf(stderr, "ERROR: TroutModelSwarm >>>> printReddSurvReport >>>> Couldn't open %s\n", reddSurvFile);
        fflush(0);
        exit(1);
-    }
-
-    if([removedRedds getCount] > 0) 
-    {
-       reddListNdx = [removedRedds listBegin: modelZone];
-
-       while(([reddListNdx getLoc] != End) && ((redd = [reddListNdx next]) != nil)) 
-       {
-         [redd printReddSurvReport: printRptPtr];
-       }
-
-       [reddListNdx drop];
-    }
-
-    if(printRptPtr != NULL)
-    {
-       fclose(printRptPtr);
-       printRptPtr = NULL;
-    }
-
-   //fprintf(stdout, "TroutModelSwarm >>>> printReddSurvReport >>>> END\n");
-   //fflush(0);
-
-    return self;
+   }
+   fclose(printRptPtr);
+   return self;
 }
-
-#endif
-
-
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -3491,7 +3533,7 @@ char **speciesStocking;
                                                  "Replicate",
                                                  "ReddID",
                                                  "Species",
-                                                 "Transect",
+                                                 "CellNo",
                                                  "CreateDate",
                                                  "InitialNumberOfEggs",
                                                  "EmptyDate",
@@ -3994,6 +4036,9 @@ char **speciesStocking;
   [reproLogisticFuncMap deleteAll];
   [reproLogisticFuncMap drop];
   
+	 [reddBinomialDist drop];
+	 reddBinomialDist = nil;
+        
   //[deathMap deleteAll];
   //[deathMap drop];
 

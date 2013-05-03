@@ -1,16 +1,15 @@
-Species.Setup file, Green River trout model.
-Set up for validation analysis, 2 species, no stocking.
-SFR 3/02
+Species.Setup file, Default project for inSTREAM 6.0.
+2 species, stocking at upper site only.
+Provide: Species name, parameter file, initial population file, display color, stocking
 
 Rainbow
-FlamingGorgeRainbowTrout.Params
-TailraceRainbowInitPops.Data
+DefaultRainbowTrout.Params
+RainbowInitPops.Data
 cyan
-Stocking_Tailrace_Rainbow.Data
+RainbowStocking.Data
 
 Brown
-FlamingGorgeBrownTrout.Params
-TailraceBrownInitPops.Data
+DefaultBrownTrout.Params
+BrownInitPops.Data
 firebrick
 NoStocking
-

@@ -1,11 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 
@@ -18,7 +36,7 @@
 #import "LogisticFunc.h"
 
 
-//#define MOVE_REPORT_ON
+//#define MOVE_REPORT_ON  This switch replaced by Model.Setup variable
 //#define MOVE_DISTANCE_REPORT_ON
 //#define SURVIVAL_REPORT_ON
 //#define SPAWN_REPORT_ON seems to be superceded by SPAWN_CELL_RPT
@@ -31,6 +49,7 @@
 @interface Trout: SwarmObject
 {
 
+  id troutZone;
   id model;
   id habitatSpace;
   id habitatManager;
@@ -73,9 +92,9 @@
   Color myColor;
   Color myOldColor;
   unsigned myRasterX, myRasterY;
-  unsigned TransectNumber, CellNumber;
-
-
+  unsigned CellNumber;
+  
+  BOOL imImmortal;
 
 // ENERGETICS VARIABLES
 // These are set in move
@@ -187,8 +206,6 @@ double dayHideNightHideERM;
 double dayHideNightFeedERM;
 
 double dailyNonStarveSurvival;
-double survivalDay;
-double survivalNight;
 
 
 //
@@ -229,7 +246,6 @@ id toggledFishForHabSurvUpdate;
   double sensoryRadiusFactor; 
 
   id troutRandGen;
-  id dieDist;
   id spawnDist;
 
 
@@ -261,9 +277,9 @@ id toggledFishForHabSurvUpdate;
   
   // Stuff from Instream 5.0
   int fishID;
-  id <InterpolationTable> cmaxInterpolator;
-  id <InterpolationTable> spawnDepthInterpolator;
-  id <InterpolationTable> spawnVelocityInterpolator;
+  id <InterpolationTableSD> cmaxInterpolator;
+  id <InterpolationTableSD> spawnDepthInterpolator;
+  id <InterpolationTableSD> spawnVelocityInterpolator;
   LogisticFunc* captureLogistic;
 
 }
@@ -271,11 +287,12 @@ id toggledFishForHabSurvUpdate;
 // Stuff from Instream 5.0
 - setFishID: (int) anIDNum;
 - (int) getFishID;
-- setCMaxInterpolator: (id <InterpolationTable>) anInterpolator;
-- setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator;
-- setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator;
+- setCMaxInterpolator: (id <InterpolationTableSD>) anInterpolator;
+- setSpawnDepthInterpolator: (id <InterpolationTableSD>) anInterpolator;
+- setSpawnVelocityInterpolator: (id <InterpolationTableSD>) anInterpolator;
 - setCaptureLogistic: (LogisticFunc *) aLogisticFunc;
 - (int) getFishCount;
+- makeMeImmortal;
 
 + createBegin: aZone;
 - createEnd;
@@ -526,9 +543,7 @@ id toggledFishForHabSurvUpdate;
 
 
 //REPORTS
-#ifdef MOVE_REPORT_ON
 - moveReport: (FishCell *)  aCell;
-#endif
 
 #ifdef MOVE_DISTANCE_REPORT_ON
 - moveDistanceReport: (FishCell *)  aCell;

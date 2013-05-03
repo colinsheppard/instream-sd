@@ -1,11 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 #import "globals.h"
@@ -14,7 +32,7 @@
 #import "TimeManagerProtocol.h"
 #import "SurvMGRProtocol.h"
 #import "FishParams.h"
-#import "ZoneAllocMapper.h"
+//#import "ZoneAllocMapper.h"
 
 @interface UTMRedd: SwarmObject
 {
@@ -50,9 +68,11 @@
   int numberOfEggsLostToSuperimp;
 
   id <NormalDist> reddNormalDist;
+  id <BinomialDist> reddBinomialDist;
+  
 
-  FishCell* fishCell;
-  int polyCellNumber;
+  FishCell* myCell;
+  int cellNumber;
   Color myColor;
   unsigned myRasterX, myRasterY;
 
@@ -70,10 +90,9 @@
 
 + createBegin: aZone;
 - createEnd;
-- createPrintList;
-- createSurvPrintList;
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
+- setReddBinomialDist: (id <BinomialDist>) aBinomialDist;
 - setModel: aModel;
 - setFishParams: (FishParams *) aFishParams;
 - (FishParams *) getFishParams;
@@ -114,13 +133,19 @@
 - setPrintSummaryFlagToYes;
 - setPrintMortalityFlagToYes;
 
-- printReport: (FILE *) printRptPtr;
+- printReport;
 - createPrintString: (int) eggsLostToDewatering
                    : (int) eggsLostToScouring
                    : (int) eggsLostToLowTemp
                    : (int) eggsLostToHiTemp
                    : (int) eggsLostToSuperimp
                    : (time_t) aModelTime_t;
+
+				   - createSurvPrintStringWithDewaterSF: (double) aDewaterSF
+                         withScourSF: (double) aScourSF
+                        withLoTempSF: (double) aLoTempSF
+                        withHiTempSF: (double) aHiTempSF
+                      withSuperimpSF: (double) aSuperimpSF;
 
 //
 // The following are broken wrt the changes

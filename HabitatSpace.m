@@ -1,12 +1,13 @@
 /*
-inSTREAM Version 5.0, February 2012.
+inSTREAM Version 6.0, May 2013.
 Individual-based stream trout modeling software. 
 Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
-Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
-Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
 Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
 USDA Forest Service, and others.
-Copyright (C) 2004-2012 Lang, Railsback & Associates.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -688,6 +689,19 @@ return self;
 
 
 
+////////////////////////////////////////////////////
+//
+// setHabLatitude
+//
+////////////////////////////////////////////////////
+- setHabLatitude: (double) aLatitude
+{
+   habLatitude = aLatitude;
+   return self;
+}
+
+
+
 /////////////////////////////////////////
 //
 // set Input Files
@@ -1096,6 +1110,8 @@ return self;
               [newPolyCell setNumberOfSpecies: numberOfSpecies];
               [newPolyCell setFishParamsMap: fishParamsMap];
               [newPolyCell setTimeManager: timeManager];
+              [newPolyCell setHabShearParamA: habShearParamA
+							  habShearParamB: habShearParamB];
 
 	      //fprintf(stdout, "HabitatSpace >>> read2DGeometryFile >>> before buildObjects\n");
 	      //fflush(0);
@@ -1442,7 +1458,7 @@ return self;
   int numFlowsInFile=0,flowDataPos,polyID,flowNdx,lineNum=0;
   double * flows;
   double depth,velocity;
-  id <InterpolationTable> depthInterpolator = nil,velocityInterpolator = nil;
+  id <InterpolationTableSD> depthInterpolator = nil,velocityInterpolator = nil;
   FishCell* polyCell = nil;
   
   //fprintf(stdout, "HabitatSpace >>>> createPolyInterpolationTables >>>> BEGIN\n");
@@ -1533,8 +1549,8 @@ return self;
 
     // Initialize counters and interpolators
     flowNdx = 0;
-    depthInterpolator    = [InterpolationTable create: habitatZone];
-    velocityInterpolator = [InterpolationTable create: habitatZone];
+    depthInterpolator    = [InterpolationTableSD create: habitatZone];
+    velocityInterpolator = [InterpolationTableSD create: habitatZone];
     [velocityInterpolator addX: 0.0 Y: 0.0];
 
     [polyCell setDepthInterpolator: depthInterpolator];
@@ -3253,8 +3269,8 @@ return self;
 {
    id <ListIndex> ndx = [polyCellList listBegin: scratchZone];
    FishCell* fishCell = nil;
-   id <InterpolationTable> aVelInterpolator = [[polyCellList getFirst] getVelocityInterpolator];
-   id <InterpolationTable> aDepthInterpolator = [[polyCellList getFirst] getDepthInterpolator];
+   id <InterpolationTableSD> aVelInterpolator = [[polyCellList getFirst] getVelocityInterpolator];
+   id <InterpolationTableSD> aDepthInterpolator = [[polyCellList getFirst] getDepthInterpolator];
 
    //fprintf(stdout, "HabitatSpace >>>> updateFishCells >>>> BEGIN\n");
    //fflush(0);
@@ -3655,7 +3671,6 @@ return self;
      exit(1);
   }
 
-
   if((scenario == 0) || (replicate == 0))
   {
      fprintf(stderr, "ERROR: HabitatSpace >>>> buildCellFishInfoReporter >>>> scenario or replicate is 0\n");
@@ -3791,9 +3806,7 @@ return self;
        exit(1);
    }
 
-
    cellNdx = [polyCellList listBegin: scratchZone];
-
 
    while(([cellNdx getLoc] != End) && ((aCell = [cellNdx next]) != nil))
    {

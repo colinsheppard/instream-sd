@@ -1,12 +1,13 @@
 /*
-inSTREAM Version 5.0, February 2012.
+inSTREAM Version 6.0, May 2013.
 Individual-based stream trout modeling software. 
 Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
-Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
-Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
 Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
 USDA Forest Service, and others.
-Copyright (C) 2004-2012 Lang, Railsback & Associates.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +36,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "TimeSeriesInputManagerP.h"
 #import "math.h"
-#import "InterpolationTableP.h"
+#import "InterpolationTableSDP.h"
 #import "TroutModelSwarmP.h"
 #import "PolyInputData.h"
 //#import "PolyInterpolatorFactory.h"
@@ -134,7 +135,7 @@ long int maxYCoordinate;
   int spaceDimX, spaceDimY;
 
   id <Array> flowArray;
-  id <InterpolationTable> flowInterpolator;
+  id <InterpolationTableSD> flowInterpolator;
 
   double maxCellY;
   double minCellY;
@@ -239,7 +240,6 @@ long int maxYCoordinate;
   // The following is used for a work around in the 
   // cellFishInfoReporter (BreakoutReport)
   //
-  int    habCellTransectNumber;
   int    habCellNumber;
   double habCellArea;
   double habCellDepth;
@@ -379,6 +379,7 @@ long int maxYCoordinate;
 
 - setTimeManager: (id <TimeManager>) aTimeManager;
 - setFishParamsMap: (id <Map>) aMap;
+- setHabLatitude: (double) aLatitude;
 - setNumberOfSpecies: (int) aNumberOfSpecies;
 
 - (id <List>) getNeighborsWithin: (double) aRange 

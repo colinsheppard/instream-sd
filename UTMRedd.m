@@ -1,12 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 
@@ -76,8 +93,13 @@
   numberOfEggsLostToHiTemp = 0;
   numberOfEggsLostToSuperimp = 0;
 
+  if([model getWriteReddMortReport] == YES){
+    printList     = [List create: reddZone];
+  }
+  if([model getWriteReddSurvReport] == YES){
+    survPrintList = [List create: reddZone];
+  }
 
-  
   reddNormalDist = [NormalDist create: reddZone 
                          setGenerator: randGen
                               setMean: fishParams->reddNewLengthMean
@@ -88,39 +110,6 @@
 }
 
 
-/////////////////////////////////////////
-//
-// createPrintList
-// invoked from the model swarm
-//
-////////////////////////////////////////
-- createPrintList
-{
-   if(printSummaryFlag == YES)
-   {
-        printList     = [List create: reddZone];
-   }
-   return self;
-}
-
-
-
-////////////////////////////////////
-//
-// createSurvPrintList
-// invoked from the model swarm
-//
-///////////////////////////////////
-- createSurvPrintList
-{
-    if(printMortalityFlag ==  YES)
-    {
-        survPrintList = [List create: reddZone];
-    }
-
-    return self;
-}
-
 //////////////////////////////////////////////
 //
 // setTimeManager
@@ -130,6 +119,13 @@
 {
     timeManager = aTimeManager;
     return self;
+}
+
+
+- setReddBinomialDist: (id <BinomialDist>) aBinomialDist
+{
+   reddBinomialDist = aBinomialDist;
+   return self;
 }
 
 
@@ -155,15 +151,15 @@
 
 - setCell: (FishCell *) aCell 
 {
-  fishCell = aCell;
-  polyCellNumber = [fishCell getPolyCellNumber];
+  myCell = aCell;
+  cellNumber = [myCell getPolyCellNumber];
   return self;
 }
 
   
 - (FishCell *) getCell 
 {
-  return fishCell;
+  return myCell;
 }
 
 - setCreateTimeT: (time_t) aCreateTime 
@@ -293,14 +289,16 @@
 //////////////////////////////////////////////////////////////
 - survive 
 {
-   double eggsLostToDewatering = 0.0;
-   double eggsLostToScouring = 0.0;
-   double eggsLostToLowTemp = 0.0;
-   double eggsLostToHiTemp = 0.0;
-   double eggsLostToSuperimp = 0.0;
+  int eggsLostToDewatering=0;
+  int eggsLostToScouring=0;
+  int eggsLostToLowTemp=0;
+  int eggsLostToHiTemp=0;
+  int eggsLostToSuperimp=0;
+
+  int totalEggsLost = 0;
 
    double dewater = -LARGEINT;
-   //double scour = -LARGEINT;
+   double scour = -LARGEINT;
    double loTemp = -LARGEINT;
    double hiTemp = -LARGEINT;
    double superimp = -LARGEINT;
@@ -317,10 +315,11 @@
         id <SurvProb> aProb;
 
 	// I think the following is redundant of updateReddSurvivalProbFor --colin
-        // [fishCell updateReddHabitatSurvProb];
-        [fishCell updateReddSurvivalProbFor: self];
+	// It wasn't before but is now... updates for both redd and cell --Steve
+       // [myCell updateReddHabitatSurvProb];
+        [myCell updateReddSurvivalProbFor: self];
 
-        listOfSurvProbs = [fishCell getReddListOfSurvProbsFor: self];
+        listOfSurvProbs = [myCell getReddListOfSurvProbsFor: self];
         lstNdx = [listOfSurvProbs listBegin: scratchZone];
 
         while(([lstNdx getLoc] != End) && ((aProb = [lstNdx next]) != nil))
@@ -330,7 +329,7 @@
             // These should be in this order -- see FishCell.m
             //
             if(dewater == -LARGEINT) dewater = [aProb getSurvivalProb];
-            //else if (scour == -LARGEINT) scour = [aProb getSurvivalProb];
+            else if (scour == -LARGEINT) scour = [aProb getSurvivalProb];
             else if (loTemp == -LARGEINT) loTemp = [aProb getSurvivalProb];
             else if (hiTemp == -LARGEINT) hiTemp = [aProb getSurvivalProb];
             else if (superimp == -LARGEINT) superimp = [aProb getSurvivalProb];
@@ -339,37 +338,51 @@
         [lstNdx drop];  
 
         if(    (dewater == -LARGEINT) 
-            //|| (scour == -LARGEINT) 
+            || (scour == -LARGEINT) 
             || (loTemp == -LARGEINT)
             || (hiTemp == -LARGEINT)
             || (superimp == -LARGEINT))
          {
                fprintf(stderr, "ERROR: Redd >>>> survive probability values not properly set\n");
                fflush(0);
-               //exit(1);
+               exit(1);
          }
 
    }
-
-   eggsLostToDewatering = (numberOfEggs * (1.0 - dewater)) + 0.5;
-   numberOfEggs -= (int) eggsLostToDewatering;
-                           
-   //eggsLostToScouring = (numberOfEggs * (1.0 - scour)) + 0.5;
-   //numberOfEggs -= (int) eggsLostToScouring;
-   eggsLostToScouring = 0.0;
-
-   eggsLostToLowTemp = (numberOfEggs * (1.0 - loTemp)) + 0.5;
-   numberOfEggs -= (int) eggsLostToLowTemp;
-
-   eggsLostToHiTemp = (numberOfEggs * (1.0 - hiTemp)) + 0.5;
-   numberOfEggs -= (int) eggsLostToHiTemp;
-
-   eggsLostToSuperimp = (numberOfEggs * (1.0 - superimp)) + 0.5;
-   numberOfEggs -= (int) eggsLostToSuperimp;
-
    //
    // End code for the survival manager
    //
+
+	   if(numberOfEggs > 0){
+		eggsLostToDewatering = [reddBinomialDist getUnsignedSampleWithNumTrials: (unsigned) numberOfEggs
+																withProbability: (1.0 - dewater)];
+		numberOfEggs -= eggsLostToDewatering; 
+	}
+	if(numberOfEggs > 0){
+		eggsLostToScouring = [reddBinomialDist getUnsignedSampleWithNumTrials: (unsigned) numberOfEggs
+														  withProbability: (1.0 - scour)];
+		numberOfEggs -= eggsLostToScouring; 
+	}
+	if(numberOfEggs > 0){
+		eggsLostToLowTemp = [reddBinomialDist getUnsignedSampleWithNumTrials: (unsigned) numberOfEggs
+														 withProbability: (1.0 - loTemp)];
+		numberOfEggs -= eggsLostToLowTemp; 
+	}
+	if(numberOfEggs > 0){
+		eggsLostToHiTemp = [reddBinomialDist getUnsignedSampleWithNumTrials: (unsigned) numberOfEggs
+														withProbability: (1.0 - hiTemp)];
+		numberOfEggs -= eggsLostToHiTemp; 
+	}
+	if(numberOfEggs > 0){
+		eggsLostToSuperimp = [reddBinomialDist getUnsignedSampleWithNumTrials: (unsigned) numberOfEggs
+														  withProbability: (1.0 - superimp)];
+		numberOfEggs -= eggsLostToSuperimp; 
+	}
+	if(numberOfEggs < 0){
+		fprintf(stderr, "ERROR: Redd >>>> survive >>>> numberOfEggs is less than 0\n");
+		fflush(0);
+		exit(1);
+	}
 
    numberOfEggsLostToDewatering += (int)eggsLostToDewatering;
    numberOfEggsLostToScouring += (int)eggsLostToScouring;
@@ -377,25 +390,49 @@
    numberOfEggsLostToHiTemp += (int)eggsLostToHiTemp;
    numberOfEggsLostToSuperimp += (int)eggsLostToSuperimp;
 
-  if(printSummaryFlag == YES)
-  {
-      [self createPrintString: (int) eggsLostToDewatering
-                             : (int) eggsLostToScouring
-                             : (int) eggsLostToLowTemp
-                             : (int) eggsLostToHiTemp
-                             : (int) eggsLostToSuperimp
-                             : [(id <Model>)[[fishCell getSpace] getModel] getModelTime] ];
-  
+   totalEggsLost =  numberOfEggsLostToDewatering 
+				 + numberOfEggsLostToScouring 
+				 + numberOfEggsLostToLowTemp 
+				 + numberOfEggsLostToHiTemp 
+				 + numberOfEggsLostToSuperimp;
+
+  if(totalEggsLost > initialNumberOfEggs){
+	   fprintf(stderr, "ERROR: Redd >>>> survive >>>> totalEggsLost is greater than the initialNumberOfEggs\n");
+	   fprintf(stderr, "ERROR: Redd >>>> survive >>>> totalEggsLost %d\n", totalEggsLost);
+	   fprintf(stderr, "ERROR: Redd >>>> survive >>>> initialNumberOfEggs %d\n", initialNumberOfEggs);
+	   fflush(0);
+	   exit(1);
    }
-   if(printMortalityFlag == YES)
-   {
-      [self createSurvPrintString];
-   }
+
+  if([model getWriteReddMortReport] == YES){
+	[self createPrintString: eggsLostToDewatering
+							  : eggsLostToScouring
+							  : eggsLostToLowTemp
+							  : eggsLostToHiTemp
+							  : eggsLostToSuperimp
+							  : [model getModelTime] ];
+	  }
+
+  if([model getWriteReddSurvReport] == YES){
+	[self createSurvPrintStringWithDewaterSF: dewater
+								withScourSF: scour
+							   withLoTempSF: loTemp
+							   withHiTempSF: hiTemp
+							 withSuperimpSF: superimp];
+	}
  
-   if(numberOfEggs <= 0 )
-   {
-      [self removeWhenEmpty];
-   }
+  if(numberOfEggs < 0){
+     fprintf(stderr, "ERROR: Redd >>>> survive >>>> numberOfEggs is less than zero\n");
+     fflush(0);
+     exit(1);
+  }
+  if(numberOfEggs == 0 ) 
+  {
+    if([model getWriteReddMortReport] == YES){
+      [self printReport];
+    }
+     [self removeWhenEmpty];
+  }
 
    //fprintf(stdout, "UTMRedd >>>> survive >>>> END\n");
    //fflush(0);
@@ -426,13 +463,13 @@
        rDPB = fishParams->reddDevelParamB; 
        rDPC = fishParams->reddDevelParamC; 
 
-       if(fishCell != nil) 
+       if(myCell != nil) 
        {
-          temperature = [fishCell getTemperature];
+          temperature = [myCell getTemperature];
        }
        else 
        {
-            fprintf(stderr, "WARNING: Redd >>>> develop >>>> Redd %p has no fishCell\n", self);
+            fprintf(stderr, "WARNING: Redd >>>> develop >>>> Redd %p has no myCell\n", self);
             fflush(0);
        }
 
@@ -499,6 +536,9 @@
        //
        if(numberOfEggs <= 0) 
        {
+		   if([model getWriteReddMortReport] == YES){
+			 [self printReport]; // Added 2/28/04 skj
+		   }
            [self removeWhenEmpty];
        }
   }
@@ -524,9 +564,9 @@
 
    [model addToEmptyReddList: self];
 
-   [fishCell removeRedd: self]; 
+   [myCell removeRedd: self]; 
 
-   fishCell = nil;
+   myCell = nil;
 
    //fprintf(stdout, "UTMRedd >>>> removeWhenEmpty >>>> END\n");
    //fflush(0);
@@ -563,14 +603,14 @@
    //
    // Initialize fish's depth/length ratio so stranding mort works
    //
-   depthLengthRatio = [fishCell getPolyCellDepth] /length;
+   depthLengthRatio = [myCell getPolyCellDepth] /length;
    [newFish setDepthLengthRatio: depthLengthRatio];
    [newFish setNewFishActivityToFEED];
   
    [newFish setFishColor: myColor];
 
-   [fishCell addFish: newFish]; 
-   [newFish setWorld: fishCell];
+   [myCell addFish: newFish]; 
+   [newFish setWorld: myCell];
 
    [model addAFish: newFish];
 
@@ -628,53 +668,58 @@
 //printReport
 //
 /////////////////////////////////////////////////////
-- printReport: (FILE *) printRptPtr 
+- printReport 
 {
-  
-  if(printSummaryFlag == YES)
+  id <ListIndex> printNdx;
+  id nextString;
+  FILE* printRptPtr = [model getReddReportFilePtr];
+
+  if(printRptPtr == NULL)
   {
-      id <ListIndex> printNdx;
-      char* nextString;
-
-      fprintf(printRptPtr,"\n\n%s %p\n","BEGIN REPORT for Redd", self);
-
-      fprintf(printRptPtr,"Redd: %p Species: %s  CellNo: %d\n", self,
-                                                                [species getName],
-                                                                polyCellNumber);
-
-      fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
-
-      fprintf(printRptPtr,"\n%-12s%-12s%-12s%-10s%-10s%-10s%-10s\n", "Redd",
-                                                                     "Date",
-                                                                     "Dewatering", 
-                                                                     "Scouring",
-                                                                     "LowTemp",
-                                                                     "HiTemp",
-                                                                     "Superimposition");
-    
-      printNdx = [printList listBegin: [self getZone]];
-
-      while(([printNdx getLoc] != End) && ((nextString = (char *) [printNdx next]) != (char *) nil))
-      {
-         fprintf(printRptPtr,"%s",(char *) nextString);
-         [[self getZone] free: nextString];
-      }
-
-
-      fprintf(printRptPtr,"%-12p%-12s%-12d%-10d%-10d%-10d%-10d\n", self, 
-                                                                  "TOTALS:",
-                                                                  numberOfEggsLostToDewatering,
-                                                                  numberOfEggsLostToScouring,
-                                                                  numberOfEggsLostToLowTemp,
-                                                                  numberOfEggsLostToHiTemp,
-                                                                  numberOfEggsLostToSuperimp);
-    
-      fprintf(printRptPtr,"\n\n%s %p\n","END REPORT for Redd", self);
-      fflush(printRptPtr);
-
-      [printNdx drop];
-      [printList drop];
+      fprintf(stderr, "ERROR: Redd >>>> printReport >>>> printRptPtr = %p\n", printRptPtr);
+      fflush(0);
+      exit(1);
   }
+
+  fprintf(printRptPtr,"\n%s %p\n","BEGIN REPORT for Redd", self);
+  fprintf(printRptPtr,"Redd: %p Scenario = %d Replicate = %d\n", self, [model getScenario],
+                                                                       [model getReplicate]);
+
+  fprintf(printRptPtr,"Redd: %p Species: %s  CellNumber: %d\n", self,
+                                                                [species getName],
+                                                                cellNumber);
+
+  fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
+
+  fprintf(printRptPtr,"\n%-12s%-12s%-12s%-10s%-10s%-10s%-10s\n", "Redd",
+                                                                 "Date",
+                                                                 "Dewatering", 
+                                                                 "Scouring",
+                                                                 "LowTemp",
+                                                                 "HiTemp",
+                                                                 "Superimposition");
+
+  printNdx = [printList listBegin: [self getZone]];
+
+  while(([printNdx getLoc] != End) && ((nextString = [printNdx next]) != nil)) 
+  {
+    fprintf(printRptPtr,"%s",(char *) nextString);
+    [[self getZone] free: nextString];
+  }
+
+
+  fprintf(printRptPtr,"%-12p%-12s%-12d%-10d%-10d%-10d%-10d\n", self, 
+                                                              "TOTALS:",
+                                                              numberOfEggsLostToDewatering,
+                                                              numberOfEggsLostToScouring,
+                                                              numberOfEggsLostToLowTemp,
+                                                              numberOfEggsLostToHiTemp,
+                                                              numberOfEggsLostToSuperimp);
+
+  fprintf(printRptPtr,"\n\n%s %p\n","END REPORT for Redd", self);
+
+  [printNdx drop];
+  [printList drop];
 
   return self;
 }
@@ -693,15 +738,14 @@
                    : (int) eggsLostToSuperimp
                    : (time_t) aModelTime_t {
 
-  if(printSummaryFlag == YES)
-  {
-     char* printString;
-     const char* formatString = "%-12p%-12s%-12d%-10d%-10d%-10d%-10d\n";
+  id printString;
+  const char* formatString;
 
-     printString  = [reddZone  allocBlock: 300*sizeof(char)];
+  printString  = [[self getZone] alloc: 300*sizeof(char)];
 
+  formatString = "%-12p%-12s%-12d%-10d%-10d%-10d%-10d\n";
  
-     sprintf((char *)printString,formatString, self,
+  sprintf((char *)printString,formatString, self,
                                             [timeManager getDateWithTimeT: aModelTime_t],
                                             eggsLostToDewatering,
                                             eggsLostToScouring,
@@ -710,83 +754,90 @@
                                             eggsLostToSuperimp);
 
 
-      [printList addLast: (void *) printString];
-
-  }
+  [printList addLast: printString];
 
   return self;
 }
 
 
+////////////////////////////////////////////////////////////////
+//
+//createSurvPrintString
+//
+////////////////////////////////////////////////////////////////
+- createSurvPrintStringWithDewaterSF: (double) aDewaterSF
+                         withScourSF: (double) aScourSF
+                        withLoTempSF: (double) aLoTempSF
+                        withHiTempSF: (double) aHiTempSF
+                      withSuperimpSF: (double) aSuperimpSF
+ {
 
+  id printString;
+  char formatString[150];
 
-//This is broken wrt the changes in 
-//the survival manager
+  printString  = [[self getZone] alloc: 300*sizeof(char)];
+
+  strcpy(formatString,"%p,%s,%E,%E,%E,%E,%E,%E,%E,%E\n");
+
+  sprintf((char *)printString,formatString,self,
+					    [species getName],
+                                            [myCell getTemperature],
+                                            [myCell getRiverFlow],
+                                            [myCell getPolyCellDepth],
+                                            aDewaterSF,
+                                            aScourSF,
+                                            aLoTempSF,
+                                            aHiTempSF,
+                                            aSuperimpSF);
+  [survPrintList addLast: printString];
+  return self;
+}
+
 
 
 //////////////////////////////////////////////////////////
 //
-// printReddSurvReport
+//printReddSurvReport
 //
 /////////////////////////////////////////////////////
-- printReddSurvReport: (FILE *) printRptPtr 
-{
-   if(printMortalityFlag == YES)
-   {
-       id <ListIndex> printNdx;
-       char* nextString;
-       const char *formatString;
+- printReddSurvReport: (FILE *) printRptPtr {
+  id <ListIndex> printNdx;
+  id nextString;
+  const char *formatString;
 
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> BEGIN\n");
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> printRptPtr = %p\n", printRptPtr);
-       //fflush(0);
+  fprintf(printRptPtr,"\n\n%s %p\n","BEGIN SURVIVAL REPORT for Redd", self);
 
-       fprintf(printRptPtr,"\n\n%s %p\n","BEGIN SURVIVAL REPORT for Redd", self);
+  fprintf(printRptPtr,"Redd: %p Species: %s  CellNumber: %d\n", self,
+                                                                [species getName],
+                                                                cellNumber);
 
-       fprintf(printRptPtr,"Redd: %p Species: %s  CellNo: %d\n",self,
-                                                   [species getName],
-                                                      polyCellNumber);
-       fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
+  fprintf(printRptPtr,"Redd: %p INITIAL NUMBER OF EGGS: %d\n", self, initialNumberOfEggs);
+  formatString = "\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n";
 
-       formatString = "\n%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n";
+  fprintf(printRptPtr,formatString, "Redd",
+                                    "Species",
+                                    "Temperature",
+                                    "Flow",
+                                    "Depth",
+                                    "Dewatering", 
+                                    "Scouring",
+                                    "LowTemp",
+                                    "HiTemp",
+                                    "Superimposition");
 
-       fprintf(printRptPtr,formatString, "Redd",
-                                         "Species",
-                                         "Temperature",
-                                         "Flow",
-                                         "Depth",
-                                         "Dewatering", 
-                                         "Scouring",
-                                         "LowTemp",
-                                         "HiTemp",
-                                         "Superimposition");
+  printNdx = [survPrintList listBegin: [self getZone]];
 
-
-       printNdx = [survPrintList listBegin: [self getZone]];
-
-       while(([printNdx getLoc] != End) && ((nextString = (char *) [printNdx next]) != (char *) nil))
-       {
-         fprintf(printRptPtr,"%s",(char *) nextString);
-         fflush(printRptPtr);
-         //[[self getZone] free: (void *) nextString];
-       }
-
-       [printNdx setLoc: Start];
-       while(([printNdx getLoc] != End) && ((nextString = (char *) [printNdx next]) != (char *) nil))
-       {
-         [reddZone freeBlock: (void *) nextString blockSize: 300*sizeof(char)];
-       }
-
-       fprintf(printRptPtr,"\n\n%s %p\n","END SURVIVAL REPORT for Redd", self);
-
-       [printNdx drop];
-       [survPrintList drop];
-
-       //fprintf(stdout, "UTMRedd >>>> printReddSurvReport >>>> END\n");
-       //fflush(0);
-     
+  while( ([printNdx getLoc] != End) && ( (nextString = [printNdx next]) != nil) ) {
+    fprintf(printRptPtr,"%s",(char *) nextString);
+    [[self getZone] free: (void *) nextString];
   }
-  return self;
+
+  fprintf(printRptPtr,"\n\n%s %p\n","END SURVIVAL REPORT for Redd", self);
+
+[printNdx drop];
+[survPrintList drop];
+
+return self;
 }
 
 
@@ -822,11 +873,11 @@
              id <ListIndex> lstNdx;
              id <SurvProb> aProb;
 
-             [fishCell updateReddSurvivalProbFor: self];
+             [myCell updateReddSurvivalProbFor: self];
              // again I think the following is redundant --colin
-	     //[fishCell updateReddHabitatSurvProb];
+	     //[myCell updateReddHabitatSurvProb];
      
-             listOfSurvProbs = [fishCell getReddListOfSurvProbsFor: self];
+             listOfSurvProbs = [myCell getReddListOfSurvProbsFor: self];
              lstNdx = [listOfSurvProbs listBegin: scratchZone];
      
              while(([lstNdx getLoc] != End) && ((aProb = [lstNdx next]) != nil))
@@ -868,9 +919,9 @@
        formatString = "%-12p%-12s%-12f%-12f%-12f%-12f%-12f%-12f%-12f%-12f\n";
      
        sprintf((char *)printString,formatString, self  , [species getName],
-                                                       [fishCell getTemperature],
-                                                       [fishCell getDailyMeanFlow],
-                                                       [fishCell getPolyCellDepth],
+                                                       [myCell getTemperature],
+                                                       [myCell getDailyMeanFlow],
+                                                       [myCell getPolyCellDepth],
                                                        dewater,
                                                        scour,
                                                        loTemp,
@@ -920,7 +971,7 @@
                                        [model getReplicate],
                                        self,
                                        [species getName],
-                                       polyCellNumber,
+                                       cellNumber,
                                        reddCreateDate,
                                        initialNumberOfEggs,
                                        emptyDate,

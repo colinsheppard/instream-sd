@@ -1,13 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 
 #import <math.h>
@@ -47,10 +63,11 @@
 
   newTrout = [super createBegin: aZone];
 
+  newTrout->troutZone = [Zone create: aZone];
   newTrout->causeOfDeath = nil;
 
   //
-  // initilaize these 4 per 
+  // initialize these 4 per 
   // Green river model formulation spec
   //
   newTrout->netEnergyForFeedingLastPhase = 0.0;
@@ -64,21 +81,18 @@
   newTrout->dailySurvivalIfFeed = -LARGEINT;
   newTrout->dailySurvivalIfHide = -LARGEINT;
 
-  newTrout->survivalDay = -LARGEINT;
-  newTrout->survivalNight = -LARGEINT;
-  
   newTrout->currentPhase = DNERROR;
   newTrout->prevPhase = INITPHASE;
 
   newTrout->isHideCoverAvailable = NO;
   newTrout->hidingCover = NO;
 
-  newTrout->destCellList = [List create: aZone];
   newTrout->fishDistanceLastMoved = 0.0;
   newTrout->fishCumulativeDistanceMoved = 0.0;
 
   newTrout->toggledFishForHabSurvUpdate = nil;
- 
+  newTrout->imImmortal = NO;
+
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
     //fflush(0);
@@ -112,17 +126,12 @@
   }
   else 
   {
-    spawnDist = [UniformDoubleDist create: [self getZone]
+    spawnDist = [UniformDoubleDist create: troutZone
 				   setGenerator: troutRandGen
 				   setDoubleMin: 0.0
 				   setMax: 1.0];
 
-    dieDist = [UniformDoubleDist create: [self getZone]
-				   setGenerator: troutRandGen
-				   setDoubleMin: 0.0
-				   setMax: 1.0];
-
-    uniformDist = [UniformDoubleDist create: [self getZone]
+    uniformDist = [UniformDoubleDist create: troutZone
                                setGenerator: troutRandGen
                                setDoubleMin: 0.0
                                      setMax: 1.0];
@@ -134,6 +143,8 @@
    deadOrAlive = "ALIVE";
  
    spawnedThisSeason = NO;
+
+   destCellList = [List create: troutZone];
 
    return self;
 }
@@ -326,10 +337,10 @@
 
   if (age > 0)
   {
-  [aRaster fillRectangleX0: anX - (1 * age) 
-                  Y0: aY - age 
-                  X1: anX + (1 * age) 
-                  Y1: aY + age
+  [aRaster fillRectangleX0: anX 
+                  Y0: aY
+                  X1: anX + age 
+                  Y1: aY + ((int) age / 2)
            //    Width: 3 
                Color: myColor];  
   }
@@ -1304,7 +1315,7 @@
 ////////////////////////////////////////////
 - (FishCell *) findCellForNewRedd 
 {
-  id <List> potentialCells = [List create: scratchZone];
+  id <List> potentialCells = [List create: troutZone];
   id <ListIndex> cellNdx = nil;
   FishCell* bestCell = (FishCell *) nil;
   FishCell* nextCell = (FishCell *) nil;
@@ -1377,6 +1388,7 @@
   [newRedd setCell: aCell];
   [newRedd setReddColor: myColor];
   [newRedd setSpecies: species]; 
+  [newRedd setReddBinomialDist: [model getReddBinomialDist]];
 
   [newRedd setNumberOfEggs: fishParams->fishFecundParamA
          * pow(fishLength, fishParams->fishFecundParamB)
@@ -1426,7 +1438,7 @@
 // setCMaxInterpolator
 //
 ///////////////////////////////////////////////////////////////
-- setCMaxInterpolator: (id <InterpolationTable>) anInterpolator
+- setCMaxInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
    cmaxInterpolator = anInterpolator;
    return self;
@@ -1439,7 +1451,7 @@
 // setSpawnDepthInterpolator
 //
 //////////////////////////////////////////
-- setSpawnDepthInterpolator: (id <InterpolationTable>) anInterpolator
+- setSpawnDepthInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
    spawnDepthInterpolator = anInterpolator;
    return self;
@@ -1452,7 +1464,7 @@
 // setSpawnVelocityInterpolator
 //
 ///////////////////////////////////////////
-- setSpawnVelocityInterpolator: (id <InterpolationTable>) anInterpolator
+- setSpawnVelocityInterpolator: (id <InterpolationTableSD>) anInterpolator
 {
     spawnVelocityInterpolator = anInterpolator;
     return self;
@@ -1981,9 +1993,9 @@
 
 
 //PRINT THE MOVE REPORT
-#ifdef MOVE_REPORT_ON
-[self moveReport: bestDest];
-#endif
+  if([model getWriteMoveReport] == YES){
+    [self moveReport: bestDest];
+  }
 
 #ifdef MOVE_DISTANCE_REPORT_ON
    [self moveDistanceReport: bestDest];
@@ -2507,6 +2519,11 @@
     //fprintf(stdout, "Trout >>>> die >>>> BEGIN\n");
     //fflush(0);
 
+    if(imImmortal == YES)
+    {
+        return self;
+    }
+
     //
     // if numHoursSinceLastStep < 1 crash and burn...
     //
@@ -2577,13 +2594,12 @@
            {
                if([uniformDist getDoubleSample]  >  pow([aProb getSurvivalProb], (((double) numHoursSinceLastStep)/24.0)))
                {
-                   char* deathName = (char *) [aProb getName];
+                   char* deathName = (char *) [[aProb getProbSymbol] getName];
                    size_t strLen = strlen(deathName) + 1;
   
                    causeOfDeath = [aProb getProbSymbol];
 
-                   deathCausedBy = [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                ofSize: strLen];
+                   deathCausedBy = (char *) [troutZone alloc: strLen*sizeof(char)];
                    strncpy(deathCausedBy, deathName, strLen);
 
                    deadOrAlive = "DEAD";
@@ -2601,13 +2617,12 @@
            // fflush(0);
                if([uniformDist getDoubleSample]  >  [aProb getSurvivalProb])
                {
-                   char* deathName = (char *) [aProb getName];
+                   char* deathName = (char *) [[aProb getProbSymbol] getName];
                    size_t strLen = strlen(deathName) + 1;
   
                    causeOfDeath = [aProb getProbSymbol];
 
-                   deathCausedBy = [ZoneAllocMapper allocBlockIn: [self getZone]
-                                                ofSize: strLen];
+                   deathCausedBy = (char *) [troutZone alloc: strLen*sizeof(char)];
                    strncpy(deathCausedBy, deathName, strLen);
 
                    deadOrAlive = "DEAD";
@@ -3550,9 +3565,22 @@
   return self;
 }
 
+///////////////////////////////
+//
+// makeMeImmortal
+//
+//////////////////////////////
+- makeMeImmortal
+{
+   if(imImmortal == NO)
+   {
+       imImmortal = YES;
+   }
+
+   return self;
+}
 
 
-#ifdef MOVE_REPORT_ON
 
 ///////////////////////////////////////////////////////////////
 //
@@ -3740,7 +3768,6 @@ return self;
 
 }
 
-#endif
 
 #ifdef MOVE_DISTANCE_REPORT_ON
 
@@ -4324,13 +4351,24 @@ return self;
 
 - (void) drop
 {
-     [destCellList drop];
 
      [spawnDist drop];
-     [dieDist drop];
      [uniformDist drop];
 
+     [destCellList drop];
+     destCellList = nil; 
+
+     if(causeOfDeath != nil)
+     {
+         [troutZone free: deathCausedBy];
+         deathCausedBy = NULL;
+     }
+
+     [troutZone drop];
+     troutZone = nil;
+
     [super drop];
+     self = nil;
 
 }
 

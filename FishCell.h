@@ -1,12 +1,13 @@
 /*
-inSTREAM Version 5.0, February 2012.
+inSTREAM Version 6.0, May 2013.
 Individual-based stream trout modeling software. 
 Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
-Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
-Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
 Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
 USDA Forest Service, and others.
-Copyright (C) 2004-2012 Lang, Railsback & Associates.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +40,7 @@ Boston, MA 02111-1307, USA.
 #import "TimeManagerProtocol.h"
 #import "TroutModelSwarmP.h"
 #import "SurvMGRProtocol.h"
-#import "InterpolationTableP.h"
+#import "InterpolationTableSDP.h"
 
 #import "PolyCell.h"
 
@@ -67,8 +68,8 @@ Boston, MA 02111-1307, USA.
   id <Symbol> ANIMAL;
   id <Symbol> HABITAT;
 
-  id <InterpolationTable> velocityInterpolator;
-  id <InterpolationTable> depthInterpolator;
+  id <InterpolationTableSD> velocityInterpolator;
+  id <InterpolationTableSD> depthInterpolator;
 
   double cellFracSpawn;
   double cellFracShelter;
@@ -132,11 +133,11 @@ Boston, MA 02111-1307, USA.
 - setRandGen: aRandGen;
 - getRandGen;
 
--  setVelocityInterpolator: (id <InterpolationTable>) aVelocityInterpolator;
--  (id <InterpolationTable>) getVelocityInterpolator;
+-  setVelocityInterpolator: (id <InterpolationTableSD>) aVelocityInterpolator;
+-  (id <InterpolationTableSD>) getVelocityInterpolator;
 - checkVelocityInterpolator;
--  setDepthInterpolator: (id <InterpolationTable>) aDepthInterpolator;
--  (id <InterpolationTable>) getDepthInterpolator;
+-  setDepthInterpolator: (id <InterpolationTableSD>) aDepthInterpolator;
+-  (id <InterpolationTableSD>) getDepthInterpolator;
 - checkDepthInterpolator;
 
 //- updatePolyCellDepthWith: (double) aFlow;
@@ -216,6 +217,7 @@ Boston, MA 02111-1307, USA.
 
 // for instream-sd
 - calcDailyMeanDepthAndVelocityFor: (double) aMeanFlow;
+- (BOOL) isDryAtDailyMeanFlow;
 - (double) getAnglingPressure;
 - (double) getDailyMeanFlow;
 - (double) getDailyMaxFlow;

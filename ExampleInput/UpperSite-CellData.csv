@@ -1,5 +1,5 @@
-Cell habitat variables for Tailrace site,,,,,
-Official input file, June 2008,,,,
+Upper Site habitat input
+inSTREAM 6.0 default project
 CellNumber,FracShelt,DistHide(m),FracSpawn,FracHide,ReachEnd
 1,0.5,0.1,0,0.8,I
 2,0.1,0.8,0,0.1,I

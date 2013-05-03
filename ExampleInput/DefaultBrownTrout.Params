@@ -1,4 +1,5 @@
-# Calibrated brown trout parameters for Tailrace
+# Example brown trout parameters for inSTREAM 6.0
+
 @begin	
 
 fishCaptureParam1                  1.6
@@ -119,7 +120,6 @@ mortFishConditionK1	0.2
 mortFishConditionK9	0.5
 mortFishHiTT1	30.0
 mortFishHiTT9	25.8
-mortFishSpawn	0.9
 mortFishStrandD1	-0.3
 mortFishStrandD9	0.3
 mortFishTerrPredCoverFactor	0.99
@@ -144,8 +144,6 @@ mortReddHiTT9	16
 mortReddLoTT1	-0.8
 mortReddLoTT9	0
 mortReddScourDepth	10
-mortReddShearParamA	0
-mortReddShearParamB	9.999
 
 reddDevelParamA	0.00313
 reddDevelParamB	3.07E-05
@@ -153,4 +151,5 @@ reddDevelParamC	9.34E-05
 reddNewLengthMean	2.8
 reddNewLengthStdDev	0.2
 reddSize	700
+
 @end

@@ -1,11 +1,29 @@
-//
-// inSTREAM-SD-2D (inSTREAM version 3.1)
-// Developed by Lang Railsback & Assoc., Arcata CA for Argonne National Laboratory
-// Software maintained by Jackson Scientific Computing, McKinleyville CA;
-// This library is distributed without any warranty; without even the
-// implied warranty of merchantability or fitness for a particular purpose.
-// See file LICENSE for details and terms of copying
-// 
+/*
+inSTREAM Version 6.0, May 2013.
+Individual-based stream trout modeling software. 
+Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
+Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
+USDA Forest Service, and others.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see file LICENSE); if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+*/
 
 #import <objectbase/Swarm.h>
 #import <analysis/Averager.h>
@@ -18,7 +36,7 @@
 #import "HabitatManager.h"
 #import "FishParams.h"
 #import "TimeManagerProtocol.h"
-#import "ZoneAllocMapper.h"
+//#import "ZoneAllocMapper.h"
 #import "GraphDataObject.h"
 #import "YearShufflerP.h"
 #import "BreakoutReporter.h"
@@ -28,10 +46,6 @@
 //#define INIT_FISH_REPORT
 //#define REDD_REPORT            // If Commented out will lose 
                                // main redd output file
-//
-// The following is broken wrt the changes
-// in the survival manager ...
-//#define REDD_SURV_REPORT
 
 struct SpeciesSetupStruct {
                               Class troutClass;
@@ -236,7 +250,11 @@ id <List> ageSymbolList;
 id <List> fishActivitySymbolList;
 id <List> reachSymbolList;
 
-
+id <Symbol> Age0;
+id <Symbol> Age1;
+id <Symbol> Age2;
+id <Symbol> Age3Plus;
+ 
 id <List> reddList;
 id <List> emptyReddList;
 id <List> removedRedds;
@@ -296,7 +314,7 @@ double checkParam;
   int endMonth;
   int endYear;
   int numSimDays;
-  int simCounter;
+  int simHourCounter;
   time_t popInitTime;
   id <List> fishInitializationRecords;
   id <List> listOfMortalityCounts;
@@ -429,8 +447,9 @@ double checkParam;
 //
 - step;
 
--           printZone:(id <Zone>) aZone 
-       withPrintLevel: (int) level;
+// Commented out; obsolete
+//-           printZone:(id <Zone>) aZone 
+//       withPrintLevel: (int) level;
 
 - toggleFishForHabSurvUpdate;
 
@@ -479,7 +498,7 @@ double checkParam;
 - openReddSummaryFilePtr;
 - (FILE *) getReddSummaryFilePtr;
 
-
+- printReddSurvReport;
 
 
 - dropFishMortObjs;

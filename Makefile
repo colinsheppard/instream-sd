@@ -14,8 +14,6 @@ OBJECTS=GraphDataObject.o \
 	ExperBatchSwarm.o \
 	TroutBatchSwarm.o \
 \
-	ZoneAllocMapper.o \
-\
 	ObjectValueFunc.o \
 	SurvProb.o \
 	SingleFuncProb.o \
@@ -59,7 +57,7 @@ OBJECTS=GraphDataObject.o \
 	Rainbow.o \
 	Brown.o \
 	UTMRedd.o \
-	InterpolationTable.o \
+	InterpolationTableSD.o \
 	TimeSeriesInputManager.o\
 	YearShuffler.o\
 	TroutMortalityCount.o\
@@ -82,8 +80,6 @@ TimeManager.o : TimeManager.[hm]
 #
 ExperBatchSwarm.o : ExperBatchSwarm.[hm]
 TroutBatchSwarm.o : TroutBatchSwarm.[hm]
-#
-ZoneAllocMapper.o : ZoneAllocMapper.[hm]
 #
 ObjectValueFunc.o : ObjectValueFunc.[hm]
 SurvProb.o : SurvProb.[hm]
@@ -123,7 +119,7 @@ Trout.o : Trout.[hm]
 Rainbow.o : Rainbow.[hm]
 Brown.o : Brown.[hm]
 UTMRedd.o : UTMRedd.[hm]
-InterpolationTable.o : InterpolationTable.[hm]
+InterpolationTableSD.o : InterpolationTableSD.[hm]
 TimeSeriesInputManager.o : TimeSeriesInputManager.[hm]
 #
 TroutObserverSwarm.o  : TroutObserverSwarm.[hm]

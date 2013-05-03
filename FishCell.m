@@ -1,12 +1,13 @@
 /*
-inSTREAM Version 5.0, February 2012.
+inSTREAM Version 6.0, May 2013.
 Individual-based stream trout modeling software. 
 Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
-Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
-Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
+Steve@LangRailsback.com; and Colin Sheppard, critter@stanfordalumni.org.
 Development sponsored by US Bureau of Reclamation, EPRI, USEPA, USFWS,
 USDA Forest Service, and others.
-Copyright (C) 2004-2012 Lang, Railsback & Associates.
+Version 6.0 sponsored by Argonne National Laboratory and Western
+Area Power Administration.
+Copyright (C) 2004-2013 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -382,7 +383,7 @@ Boston, MA 02111-1307, USA.
 // setVelocityInterpolator
 //
 ////////////////////////////////////////////////
--  setVelocityInterpolator: (id <InterpolationTable>) aVelocityInterpolator
+-  setVelocityInterpolator: (id <InterpolationTableSD>) aVelocityInterpolator
 {
     velocityInterpolator = aVelocityInterpolator;
     return self;
@@ -394,7 +395,7 @@ Boston, MA 02111-1307, USA.
 // getVelocityInterpolator
 //
 ////////////////////////////////////////////////////
--  (id <InterpolationTable>) getVelocityInterpolator
+-  (id <InterpolationTableSD>) getVelocityInterpolator
 {
    return velocityInterpolator;
 }
@@ -405,7 +406,7 @@ Boston, MA 02111-1307, USA.
 // setDepthInterpolator
 //
 ////////////////////////////////////////////////
--  setDepthInterpolator: (id <InterpolationTable>) aDepthInterpolator
+-  setDepthInterpolator: (id <InterpolationTableSD>) aDepthInterpolator
 {
     depthInterpolator = aDepthInterpolator;
     return self;
@@ -415,7 +416,7 @@ Boston, MA 02111-1307, USA.
 // getDepthInterpolator
 //
 /////////////////////////////////////////////////////
--  (id <InterpolationTable>) getDepthInterpolator
+-  (id <InterpolationTableSD>) getDepthInterpolator
 {
     return depthInterpolator;
 }
@@ -964,6 +965,24 @@ Boston, MA 02111-1307, USA.
  
     return self;
 }
+
+/////////////////////////////////////
+//
+// isDryAtDailyMeanFlow
+//
+/////////////////////////////////////
+- (BOOL) isDryAtDailyMeanFlow
+{
+   BOOL isDry = NO;
+
+   if(meanDepth <= 0.0)
+   {
+      isDry = YES;
+   }
+
+   return isDry;
+}
+
 
 ///////////////////////////////////////
 //
@@ -1939,9 +1958,9 @@ Boston, MA 02111-1307, USA.
 
     [survMgr addBoolSwitchFuncToProbWithSymbol: [model getReddMortalitySymbolWithName: "ReddDewater"]
                            withInputObjectType: 0
-                             withInputSelector: M(isDepthGreaterThan0)
-                                  withYesValue: 1.0
-		                   withNoValue: fishParams->mortReddDewaterSurv];
+                             withInputSelector: M(isDryAtDailyMeanFlow)
+                                  withYesValue: fishParams->mortReddDewaterSurv
+		                           withNoValue: 1.0];
 
      //
      // Scouring
@@ -2004,7 +2023,7 @@ Boston, MA 02111-1307, USA.
                            withInputSelector: M(getCell)];
 
      [survMgr setLogisticFuncLimiterTo: 20.0];
-     //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"];
+     //[survMgr setTestOutputOnWithFileName: "SurvMGRTest.out"]; This isn't working with scour
      survMgr = [survMgr createEnd];
   }
  
@@ -2135,6 +2154,8 @@ Boston, MA 02111-1307, USA.
   //fflush(0);
 
   [survMgrMap forEach: M(updateForHabitat)];
+  
+  // Redd survival managers are now updated in [redd survive]
   [survMgrReddMap forEach: M(updateForHabitat)];
 
   //fprintf(stdout, "FishCell >>>> updateHabitatSurvivalProb >>>> END\n");
@@ -2190,7 +2211,10 @@ Boston, MA 02111-1307, USA.
    [[survMgrReddMap at: [aRedd getSpecies]] 
                updateForAnimal: aRedd]; 
 
-  //fprintf(stdout, "FishCell >>>> updateReddSurvivalProbFor >>>> BEGIN\n");
+   [[survMgrReddMap at: [aRedd getSpecies]] 
+               updateForHabitat]; 
+
+			   //fprintf(stdout, "FishCell >>>> updateReddSurvivalProbFor >>>> BEGIN\n");
   //fflush(0);
 
    return self;

@@ -1,5 +1,5 @@
-Hydraulic input file for inSTREAM,Little Hole site,"Green River, Utah",,,,,,,,,,,,,,,,,,,,,,,,
-Generated from inSTREAM 3 SD-2D output,SFR 11/16/2012,,,,,,,,,,,,,,,,,,,,,,,,,
+Hydraulic input file for inSTREAM, Lower Site
+inSTREAM 6.0 default project
 Flows,17,,23,,27,,30,,35,,40,,60,,70,,85,,100,,115,,130,,142,
 CellNumber,Depth@17,Vel@17,Depth@23,Vel@23,Depth@27,Vel@27,Depth@30,Vel@30,Depth@35,Vel@35,Depth@40,Vel@40,Depth@60,Vel@60,Depth@70,Vel@70,Depth@85,Vel@85,Depth@100,Vel@100,Depth@115,Vel@115,Depth@130,Vel@130,Depth@142,Vel@142
 1,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.01,0.08,0.03,0.06,0.03,0.06
