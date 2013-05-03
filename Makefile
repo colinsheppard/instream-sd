@@ -3,7 +3,7 @@ SWARMHOME=/usr/local/etc
 endif
 
 
-APPLICATION=instream6.0
+APPLICATION=instream6-0
 OBJECTS=GraphDataObject.o \
 	FishParams.o \
 	SearchElement.o ScenarioIterator.o  ExperSwarm.o \
@@ -64,7 +64,7 @@ OBJECTS=GraphDataObject.o \
 	KDTree.o
 
 
-OTHERCLEAN= instream6.0.exe.core instream6.0.exe unhappiness.output
+OTHERCLEAN= instream6-0.exe.core instream6-0.exe unhappiness.output
 
 include $(SWARMHOME)/etc/swarm/Makefile.appl
 
