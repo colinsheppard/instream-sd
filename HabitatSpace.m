@@ -4052,7 +4052,10 @@ return self;
 ////////////////////////////////////////
 - updateHabSurvProbForAqPred
 {
-   //[polyCellList forEach: M(updateHabSurvProbForAqPred)];
+	// fprintf(stdout, "HabitatSpace >>>> updateHabSurvProbForAqPred >>>> BEGIN\n");
+	// fflush(0);
+
+   [polyCellList forEach: M(updateHabSurvProbForAqPred)];
 
    return self;
 }
