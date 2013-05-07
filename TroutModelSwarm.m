@@ -1998,7 +1998,7 @@ char **speciesStocking;
 	fprintf(stdout,"Scenario: %d, Replicate: %d, Date: %s, Hour: %d, Live fish: %d\n", 
 	scenario,replicate, [timeManager getDateWithTimeT: modelTime], 
 	[timeManager getHourWithTimeT: modelTime], [liveFish getCount]);
-	fflush();
+	fflush(0);
 
   if(isFirstStep == TRUE)
   {
