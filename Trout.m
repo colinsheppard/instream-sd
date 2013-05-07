@@ -1006,17 +1006,23 @@ Boston, MA 02111-1307, USA.
 
   if ([self readyToSpawn] == NO)
   {
-     #ifdef READY_TO_SPAWN_RPT
+     //#ifdef READY_TO_SPAWN_RPT
+	 if ([model getWriteReadyToSpawnReport])
+	 {
        [self printReadyToSpawnRpt: NO];
-     #endif
+     }
+	 //#endif
 
      return self;
   }
 
 
-  #ifdef READY_TO_SPAWN_RPT
-      [self printReadyToSpawnRpt: YES];
-  #endif
+  //#ifdef READY_TO_SPAWN_RPT
+	 if ([model getWriteReadyToSpawnReport])
+	 {
+       [self printReadyToSpawnRpt: YES];
+     }
+  //#endif
 
   if((spawnCell = [self findCellForNewRedd]) == nil) 
   {
@@ -4133,7 +4139,7 @@ return self;
 }
 
 
-#ifdef READY_TO_SPAWN_RPT
+//#ifdef READY_TO_SPAWN_RPT
 ///////////////////////////////////////////////////////////
 //
 // printReadyToSpawnRpt
@@ -4240,7 +4246,7 @@ return self;
    fclose(spawnReportPtr);
    return self;
 } 
-#endif
+//#endif
 
 
 #ifdef SPAWN_CELL_RPT

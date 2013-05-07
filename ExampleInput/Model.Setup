@@ -30,6 +30,7 @@ writeReddSurvReport				0
 writeReddMortReport				0
 writeMoveReport					0
 writeCellCentroidReport			0
+writeReadyToSpawnReport			0
 
 @end
 

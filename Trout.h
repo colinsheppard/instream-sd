@@ -556,9 +556,9 @@ id toggledFishForHabSurvUpdate;
 - printSpawnReport: aCell;
 #endif
 
-#ifdef READY_TO_SPAWN_RPT
+//#ifdef READY_TO_SPAWN_RPT
 - printReadyToSpawnRpt: (BOOL) readyToSpawn;
-#endif
+//#endif
 
 #ifdef SPAWN_CELL_RPT
 - printSpawnCellRpt: (id <List>) spawnCellList;
