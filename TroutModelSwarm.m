@@ -82,6 +82,13 @@ char **speciesStocking;
 
   troutModelSwarm->fishOutputFile = (char *) nil;
 
+  // variables used for tracking LFT data
+  troutModelSwarm->resultsAgeThreshold = 1;
+  troutModelSwarm->resultsCensusDay = "9/30";
+  troutModelSwarm->lftNumAdultTrout = 0.0;
+  troutModelSwarm->lftBiomassAdultTrout = 0.0;
+  troutModelSwarm->lftNumCensusDays = 0;	
+
   // Initialize optional output file controls
   troutModelSwarm->writeFoodAvailabilityReport = NO;
   troutModelSwarm->writeDepthReport = NO;
@@ -1875,10 +1882,13 @@ char **speciesStocking;
   //
   // Third, if it is midnight, call the method that updates
   // fish variables: age, time till next spawning period.
+  // Update the logistic functions for Reproductive Maturity.
+  // Write Limiting Factors Tool output if it's a census day
   if([timeManager getHourWithTimeT: modelTime] == 0)
   {
       [self updateFish];      //increments fish age if date is 1/1
       [self updateReproFuncs];
+	  [self updateLFTOutput];
   }
 
   //
@@ -2295,8 +2305,9 @@ char **speciesStocking;
   if(simHourCounter >= (numSimDays * 24))  
   {
      STOP = YES;
+	 [self writeLFTOutput];
      [self dropFishMortObjs];
-
+	 
      #ifdef REDD_REPORT
         [self printReddReport];
      #endif
@@ -3982,6 +3993,87 @@ char **speciesStocking;
 - (BOOL) getWriteCellCentroidReport {
   return writeCellCentroidReport;
 }
+
+///////////////////////////////////////////////
+//
+// updateLFTOutput
+//
+///////////////////////////////////////////////
+
+- updateLFTOutput{
+  // First determine if the current day is a census day
+  if([timeManager isThisTime: modelTime onThisDay: resultsCensusDay] && !([timeManager getTimeTWithDate: runStartDate] == modelTime)){
+    //
+    //fprintf(stdout, "TroutModelSwarm >>>> writeLFTOutput >>>> Current day %s, Census day %s, runStartDate %s \n",[timeManager getDateWithTimeT: modelTime],resultsCensusDay,runStartDate);
+    //fflush(0);
+
+    id <ListIndex> liveFishNdx;
+    id nextLiveFish = nil;
+
+    liveFishNdx = [liveFish listBegin: scratchZone];
+    while (([liveFishNdx getLoc] != End) && ((nextLiveFish = [liveFishNdx next]) != nil)){
+        if([nextLiveFish getAge] >= resultsAgeThreshold){
+	  lftNumAdultTrout = lftNumAdultTrout + 1.0;
+	  lftBiomassAdultTrout = lftBiomassAdultTrout + [nextLiveFish getFishWeight];
+        }
+     }
+    [liveFishNdx drop];
+    lftNumCensusDays++;	
+  }
+    return self;
+}
+
+///////////////////////////////////////////////
+//
+// writeLFTOutput
+//
+///////////////////////////////////////////////
+
+- writeLFTOutput{
+  const char * lftOutputFile = "LFT_Output.rpt";
+  double meanNumAdults, meanBiomass;
+
+  if(lftOutputFilePtr == NULL) {
+     if ((scenario == 1) && (replicate == 1)){
+        if((lftOutputFilePtr = fopen(lftOutputFile,"w")) == NULL ){
+            fprintf(stderr, "ERROR: TroutModelSwarm >>>> writeLFTOutput >>>> Cannot open %s for writing\n",lftOutputFile);
+            fflush(0);
+            exit(1);
+        }
+        fprintf(lftOutputFilePtr,"Limiting factors tool output file\n");
+        fprintf(lftOutputFilePtr,"SYSTEM TIME:  %s\n", [timeManager getSystemDateAndTime]);
+        fprintf(lftOutputFilePtr,"Scenario,Replicate,Census Date,Mean Number of Adults,Mean Biomass of All Adults\n");
+     }else{ // Not the first replicate or scenario, so no header 
+         if((lftOutputFilePtr = fopen(lftOutputFile,"a")) == NULL){
+            fprintf(stderr, "ERROR: TroutModelSwarm >>>> writeLFTOutput >>>> Cannot open %s for appending\n",lftOutputFile);
+            fflush(0);
+            exit(1);
+         }
+     }
+  }
+  if(lftOutputFilePtr == NULL){
+      fprintf(stderr, "ERROR: TroutModelSwarm >>>> writeLFTOutput >>>> File %s is not open\n",lftOutputFile);
+      fflush(0);
+      exit(1);
+  }
+  if(lftNumCensusDays <= 0){
+    meanNumAdults = -9999.0;
+    meanBiomass = -9999.0;
+  }else{
+    meanNumAdults = lftNumAdultTrout / lftNumCensusDays;
+    meanBiomass = lftBiomassAdultTrout / lftNumCensusDays;
+  }
+  fprintf(lftOutputFilePtr,"%d\t%d\t%s\t%f\t%f\n", 
+    scenario, 
+    replicate, 
+    resultsCensusDay,
+    meanNumAdults,
+    meanBiomass);
+  return self;
+}
+
+
+
 //////////////////////////////////////////////////////////
 //
 // drop

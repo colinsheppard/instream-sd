@@ -72,7 +72,7 @@ fishSpawnMinAge	1
 fishSpawnMinCond	0.95
 fishSpawnMinLength	25
 fishSpawnMinTemp	4
-fishSpawnProb	0.04
+fishSpawnProb	0.004
 fishSpawnStartDate	10/1
 fishSpawnVSuitS1	0
 fishSpawnVSuitS2	0

@@ -145,6 +145,7 @@ typedef struct FishStockType FishStockStruct;
   id modelSchedule;
   id coinFlip;
 
+
   // 
   // FILE OUTPUT
   //
@@ -157,6 +158,7 @@ typedef struct FishStockType FishStockStruct;
 
   FILE* reddRptFilePtr;
   FILE* reddSummaryFilePtr;
+  FILE * lftOutputFilePtr;
 
 
 //Mortality counts
@@ -183,10 +185,18 @@ int    fileOutputFrequency;
 double fracFlowChangeForMovement;
 char* tagFishColor;
 
+// Set by Limiting Factors Tool 
+int	    resultsAgeThreshold;
+char*	    resultsCensusDay;
+
 //
 //END VARIABLES INITIALIZED BY Model.Setup
 //
 
+  //// NEW VARIABLES CONTROLLED BY OR USED BY LIMITING FACTOR TOOL
+  double lftNumAdultTrout;	  // Total number of all adult trout with age >= resultsAgeThreshold, summed across every resultsCensusDay
+  double lftBiomassAdultTrout;	  // Total weight of all adult trout with age >= resultsAgeThreshold, summed across every resultsCensusDay
+  int lftNumCensusDays;		  // Number of census days, used to calculate average of the above to metrics 
 
 id fishColorMap;
 double shadeColorMax;
@@ -371,6 +381,9 @@ double checkParam;
 - createInitialFish;
 - createFishParameters;
 - findMinSpeciesPiscLength;
+
+- updateLFTOutput;
+- writeLFTOutput;
 
 //
 // REPRO LOGISTIC
