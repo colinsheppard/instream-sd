@@ -4144,9 +4144,11 @@ char **speciesStocking;
       randGen = nil;
   }
 
-  [reproLogisticFuncMap deleteAll];
-  [reproLogisticFuncMap drop];
-  
+  if(coinFlip){
+   [coinFlip drop];
+   coinFlip = nil;
+  }
+
   // New stuff copied from instream-5 5/8/2013
   if(modelZone != nil){
       int speciesIDX = 0;
@@ -4192,7 +4194,16 @@ char **speciesStocking;
      // drop capture logistics
      //
 
-     [mortalityCountLstNdx drop];
+    [reproLogisticFuncMap deleteAll];
+    [reproLogisticFuncMap drop];
+    reproLogisticFuncMap = nil;
+
+/* This is not working
+    [deathMap deleteAll];
+    [deathMap drop];
+    deathMap = nil;
+*/
+	[mortalityCountLstNdx drop];
      mortalityCountLstNdx = nil;
   
      [listOfMortalityCounts deleteAll];
@@ -4260,6 +4271,26 @@ char **speciesStocking;
      [reachList drop];
      reachList = nil;
 
+     [reachSymbolList deleteAll];
+     [reachSymbolList drop];
+     reachSymbolList = nil;
+
+     [fishMortSymbolList deleteAll];
+     [fishMortSymbolList drop];
+     fishMortSymbolList = nil;
+
+     [reddMortSymbolList deleteAll];
+     [reddMortSymbolList drop];
+     reddMortSymbolList = nil;
+
+     [ageSymbolList deleteAll];
+     [ageSymbolList drop];
+     ageSymbolList = nil;
+
+     [fishActivitySymbolList deleteAll];
+     [fishActivitySymbolList drop];
+     fishActivitySymbolList = nil;
+
 	   //[Male drop];
      Male = nil;
      //[Female drop];
@@ -4282,26 +4313,6 @@ char **speciesStocking;
     [fishParamsMap deleteAll];
     [fishParamsMap drop];
     fishParamsMap = nil;
-
-     [fishMortSymbolList deleteAll];
-     [fishMortSymbolList drop];
-     fishMortSymbolList = nil;
-
-     [reddMortSymbolList deleteAll];
-     [reddMortSymbolList drop];
-     reddMortSymbolList = nil;
-
-     [ageSymbolList deleteAll];
-     [ageSymbolList drop];
-     ageSymbolList = nil;
-
-     [fishActivitySymbolList deleteAll];
-     [fishActivitySymbolList drop];
-     fishActivitySymbolList = nil;
-
-     [reachSymbolList deleteAll];
-     [reachSymbolList drop];
-     reachSymbolList = nil;
 
 /*  THis is failing in habitatManager drop; don't know why
       if(habitatManager){
