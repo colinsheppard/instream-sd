@@ -4264,6 +4264,10 @@ char **speciesStocking;
      //[speciesSetupList deleteAll]; Can't drop these
      [speciesSetupList drop];
      speciesSetupList = nil;
+     [speciesClassList drop];
+     speciesClassList = nil;
+     [fishInitializationRecords drop];
+     fishInitializationRecords = nil;
 
      [speciesSymbolList deleteAll];
      [speciesSymbolList drop];
