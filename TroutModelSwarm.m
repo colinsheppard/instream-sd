@@ -4105,30 +4105,222 @@ char **speciesStocking;
   // [ndx drop];
 
 
-  if(liveFishReporter != nil)
-  {
-     [liveFishReporter drop];
+  if(lftOutputFilePtr != NULL){
+      fclose(lftOutputFilePtr);
+  }
+  if(reddSummaryFilePtr != NULL){
+      fclose(reddSummaryFilePtr);
+  }
+  if(reddRptFilePtr != NULL){
+      fclose(reddRptFilePtr);
   }
 
-  if(fishMortalityReporter != nil)
-  {
-     [fishMortalityReporter drop];
+  if(timeManager){
+      [timeManager drop];
+      timeManager = nil;
   }
+
+  if(fishColorMap)
+  {
+       id <MapIndex> mapNdx = [fishColorMap mapBegin: scratchZone];
+       long* aFishColor = (long *) nil;
+ 
+       while(([mapNdx getLoc] != End) && ((aFishColor = (long *) [mapNdx next]) != (long *) nil))
+       {
+            [modelZone free: aFishColor];
+       }
+
+       [mapNdx drop];
+       [fishColorMap drop];
+   }
 
   //if(moveFishReporter != nil)
   //{
      //[moveFishReporter drop];
   //}
 
-  if(timeManager != nil)
-  {
-      [timeManager drop];
-      timeManager = nil;
+  if(randGen){
+      [randGen drop]; 
+      randGen = nil;
   }
 
   [reproLogisticFuncMap deleteAll];
   [reproLogisticFuncMap drop];
   
+  // New stuff copied from instream-5 5/8/2013
+  if(modelZone != nil){
+      int speciesIDX = 0;
+ 
+  [modelZone free: mySpecies];
+  [modelZone freeBlock: modelDate blockSize: 15*sizeof(char)];
+
+      for(speciesIDX=0;speciesIDX<numberOfSpecies;speciesIDX++) {
+          [modelZone free: speciesName[speciesIDX]];
+          [modelZone free: speciesParameter[speciesIDX]];
+          [modelZone free: speciesPopFile[speciesIDX]];
+          [modelZone free: speciesColor[speciesIDX]];
+      }
+
+      [modelZone free: speciesName];
+      [modelZone free: speciesParameter];
+      [modelZone free: speciesPopFile];
+      [modelZone free: speciesColor];
+
+      [modelZone free: MyTroutClass];
+
+      //
+      // drop interpolation tables
+      //
+    [spawnVelocityInterpolatorMap deleteAll];
+    [spawnVelocityInterpolatorMap drop];
+    spawnVelocityInterpolatorMap = nil;
+    [spawnDepthInterpolatorMap deleteAll];
+    [spawnDepthInterpolatorMap drop];
+    spawnDepthInterpolatorMap = nil;
+    [cmaxInterpolatorMap deleteAll];
+    [cmaxInterpolatorMap drop];
+    cmaxInterpolatorMap = nil;
+     //
+     // End drop interpolation tables
+     //
+     // drop capture logistics
+     //
+    [captureLogisticMap deleteAll];
+    [captureLogisticMap drop];
+    captureLogisticMap = nil;
+     //
+     // drop capture logistics
+     //
+
+     [mortalityCountLstNdx drop];
+     mortalityCountLstNdx = nil;
+  
+     [listOfMortalityCounts deleteAll];
+     [listOfMortalityCounts drop];
+      listOfMortalityCounts = nil; 
+
+     [liveFish deleteAll];
+     [liveFish drop];
+     liveFish = nil;
+	 
+     [modelActions drop];
+     modelActions = nil;
+
+     [modelSchedule drop];
+     modelSchedule = nil;
+      
+     [reddBinomialDist drop];
+     reddBinomialDist = nil;
+        
+     [deadFish deleteAll];
+     [deadFish drop];
+     deadFish = nil;
+
+     [killedFish deleteAll];
+     [killedFish drop];
+     killedFish = nil;
+
+/* This is not working... perhaps because the list contains structures??
+     [fishStockList deleteAll];
+     [fishStockList drop];
+     fishStockList = nil;
+*/
+
+     [reddList deleteAll];
+     [reddList drop];
+     reddList = nil;
+
+     [emptyReddList deleteAll];
+     [emptyReddList drop];
+     emptyReddList = nil;
+
+     [removedRedds deleteAll];
+     [removedRedds drop];
+     removedRedds = nil;
+
+     [killedRedds deleteAll];
+     [killedRedds drop];
+     killedRedds = nil;
+
+     [deadRedds deleteAll];
+     [deadRedds drop];
+     deadRedds = nil;
+
+/* This does not work, perhaps because list contains structures?
+     [speciesSetupList deleteAll];
+     [speciesSetupList drop];
+     speciesSetupList = nil;
+*/
+
+     [speciesSymbolList deleteAll];
+     [speciesSymbolList drop];
+     speciesSymbolList = nil;
+
+     [reachList deleteAll];
+     [reachList drop];
+     reachList = nil;
+
+	   //[Male drop];
+     Male = nil;
+     //[Female drop];
+     Female = nil;
+
+     if(yearShuffler != nil){
+          [yearShuffler drop];
+          yearShuffler = nil;
+     }
+
+     [fishMortalityReporter drop];
+     fishMortalityReporter = nil;
+
+     [liveFishReporter drop];
+     liveFishReporter = nil;
+
+     //
+     // Drop the fishParams
+     //
+    [fishParamsMap deleteAll];
+    [fishParamsMap drop];
+    fishParamsMap = nil;
+
+     [fishMortSymbolList deleteAll];
+     [fishMortSymbolList drop];
+     fishMortSymbolList = nil;
+
+     [reddMortSymbolList deleteAll];
+     [reddMortSymbolList drop];
+     reddMortSymbolList = nil;
+
+     [ageSymbolList deleteAll];
+     [ageSymbolList drop];
+     ageSymbolList = nil;
+
+     [fishActivitySymbolList deleteAll];
+     [fishActivitySymbolList drop];
+     fishActivitySymbolList = nil;
+
+     [reachSymbolList deleteAll];
+     [reachSymbolList drop];
+     reachSymbolList = nil;
+
+/*  THis is failing in habitatManager drop; don't know why
+      if(habitatManager){
+          [habitatManager drop];
+          habitatManager = nil;
+      }
+*/
+
+ //    [self outputModelZone: modelZone];
+
+     [modelZone drop];
+     modelZone = nil;
+
+//     fprintf(stdout, "TroutModelSwarm >>>> drop >>>> dropping modelZone >>>> END\n");
+//     fflush(0);
+  }
+  
+
+/*  
 	 [reddBinomialDist drop];
 	 reddBinomialDist = nil;
         
@@ -4167,7 +4359,6 @@ char **speciesStocking;
   [fishMortSymbolList deleteAll];
   [fishMortSymbolList drop];
   [coinFlip drop];
-  [randGen drop];
   [speciesClassList drop];
 
   [modelZone freeBlock: modelDate blockSize: 15*sizeof(char)];
@@ -4179,10 +4370,10 @@ char **speciesStocking;
       [modelZone drop];
       modelZone = nil;
   }
-  
+*/  
   [super drop];
 
-  fprintf(stdout, "TroutModelSwarm >>>> drop >>>> BEGIN\n");
+  fprintf(stdout, "TroutModelSwarm >>>> drop >>>> END\n");
   fflush(0);
 
 } //drop

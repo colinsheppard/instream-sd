@@ -204,7 +204,7 @@ Boston, MA 02111-1307, USA.
   fprintf(stdout,"TroutBatchSwarm >>>> drop >>>> after troutModelSwarm drop\n");
   fflush(0);
 
-  if(obsZone != nil) 
+  if(obsZone) 
   {
       [obsZone drop];
       obsZone = nil;

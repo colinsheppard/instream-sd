@@ -94,13 +94,13 @@ Boston, MA 02111-1307, USA.
 
 - (void) drop
 {
-    fprintf(stdout, "ReddScour >>>> drop >>>> BEGIN\n");
-    fflush(0);
+    // fprintf(stdout, "ReddScour >>>> drop >>>> BEGIN\n");
+    // fflush(0);
 
     [super drop];
 
-    fprintf(stdout, "ReddScour >>>> drop >>>> END\n");
-    fflush(0);
+    // fprintf(stdout, "ReddScour >>>> drop >>>> END\n");
+    // fflush(0);
 }
 
 
