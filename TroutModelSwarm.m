@@ -1992,13 +1992,13 @@ char **speciesStocking;
      //
      numHoursSinceLastStep = 0;
 
-
-  }    
-	// Output to terminal
+	 // Output to terminal once per step
 	fprintf(stdout,"Scenario: %d, Replicate: %d, Date: %s, Hour: %d, Live fish: %d\n", 
 	scenario,replicate, [timeManager getDateWithTimeT: modelTime], 
 	[timeManager getHourWithTimeT: modelTime], [liveFish getCount]);
 	fflush(0);
+
+  }    
 
   if(isFirstStep == TRUE)
   {
