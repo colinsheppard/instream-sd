@@ -4099,8 +4099,8 @@ return self;
 {
  //   int i = 0;
 
-  fprintf(stdout, "HabitatSpace >>>> drop >>>> BEGIN\n");
-  fflush(0);
+  // fprintf(stdout, "HabitatSpace >>>> drop >>>> BEGIN\n");
+  // fflush(0);
 
 
     //fclose(areaDepthFileStream);

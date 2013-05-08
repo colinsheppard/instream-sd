@@ -4153,6 +4153,12 @@ char **speciesStocking;
   if(modelZone != nil){
       int speciesIDX = 0;
  
+//  Don't try "reachList deleteAll" before this!
+      if(habitatManager){
+          [habitatManager drop];
+          habitatManager = nil;
+      }
+
   [modelZone free: mySpecies];
   [modelZone freeBlock: modelDate blockSize: 15*sizeof(char)];
 
@@ -4198,11 +4204,11 @@ char **speciesStocking;
     [reproLogisticFuncMap drop];
     reproLogisticFuncMap = nil;
 
-/* This is not working
-    [deathMap deleteAll];
+  //  [deathMap deleteAll]; The structures on this list do not 
+  //  respond to "drop", which deleteAll tries to execute
     [deathMap drop];
     deathMap = nil;
-*/
+
 	[mortalityCountLstNdx drop];
      mortalityCountLstNdx = nil;
   
@@ -4231,11 +4237,9 @@ char **speciesStocking;
      [killedFish drop];
      killedFish = nil;
 
-/* This is not working... perhaps because the list contains structures??
-     [fishStockList deleteAll];
+     //[fishStockList deleteAll]; can't drop these
      [fishStockList drop];
      fishStockList = nil;
-*/
 
      [reddList deleteAll];
      [reddList drop];
@@ -4257,18 +4261,16 @@ char **speciesStocking;
      [deadRedds drop];
      deadRedds = nil;
 
-/* This does not work, perhaps because list contains structures?
-     [speciesSetupList deleteAll];
+     //[speciesSetupList deleteAll]; Can't drop these
      [speciesSetupList drop];
      speciesSetupList = nil;
-*/
 
      [speciesSymbolList deleteAll];
      [speciesSymbolList drop];
      speciesSymbolList = nil;
 
-     [reachList deleteAll];
-     [reachList drop];
+//     [reachList deleteAll];
+//     [reachList drop];
      reachList = nil;
 
      [reachSymbolList deleteAll];
@@ -4314,12 +4316,7 @@ char **speciesStocking;
     [fishParamsMap drop];
     fishParamsMap = nil;
 
-/*  THis is failing in habitatManager drop; don't know why
-      if(habitatManager){
-          [habitatManager drop];
-          habitatManager = nil;
-      }
-*/
+
 
  //    [self outputModelZone: modelZone];
 
