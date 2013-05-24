@@ -3656,6 +3656,13 @@ return self;
 
   //fprintf(stdout, "HabitatSpace >>>> buildCellFishInfoReporter >>>> BEGIN\n");
   //fflush(0);
+  
+  // These are set in finishBuildObjects but that method is executed
+  // before the model has built these lists. So do it again.
+  // (These lists do not appear to be used anywhere else in HabitatSpace.)
+  ageSymbolList = [modelSwarm getAgeSymbolList];
+  speciesSymbolList = [modelSwarm getSpeciesSymbolList];
+
  
   if(speciesSymbolList == nil)
   {
@@ -3754,8 +3761,8 @@ return self;
   [cellFishInfoReporter breakOutUsingSelector: @selector(getSpecies)
                                withListOfKeys: speciesSymbolList];
 
-  // [cellFishInfoReporter breakOutUsingSelector: @selector(getAgeSymbol)
-                               // withListOfKeys: ageSymbolList];
+  [cellFishInfoReporter breakOutUsingSelector: @selector(getAgeSymbol)
+                               withListOfKeys: ageSymbolList];
 
   [cellFishInfoReporter createOutputWithLabel: "Count"
                                  withSelector: @selector(getFishCount)
