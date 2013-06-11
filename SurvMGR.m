@@ -216,7 +216,7 @@ Boston, MA 02111-1307, USA.
     withAgentKnows: (BOOL) anAgentKnows
    withIsStarvProb: (BOOL) isAStarvProb
 {
-
+  char* symbolName = NULL;
   id aProb = nil;
   int i;
    
@@ -253,11 +253,16 @@ Boston, MA 02111-1307, USA.
      // at compile time. This gets resolved at runtime...
      //
      Class aCustomProbClass;
+     symbolName = [aProbSymbol getName];
 
-     aCustomProbClass = [objc_get_class([aProbSymbol getName]) class];
-     
+     aCustomProbClass = [objc_get_class(symbolName) class];
+    
      aProb = [aCustomProbClass createBegin: mgrZone];
 
+     if(symbolName != NULL){
+	[scratchZone free: symbolName];
+	symbolName = NULL;
+     }
   }
   else
   {
@@ -1039,6 +1044,11 @@ Boston, MA 02111-1307, USA.
           sprintf(aFormatString[i], "%c%c%d%c",  '%', '-', (int) probNameLength + 1, 'f');
  
           i++;
+
+	 if(aProbName != NULL){
+	    [scratchZone free: aProbName];
+	    aProbName = NULL;
+	 }
 
       }
 

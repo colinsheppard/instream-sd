@@ -154,19 +154,17 @@ Boston, MA 02111-1307, USA.
 
 - (double) getFuncValue
 {
-
    //fprintf(stdout, "Func >>>> getFuncValue >>>> funcValue = %f\n", funcValue);
    //fflush(0);
-
  
    return funcValue;
-
 }
-
 
 - (void) drop
 {
 
+    [messageProbe drop];
+    messageProbe = nil;
     [super drop];
 }
 
