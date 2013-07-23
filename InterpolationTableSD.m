@@ -536,7 +536,7 @@ Boston, MA 02111-1307, USA.
       int i;
       for(i = 0; i < funcArrayMax; i++)
       {
-           //[interpolationZone free: [xValues atOffset: i]];
+           [interpolationZone free: [xValues atOffset: i]];
       }
   }
 
@@ -545,9 +545,14 @@ Boston, MA 02111-1307, USA.
       int i;
       for(i = 0; i < funcArrayMax; i++)
       {
-          //[interpolationZone free: [yValues atOffset: i]];
+          [interpolationZone free: [yValues atOffset: i]];
       }
   }
+  [xValues drop];
+  [yValues drop]; 
+
+  xValues = nil;
+  yValues = nil;
 
   if(interpolationZone != nil)
   {

@@ -231,8 +231,15 @@ Boston, MA 02111-1307, USA.
   }
   #endif
 
+  if(randGen){
+      [randGen drop]; 
+      randGen = nil;
+  }
+
   [super drop];
 
+  //fprintf(stdout, "Angling >>>> drop >>>> END\n");
+  //fflush(0);
 }
 
 @end

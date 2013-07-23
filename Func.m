@@ -166,8 +166,12 @@ Boston, MA 02111-1307, USA.
 
 - (void) drop
 {
+	//fprintf(stdout, "Func >>>> drop >>>> BEGIN\n");
+	//fflush(0);
 
-    [super drop];
+   [messageProbe drop];
+
+   [super drop];
 }
 
 @end

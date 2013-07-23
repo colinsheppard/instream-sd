@@ -1709,7 +1709,6 @@ Boston, MA 02111-1307, USA.
 
   while(([mapNdx getLoc] != End) && ((fishParams = (FishParams *) [mapNdx next]) != nil))
   {
-
      id <SurvMGR> survMgr;
      id <Symbol> species = [fishParams getFishSpecies];
  
