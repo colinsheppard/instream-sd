@@ -83,8 +83,6 @@ Boston, MA 02111-1307, USA.
 
   probSymbol = aNameSymbol;
 
-  probName = (char *) [probSymbol getName];
-
   return self;
 
 }
