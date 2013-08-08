@@ -4,4 +4,4 @@ set -e
 cd ..
 make
 cd ExampleInput/
-../instream6.0.exe -b
+../instream6-0.exe -b
