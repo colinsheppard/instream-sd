@@ -1045,6 +1045,8 @@ Boston, MA 02111-1307, USA.
   // reduce weight of spawners
   //
   fishWeight = fishWeight * (1.0 - fishParams->fishSpawnWtLossFraction);
+  // Condition update added 6 Aug 2014
+  fishCondition = [self getConditionForWeight: fishWeight andLength: fishLength];
 
   timeLastSpawned = [self getCurrentTimeT];
   spawnedThisSeason = YES;
@@ -1300,6 +1302,8 @@ Boston, MA 02111-1307, USA.
 
   spawnedThisSeason = YES;
   fishWeight = fishWeight * (1.0 - fishParams->fishSpawnWtLossFraction);
+  // Condition update added 6 Aug 2014
+  fishCondition = [self getConditionForWeight: fishWeight andLength: fishLength];
 
   // fprintf(stdout, "I'm a male and I spawned, with condition: %f\n", fishCondition);
   // fflush(0);
