@@ -1,12 +1,12 @@
 /*
-EcoSwarm library for individual-based modeling, last revised February 2012.
+EcoSwarm library for individual-based modeling, last revised April 2013.
 Developed and maintained by Steve Railsback, Lang, Railsback & Associates, 
 Steve@LangRailsback.com; Colin Sheppard, critter@stanfordalumni.org; and
 Steve Jackson, Jackson Scientific Computing, McKinleyville, California.
 Development sponsored by US Bureau of Reclamation under the 
 Central Valley Project Improvement Act, EPRI, USEPA, USFWS,
 USDA Forest Service, and others.
-Copyright (C) 2004-2012 Lang, Railsback & Associates.
+Copyright (C) 2011 Lang, Railsback & Associates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ along with this program (see file LICENSE); if not, write to the
 Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
+
 
 
 #import "TimeManager.h"
@@ -199,12 +200,12 @@ Boston, MA 02111-1307, USA.
 
         aTimeT = aTimeT - timeZoneOffset;
 
-      /*
-        printf("aFormattedDate = %s \n", aFormattedDate);
-        printf("aTimeT = %d \n", (int) aTimeT);
-        printf("aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
-        fflush(stdout);
-      */
+      
+        //printf("aFormattedDate = %s \n", aFormattedDate);
+        //printf("aTimeT = %d \n", (int) aTimeT);
+        //printf("aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
+        //fflush(stdout);
+      
 
 
  if(aTimeT == -1 )  
@@ -242,9 +243,6 @@ Boston, MA 02111-1307, USA.
        char* dateDay;
        char* dateYear;
 
-       //fprintf(stdout,"TimeManager >>> getTimeTWithDate >>> BEGIN\n");
-       //fflush(stdout);
-
        strncpy(date, aFormattedDate, length);
        
        dateMonth = strtok(date, "/");
@@ -256,7 +254,6 @@ Boston, MA 02111-1307, USA.
        timeStruct.tm_mon = atoi(dateMonth) - 1; 
        timeStruct.tm_mday = atoi(dateDay);  
        timeStruct.tm_year = atoi(dateYear) - 1900; 
-
 
         //strptime(aFormattedDate ,format, &timeStruct);
 
@@ -291,10 +288,10 @@ Boston, MA 02111-1307, USA.
            aTimeT = aTimeT + 86400;
         }
 
-        //fprintf(stdout,"aFormattedDate = %s \n", aFormattedDate);
-        //fprintf(stdout,"aTimeT = %d \n", (int) aTimeT);
-	//fprintf(stdout,"aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
-        //fflush(stdout);
+	//printf("aFormattedDate = %s \n", aFormattedDate);
+	//printf("aTimeT = %d \n", (int) aTimeT);
+	//printf("aDate = %s \n\n", [self getDateWithTimeT: aTimeT]);
+	//fflush(stdout);
 
 
 
@@ -306,8 +303,6 @@ Boston, MA 02111-1307, USA.
     exit(1);
  }
 
-       //fprintf(stdout,"TimeManager >>> getTimeTWithDate >>> END\n");
-       //fflush(stdout);
  return aTimeT;
 }
 
@@ -619,25 +614,20 @@ Boston, MA 02111-1307, USA.
       double timeDifference=-1;
       int numberOfDays=-1;
 
-      if(aLaterTime >= aTime) 
-      {
+      if(aLaterTime >= aTime){
          timeDifference = difftime(aLaterTime, aTime);
 
-         if(timeDifference == -1) 
-         {
+         if(timeDifference == -1){
              fprintf(stderr, "ERROR: TImeManager >>>> getNumberOfDaysBetween >>>> timeDifference == -1\n"); 
              fflush(0);
              exit(1);
          }
 
          numberOfDays = ((int) timeDifference)/86400;
-      }
-      else 
-      {
+      }else{
          timeDifference = difftime(aTime, aLaterTime);
 
-         if(timeDifference == -1) 
-         {
+         if(timeDifference == -1) {
              fprintf(stderr, "ERROR: TImeManager >>>> getNumberOfDaysBetween >>>> timeDifference == -1\n"); 
              fflush(0);
              exit(1);
@@ -645,7 +635,6 @@ Boston, MA 02111-1307, USA.
 
          numberOfDays = -1 * ((int) timeDifference)/86400;
       }
- 
       return numberOfDays;
 }
 
@@ -827,26 +816,35 @@ Boston, MA 02111-1307, USA.
 
   if(endTime  < startTime)
   {
-     endTimeStruct.tm_sec = defaultSecond;         /* seconds */
-     endTimeStruct.tm_min = defaultMinute;         /* minutes */
-     endTimeStruct.tm_hour = defaultHour;        /* hours */
-     endTimeStruct.tm_mday = endDateDay;
-     endTimeStruct.tm_mon = endDateMonth - 1;
-     endTimeStruct.tm_year = ((timeYear + 1) - 1900);
-     endTimeStruct.tm_wday = 0;
-     endTimeStruct.tm_yday = 0;
-     endTimeStruct.tm_isdst = defaultDST;       /* no daylight savings */
+	 // endTimeStruct.tm_sec = defaultSecond;         /* seconds */
+	 // endTimeStruct.tm_min = defaultMinute;         /* minutes */
+	 // endTimeStruct.tm_hour = defaultHour;        /* hours */
+	 // endTimeStruct.tm_mday = endDateDay;
+	 // endTimeStruct.tm_mon = endDateMonth - 1;
+	 // endTimeStruct.tm_year = ((timeYear + 1) - 1900);
+	 // endTimeStruct.tm_wday = 0;
+	 // endTimeStruct.tm_yday = 0;
+	 // endTimeStruct.tm_isdst = defaultDST;       /* no daylight savings */
  
-     endTime = mktime(&endTimeStruct);
+	 // endTime = mktime(&endTimeStruct);
 
 
-     endTime = endTime - timeZoneOffset;
-
+	 // endTime = endTime - timeZoneOffset;
+	if([self getJulianDayWithTimeT: aTime_t] >= [self getJulianDayWithTimeT: startTime])
+	  {
+		  timeIsBetween = YES;
+	  }
+	else if([self getJulianDayWithTimeT: aTime_t] <= [self getJulianDayWithTimeT: endTime])
+	  {
+		  timeIsBetween = YES;
+	  }
   }
-
-  if((startTime <= aTime_t) && (aTime_t <= endTime))
+  else
   {
-      timeIsBetween = YES;
+	  if((startTime <= aTime_t) && (aTime_t <= endTime))
+	  {
+		  timeIsBetween = YES;
+	  }
   }
 
   //fprintf(stderr, "TIMEMANAGER >>>> isTime:betweenMMDD:andMMDD >>>> startTime = %ld \n", (long) startTime);
@@ -1057,32 +1055,34 @@ Boston, MA 02111-1307, USA.
    time_t theTime = (time_t) 0;
    struct tm *timeStruct;
    
-   //char nextMMDDDay[] = "#####";
-   char nextMMDDDay[6];
+   char nextMMDDDay[] = "#####";
 
    int nextMMDDMonth=0;
    int nextMMDDDayOfTheMonth=0;
 
-   int aDayLen = (int) strlen(aDay);
+   int aDayLen=strlen(aDay);
 
    int i;
 
    BOOL ERROR = FALSE;
  
-   strncpy(nextMMDDDay, "#####", 6);
 
-   if(strlen(nextMMDDDay) < aDayLen)
-   {
+   if( strlen(nextMMDDDay) < aDayLen ) {
+
             ERROR = TRUE;
+
     }
    
-    for(i=0; (i<aDayLen) && !ERROR  ; i++) 
-    {
-       if( !(isdigit(aDay[i]) || (aDay[i] == '/'))) 
-       {
+ 
+    for(i=0; (i<aDayLen) && !ERROR  ; i++) {
+
+       if( !(isdigit(aDay[i]) || (aDay[i] == '/')) ) {
+          
             ERROR = TRUE;
             break;
+      
        }
+
    }
 
    if(!ERROR) {
@@ -1091,6 +1091,9 @@ Boston, MA 02111-1307, USA.
 
        nextMMDDMonth = atoi(strtok(nextMMDDDay, "/"));
        nextMMDDDayOfTheMonth = atoi(strtok(NULL, "#"));
+
+       fflush(0);
+
 
    }
 
