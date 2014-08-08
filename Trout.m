@@ -563,6 +563,7 @@ Boston, MA 02111-1307, USA.
 - setFishLength: (double) aFloat 
 {
    fishLength = aFloat;
+   fishWeightAtK1 = (fishParams->fishWeightParamA) * pow(fishLength, fishParams->fishWeightParamB);
    return self;
 }
 
@@ -570,20 +571,21 @@ Boston, MA 02111-1307, USA.
 //
 // getLengthForNewWeight
 //
+// Updated 8 Aug. 2014 with new, faster method. SFRailsback
 //////////////////////////////////////////////////////////////////
 - (double) getLengthForNewWeight: (double) aWeight 
 {
-  double fishWannabeLength;
+  //double fishWannabeLength;
 
-  fishWannabeLength = pow((aWeight/fishParams->fishWeightParamA),1/fishParams->fishWeightParamB);
+  //fishWannabeLength = pow((aWeight/fishParams->fishWeightParamA),1/fishParams->fishWeightParamB);
 
-  if(fishLength <  fishWannabeLength) 
+  if(aWeight <= fishWeightAtK1)
   {
-     return fishWannabeLength;
+     return fishLength;
   }
   else
   {
-    return fishLength;
+    return pow((aWeight/fishParams->fishWeightParamA),1/fishParams->fishWeightParamB);
   }
 }
 
@@ -2499,6 +2501,11 @@ Boston, MA 02111-1307, USA.
   fishLength = [self getLengthForNewWeight: fishWeight];
   fishCondition = [self getConditionForWeight: fishWeight andLength: fishLength];
   fishFracMature = [self getFracMatureForLength: fishLength];
+  // New for new getLengthForNewWeight  8 Aug 2014
+  if(fishLength > prevLength)
+  {
+    fishWeightAtK1 = (fishParams->fishWeightParamA) * pow(fishLength, fishParams->fishWeightParamB);
+  }
 
   //  Added to implement cMax:
   fishActualDailyIntake += totalFoodConsumptionThisStep;
