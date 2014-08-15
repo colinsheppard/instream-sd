@@ -82,6 +82,8 @@ char **speciesStocking;
 
   troutModelSwarm->fishOutputFile = (char *) nil;
 
+  troutModelSwarm->fileOutputFrequency = 1;
+
   // variables used for tracking LFT data
   troutModelSwarm->resultsAgeThreshold = 1;
   troutModelSwarm->resultsCensusDay = "9/30";
@@ -270,7 +272,7 @@ char **speciesStocking;
                                  withSecond: 0];
 
   modelTime = [timeManager getCurrentTimeT];
-
+  
   numHoursSinceLastStep = 0;
 
   strncpy(modelDate, [timeManager getDateWithTimeT: modelTime], 12);
@@ -1967,9 +1969,11 @@ char **speciesStocking;
      {
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before breakout report\n");
       //fflush(0);
+	  if(([timeManager getNumberOfDaysBetween: runStartTime and: modelTime] % fileOutputFrequency) == 0)
+	   {
         [self outputBreakoutReport];
-
-     }
+       }
+	 }
 
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update hab manager\n");
       //fflush(0);
