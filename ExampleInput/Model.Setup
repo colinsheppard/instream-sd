@@ -17,6 +17,7 @@ reddMortalityFile				DeadRedds.Out
 reddOutputFile					Redds.Out
 popInitDate						10/1/1995
 appendFiles						0
+fileOutputFrequency				5
 
 fracFlowChangeForMovement	 	0.1
 siteLatitude					41
