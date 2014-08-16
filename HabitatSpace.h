@@ -280,7 +280,8 @@ long int maxYCoordinate;
 //  double** nodeUTMXArray;
 //  double** nodeUTMYArray;
   id <ListIndex> polyCellListNdx;
-  void* kdTree;
+  void* centroidKDTree;
+  void* vertexKDTree;
 
   unsigned int polySpaceSizeX;
   unsigned int polySpaceSizeY;
@@ -335,7 +336,7 @@ long int maxYCoordinate;
 - setReachSymbol: (id <Symbol>) aSymbol;
 - (id <Symbol>) getReachSymbol;
 
-- buildKDTree;
+- buildKDTrees;
 
 // for instream-sd
 - (BOOL) shouldFishMoveAt: (time_t) theCurrentTime;

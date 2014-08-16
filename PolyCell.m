@@ -622,45 +622,89 @@ Boston, MA 02111-1307, USA.
     return polyCellArea;
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 //
 // createPolyAdjacentCellsFrom
 //
 ////////////////////////////////////////////////////////////////////////
-- createPolyAdjacentCellsFrom: (id <ListIndex>) habSpacePolyCellListNdx
-{
-   id <ListIndex> ndx = habSpacePolyCellListNdx;
-   PolyCell* otherPolyCell = nil;
-   id <ListIndex> ppNdx = nil;
+- createPolyAdjacentCellsFrom: (void *) vertexKDTree {
+  void *kdSet;
+  int i,j,numberOfPPoints = 0;
+  double iX,iY,jX,jY,tX,tY,midPointX,midPointY,sqEdgeLength,dx,dy,sqDistItoTemp,sqDistJtoTemp;
+  PolyCell* otherPolyCell = nil;
+  PolyPoint* polyPointI,polyPointJ,tempPoint;
 
-   //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> BEGIN\n");
-   //fflush(0);
+  //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> BEGIN\n");
+  //fflush(0);
 
-   listOfAdjacentCells = [List create: cellZone];
+  listOfAdjacentCells = [List create: cellZone];
 
-   [ndx setLoc: Start];
+  numberOfPPoints = [polyPointList getCount];
+   
+  // Cycle through each edge of the polygon
+  for(i = 0; i < numberOfPPoints; i++){
+    j = (i + 1) % numberOfPPoints;
+    
+    polyPointI = [polyPointList atOffset: i];
+    polyPointJ = [polyPointList atOffset: j];
 
-   ppNdx  = [polyPointList listBegin: scratchZone];
+    iX = [polyPointI getXCoordinate];
+    iY = [polyPointI getYCoordinate];
+    jX = [polyPointJ getXCoordinate];
+    jY = [polyPointJ getYCoordinate];
 
-   while(([ndx getLoc] != End) && ((otherPolyCell = [ndx next]) != nil))
-   {
-       id <List> otherPolyPointList = nil;
-       id <ListIndex> oppNdx = nil;
-       PolyPoint* polyPoint = nil;
-       PolyPoint* otherPolyPoint = nil;
+    // Find the midpoint and length
+    midPointX = (iX + jX) / 2.0;
+    midPointY = (jY + jY) / 2.0;
+    dx = iX - jX;
+    dy = iY - jY;
+    sqEdgeLength = dx*dx + dy*dy;
 
-       if(otherPolyCell == self)
-       {
-          continue;
-       }
+    // Use the kdtree to pull the set of points within 0.5L of the midpoint
+    kdSet = kd_nearest_range3(vertexKDTree, midPointX, midPointY, 0.0, sqrt(sqEdgeLength) / 2.0 + 1.0); // the 1.0 is the tolerance, 1cm 
 
-       if((otherPolyPointList = [otherPolyCell getPolyPointList]) == nil)
-       {
-           fprintf(stderr, "ERROR: PolyCell >>> createPolyAdjacentCellsFrom >>>> nil polyPointList\n");
-           fflush(0);
-           exit(1);
-       }
+    // Now iterate through these points and find any that are on the segment between I and J
+    while(kd_res_end(kdSet)==0){
+      tempPoint = kd_res_item_data(kdSet);
+
+      tX = [tempPoint getXCoordinate];
+      tY = [tempPoint getYCoordinate];
+
+      // Note we save some computation time by avoiding sqrt here, so instead we'll compare the square distances
+      dx = iX - tX;
+      dy = iY - tY;
+      sqDistItoTemp = dx*dx + dy*dy;
+      dx = jX - tX;
+      dy = jY - tY;
+      sqDistJtoTemp = dx*dx + dy*dy;
+
+      if(abs(sqDistItoTemp + sqDistJtoTemp - sqEdgeLength) < 1.0){
+	// Found a neighbor
+      }
+      
+      //fprintf(stdout,"HabitatSpace >>> getNeighborsWithin >>> KD found PolyCell with coords x = %f, y = %f \n", [tempCell getPolyCenterX], [tempCell getPolyCenterY]);
+      //fflush(0);
+      kd_res_next(kdSet);
+    }
+    kd_res_free(kdSet);
+  
+
+     id <List> otherPolyPointList = nil;
+     id <ListIndex> oppNdx = nil;
+     PolyPoint* polyPoint = nil;
+     PolyPoint* otherPolyPoint = nil;
+
+     if(otherPolyCell == self){
+         continue;
+     }
+
+      if((otherPolyPointList = [otherPolyCell getPolyPointList]) == nil)
+      {
+          fprintf(stderr, "ERROR: PolyCell >>> createPolyAdjacentCellsFrom >>>> nil polyPointList\n");
+          fflush(0);
+          exit(1);
+      }
+
  
        [ppNdx setLoc: Start];
        while(([ppNdx getLoc] != End) && ((polyPoint = [ppNdx next]) != nil))

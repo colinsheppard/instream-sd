@@ -507,16 +507,20 @@ return self;
 
 /////////////////////////////////////////////
 //
-// buildKDTree
+// buildKDTrees
 //
 /////////////////////////////////////////////
-- buildKDTree {
+- buildKDTrees {
   id cell = nil;
+  id point = nil;
   double x=0.0, y=0.0, z=0.0;
   id <UniformUnsignedDist> listRandomizer;
   id <ListShuffler> listShuffler;
   id <List> shuffledPolyCellList;
   id <ListIndex> aPolyCellListNdx;
+  id <List> shuffledPolyPointList;
+  id <List> polyPointList = nil;
+  id <ListIndex> polyPointListNdx;
 
   //struct timeval begTV, endTV;
   //gettimeofday(&begTV,NULL);
@@ -524,9 +528,15 @@ return self;
   // KD Trees should be balanced, to acheive this, we need to add nodes to the tree in a random order, 
   // so we create a shuffled list
   shuffledPolyCellList = [List create: scratchZone];
+  shuffledPolyPointList = [List create: scratchZone];
   [polyCellListNdx setLoc: Start];
   while(([polyCellListNdx getLoc] != End) && ((cell = [polyCellListNdx next]) != nil)){
     [shuffledPolyCellList addLast: cell];
+    polyPointList = [cell getPolyPointList];
+    polyPointListNdx = [polyPointList listBegin: scratchZone];
+    while(([aPolyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){
+      [shuffledPolyPointList addLast: point];
+    }
   }
   listRandomizer = [UniformUnsignedDist create: scratchZone
                                   setGenerator: randGen
@@ -535,29 +545,48 @@ return self;
   listShuffler = [ListShuffler      create: scratchZone
                           setUniformRandom: listRandomizer];
   [listShuffler shuffleWholeList: shuffledPolyCellList];
+  [listShuffler shuffleWholeList: shuffledPolyPointList];
   [listShuffler drop];
   [listRandomizer drop];
 
-  //fprintf(stdout,"HabitatSpace >>> buildKDTree >>> Inserting PolyCells into tree...\n ");
+  //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into tree...\n ");
   //fflush(0);
 
-  kdTree = kd_create(2);
+  centroidKDTree = kd_create(2);
   aPolyCellListNdx = [shuffledPolyCellList listBegin: scratchZone];
   while(([aPolyCellListNdx getLoc] != End) && ((cell = [aPolyCellListNdx next]) != nil)){ 
     x = [cell getPolyCenterX];
     y = [cell getPolyCenterY];
-    //fprintf(stdout,"HabitatSpace >>> buildKDTree >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
+    //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
     //fflush(0);
-    if(kd_insert3(kdTree, x, y, z, cell) != 0){
-      fprintf(stderr,"HabitatSpace >>> buildKDTree >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
+    if(kd_insert3(centroidKDTree, x, y, z, cell) != 0){
+      fprintf(stderr,"HabitatSpace >>> buildKDTrees >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
       fflush(0);
       exit(1);
     }
   }
   [aPolyCellListNdx drop];
   [shuffledPolyCellList drop];
+
+  // Finally, build a second KD Tree of the vertices of all polygons
+  vertexKDTree = kd_create(2);
+  polyPointListNdx = [shuffledPolyPointList listBegin: scratchZone];
+  while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){ 
+    x = [point getXCoordinate];
+    y = [point getYCoordinate];
+    //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
+    //fflush(0);
+    if(kd_insert3(vertexKDTree, x, y, z, point) != 0){
+      fprintf(stderr,"HabitatSpace >>> buildKDTrees >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
+      fflush(0);
+      exit(1);
+    }
+  }
+  [polyPointListNdx drop];
+  [shuffledPolyPointList drop];
+
   //gettimeofday(&endTV,NULL);
-  //fprintf(stdout, "HabitatSpace >>>> buildKDTree >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
+  //fprintf(stdout, "HabitatSpace >>>> buildKDTrees >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
   //fflush(0);
   return self;
 }
@@ -983,6 +1012,9 @@ return self;
     [self read2DGeometryFile];
     //fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
     //fflush(0);
+    [self buildKDTrees];
+    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    fflush(0);
     [self createPolyAdjacentCells];
     //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
     //fflush(0);
@@ -993,9 +1025,6 @@ return self;
     [self setCellShadeColorMax];
     [self readPolyCellDataFile];
     [self calcPolyCellsDistFromRE];
-    [self buildKDTree];
-    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
-    fflush(0);
 
     if([[self getModel] getWriteCellCentroidReport]){
       [self outputCellCentroidRpt];
@@ -1387,6 +1416,7 @@ return self;
 
 
     fclose(dataFPTR);
+
     //fprintf(stdout, "HabitatSpace >>>> read2DGeometry >>>> END\n");
     //fflush(0);
     //exit(0);
@@ -1724,14 +1754,10 @@ return self;
     //fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> BEGIN\n");
     //fflush(0);
 
-    id <ListIndex> ndx = [polyCellList listBegin: scratchZone];
-
-    [polyCellList forEach: M(createPolyAdjacentCellsFrom:) :ndx];
+    [polyCellList forEach: M(createPolyAdjacentCellsFrom:) :vertexKDTree];
 
     //fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> END\n");
     //fflush(0);
-
-    [ndx drop];
 
     return self;
 }
@@ -2851,7 +2877,7 @@ return self;
  // Note: KDTree includes the calling cell, so there is no need to add it to the list
 
   // Use the KDTree to find the neighbors within aRange of refCell
-  kdSet = kd_nearest_range3(kdTree, [refCell getPolyCenterX], [refCell getPolyCenterY], 0.0, aRange);
+  kdSet = kd_nearest_range3(centroidKDTree, [refCell getPolyCenterX], [refCell getPolyCenterY], 0.0, aRange);
   //fprintf(stdout,"HabitatSpace >>> getNeighborsWithin >>> KDTree range query returned %d items \n", kd_res_size(kdSet));
   //fflush(0);
   
@@ -4220,7 +4246,8 @@ return self;
     [habitatZone drop];
     habitatZone = nil;
 
-    kd_free(kdTree);
+    kd_free(centroidKDTree);
+    kd_free(vertexKDTree);
     //fprintf(stdout, "HabitatSpace >>>> drop >>>> END\n");
     //fflush(0);
 }
