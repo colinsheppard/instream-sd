@@ -477,10 +477,14 @@ char **speciesStocking;
   fishInitializationRecords = [List create: modelZone];
   popInitTime = [timeManager getTimeTWithDate: popInitDate];
   [self createInitialFish]; 
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after createInitialFish \n");
+  fflush(0);
   [QSort sortObjectsIn:  liveFish];
   [QSort reverseOrderOf: liveFish];
 
   [self createReproLogistics];
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after createReproLogistics \n");
+  fflush(0);
 
   reddBinomialDist = [BinomialDist create: modelZone setGenerator: randGen];
 
@@ -1038,8 +1042,8 @@ char **speciesStocking;
 
    while(([initPopLstNdx getLoc] != End) && ((initialFishRecord = (TroutInitializationRecord *) [initPopLstNdx next]) != (TroutInitializationRecord *) nil)) 
    {
-	  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
-	  //fflush(0);
+     fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> initialFishRecord loop\n");
+     fflush(0);
       //
       //Begin species loop
       //
@@ -1097,8 +1101,8 @@ char **speciesStocking;
                continue;
           }
 
-	  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> create fish %s age %d length %f \n",[initialFishRecord->mySpecies getName],age,length );
-	  //fflush(0);
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> create fish %s age %d length %f \n",[initialFishRecord->mySpecies getName],age,length );
+	  fflush(0);
 	  newFish = [self createNewFishWithSpeciesIndex: initialFishRecord->speciesNdx  
                                                    Species: initialFishRecord->mySpecies 
                                                        Age: age
@@ -1195,8 +1199,8 @@ char **speciesStocking;
 
   [initPopLstNdx drop];
 
-  //fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> END\n");
-  //fflush(0);
+  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> END\n");
+  fflush(0);
 
   return self;
 

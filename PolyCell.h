@@ -162,9 +162,7 @@ typedef struct PolyPixelCoordStruct PolyPixelCoord;
 - (double) getPolyCenterX;
 - (double) getPolyCenterY;
 
-
-- buildVertexKDTree;
-- createPolyAdjacentCellsFrom: (id <ListIndex>) habSpacePolyCellListNdx;
+- createPolyAdjacentCellsFrom: (void *) vertexKDTree;
 - (id <List>) getListOfAdjacentCells;
 
 

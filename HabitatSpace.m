@@ -534,7 +534,7 @@ return self;
     [shuffledPolyCellList addLast: cell];
     polyPointList = [cell getPolyPointList];
     polyPointListNdx = [polyPointList listBegin: scratchZone];
-    while(([aPolyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){
+    while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){
       [shuffledPolyPointList addLast: point];
     }
   }
@@ -1013,8 +1013,8 @@ return self;
     //fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
     //fflush(0);
     [self buildKDTrees];
-    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
-    fflush(0);
+    //fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    //fflush(0);
     [self createPolyAdjacentCells];
     //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
     //fflush(0);
@@ -1751,13 +1751,16 @@ return self;
 //////////////////////////////////////
 - createPolyAdjacentCells
 {
-    //fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> BEGIN\n");
-    //fflush(0);
+  fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> BEGIN\n");
+  fflush(0);
 
     [polyCellList forEach: M(createPolyAdjacentCellsFrom:) :vertexKDTree];
 
-    //fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> END\n");
-    //fflush(0);
+    // We no longer need the vertex tree so free it
+    kd_free(vertexKDTree);
+
+    fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> END\n");
+    fflush(0);
 
     return self;
 }
@@ -4247,7 +4250,6 @@ return self;
     habitatZone = nil;
 
     kd_free(centroidKDTree);
-    kd_free(vertexKDTree);
     //fprintf(stdout, "HabitatSpace >>>> drop >>>> END\n");
     //fflush(0);
 }
