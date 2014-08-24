@@ -143,8 +143,8 @@ struct updateVar {
  char probeType;
  BOOL TYPEERROR = YES;
 
-  fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> BEGIN\n");
-  fflush(0);
+ //fprintf(stdout, "ScenarioIterator >>>> appendToIterSetParam >>>> BEGIN\n");
+ //fflush(0);
  
   myVar = (struct experVar *) [scenarioIterZone  alloc: sizeof(struct experVar)];
 
@@ -475,8 +475,8 @@ struct updateVar {
    struct experVar *myVar;
 
 
-   fprintf(stdout, "ScenarioIterator >>>> nextControlSetOnObject >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "ScenarioIterator >>>> nextControlSetOnObject >>>> BEGIN\n");
+   //fflush(0);
 
    [self updateClassScenarioCounts: theObject];
    [self updateClassReplicateCounts: theObject];
@@ -566,8 +566,8 @@ struct updateVar {
  
    }
 
-   fprintf(stdout, "ScenarioIterator >>>> nextControlSetOnObject >>>> END\n");
-   fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> nextControlSetOnObject >>>> END\n");
+  //fflush(0);
 
    return self;
 
@@ -663,8 +663,8 @@ struct updateVar {
           [anSCounter->varProbe setData: inObject To: &scenarioCount];
   }
 
-  fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> updateClassScenarioCounts >>>> END\n");
+  //fflush(0);
 
   return self;
 }
@@ -679,8 +679,8 @@ struct updateVar {
 {
   struct updateVar *anRCounter;
 
-  fprintf(stdout, "ScenarioIterator >>>> updateClassReplicateCounts >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> updateClassReplicateCounts >>>> BEGIN\n");
+  //fflush(0);
 
 
   [replicateNdx setLoc: Start];
@@ -692,8 +692,8 @@ struct updateVar {
           [anRCounter->varProbe setData: inObject To: &replicateCount];
   }
 
-  fprintf(stdout, "ScenarioIterator >>>> updateClassReplicateCounts >>>> END\n");
-  fflush(0);
+  //fprintf(stdout, "ScenarioIterator >>>> updateClassReplicateCounts >>>> END\n");
+  //fflush(0);
 
   return self;
 }

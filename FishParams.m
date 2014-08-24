@@ -56,8 +56,8 @@ Boston, MA 02111-1307, USA.
   fishParams->anInitDouble = [fishParams->fishParamZone alloc: sizeof(double)];
   fishParams->anInitId = [fishParams->fishParamZone alloc: sizeof(id)];
 
-  fprintf(stdout, "CPMFishParams >>>> createBegin >>>>> fishParams->anInitId = %p\n", fishParams->anInitId);
-  fflush(0);
+  //fprintf(stdout, "CPMFishParams >>>> createBegin >>>>> fishParams->anInitId = %p\n", fishParams->anInitId);
+  //fflush(0);
 
   strncpy(fishParams->anInitString, "nil", 3);
   *(fishParams->anInitInt) = -LARGEINT;
@@ -70,8 +70,8 @@ Boston, MA 02111-1307, USA.
   [fishParams->probeMap setProbedClass: [fishParams getClass]];
   fishParams->probeMap = [fishParams->probeMap createEnd];
 
-  fprintf(stdout, "BEFORE ----\n");
-  fflush(0);
+  //fprintf(stdout, "BEFORE ----\n");
+  //fflush(0);
 
   //xprint(fishParams->probeMap); //Commented out 6Jun08 SKJ
  
@@ -89,8 +89,8 @@ Boston, MA 02111-1307, USA.
   [fishParams->probeMap dropProbeForVariable: "probeMap"];
 
   
-  fprintf(stdout, "AFTER ----\n");
-  fflush(0);
+  //fprintf(stdout, "AFTER ----\n");
+  //fflush(0);
  
 
   superProbeLibrary = [ProbeLibrary createBegin: scratchZone];
@@ -169,8 +169,8 @@ Boston, MA 02111-1307, USA.
   BOOL ERROR = FALSE;
   char buffer[300];
 
-  fprintf(stderr, "FishParams >>>> createEnd >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stderr, "FishParams >>>> createEnd >>>> BEGIN\n");
+  //fflush(0);
 
 
   mapNdx = [(id <Map>) probeMap begin: scratchZone];
@@ -264,8 +264,8 @@ Boston, MA 02111-1307, USA.
      exit(1);
   }
 
-  fprintf(stderr, "FishParams >>>> createEnd >>>> EXIT\n");
-  fflush(0);
+  //fprintf(stderr, "FishParams >>>> createEnd >>>> EXIT\n");
+  //fflush(0);
  
   return [super createEnd];
 }
@@ -325,8 +325,8 @@ Boston, MA 02111-1307, USA.
   FILE* filePtr = NULL;
 
 
-  fprintf(stderr, "FishParams >>>> printSelf >>>> BEGIN\n");
-  fflush(0);
+  //fprintf(stderr, "FishParams >>>> printSelf >>>> BEGIN\n");
+  //fflush(0);
  
   //sprintf(outputFileName, "Species%sParamCheck.out", [fishSpecies getName]);
   sprintf(outputFileName, "Species%dParamCheck.out", speciesIndex);
@@ -409,8 +409,8 @@ Boston, MA 02111-1307, USA.
   [mapNdx drop];
 
 
-  fprintf(stderr, "FishParams >>>> printSelf >>>> EXIT\n");
-  fflush(0);
+  //fprintf(stderr, "FishParams >>>> printSelf >>>> EXIT\n");
+  //fflush(0);
 
 
 }

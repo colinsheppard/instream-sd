@@ -538,8 +538,8 @@ Boston, MA 02111-1307, USA.
   HabitatSpace* habitatSpace = nil;
   int habitatSpaceCount;
 
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> BEGIN\n");
-  fflush(0); 
+  //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> BEGIN\n");
+  //fflush(0); 
   
   for(habitatSpaceCount = 0; habitatSpaceCount < numHabitatSpaces; habitatSpaceCount++)
   {  
@@ -549,8 +549,8 @@ Boston, MA 02111-1307, USA.
      habitatSpace = [HabitatSpace createBegin: aZone];
      [habitatSpace setModel: model];
      [habitatSpace setNumberOfSpecies: numberOfSpecies];
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before load space\n");
-  fflush(0); 
+     //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before load space\n");
+     //fflush(0); 
      [ObjectLoader load: habitatSpace fromFileNamed: [habSetup getHabParamFile]];
 
      [habitatSpace setReachName: [habSetup getReachName]];
@@ -563,22 +563,22 @@ Boston, MA 02111-1307, USA.
      [habitatSpace setFishParamsMap: fishParamsMap];
      [habitatSpace setHabLatitude: siteLatitude];
 
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before buildObj \n");
-  fflush(0); 
+     //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before buildObj \n");
+     //fflush(0); 
      [habitatSpace buildObjects];
 
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set files\n");
-  fflush(0); 
+     //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set files\n");
+     //fflush(0); 
      [habitatSpace setPolyCellGeomFile: [habSetup getCellGeomFile]];
      [habitatSpace setHydraulicFile: [habSetup getHydraulicFile]];
      [habitatSpace setFlowFile: [habSetup getFlowFile]];
      [habitatSpace setTemperatureFile: [habSetup getTemperatureFile]];
      [habitatSpace setTurbidityFile: [habSetup getTurbidityFile]];
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set drift\n");
-  fflush(0); 
+     //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> before set drift\n");
+     //fflush(0); 
      [habitatSpace setDriftFoodFile: [habSetup getDriftFoodFile]];
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> after set drift \n");
-  fflush(0); 
+     //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> after set drift \n");
+     //fflush(0); 
      [habitatSpace setCellHabVarsFile: [habSetup getCellHabVarsFile]];
      [habitatSpace setListOfPolyInputData: [habSetup getListOfPolyInputData]];
    
@@ -595,8 +595,8 @@ Boston, MA 02111-1307, USA.
   //
   habitatSpaceNdx = [habitatSpaceList listBegin: habManagerZone];
 
-  fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> END\n");
-  fflush(0); 
+  //fprintf(stdout, "HabitatManager >>> instantiateHabitatSpacesInZone >>>> END\n");
+  //fflush(0); 
 
   return self;
 }
@@ -627,8 +627,8 @@ Boston, MA 02111-1307, USA.
      //[habitatSpace setSpaceDimensions];
 
      [habitatSpace setTimeManager: timeManager];
-  fprintf(stdout, "HabitatManager >>>> before setPolyRast X=%d Y=%d\n",polyRasterResolutionX,polyRasterResolutionY);
-  fflush(0);
+     //fprintf(stdout, "HabitatManager >>>> before setPolyRast X=%d Y=%d\n",polyRasterResolutionX,polyRasterResolutionY);
+     //fflush(0);
 
      //
      // Poly Cells BEGIN
@@ -640,8 +640,8 @@ Boston, MA 02111-1307, USA.
                            setShadeColorMax: shadeColorMax];
 
      [habitatSpace buildPolyCells];
-  fprintf(stdout, "HabitatManager >>>> afterBuildPolyC \n");
-  fflush(0);
+     //fprintf(stdout, "HabitatManager >>>> afterBuildPolyC \n");
+     //fflush(0);
 
      [habitatSpace setSizeX: [habitatSpace getSpaceDimX]  Y: [habitatSpace getSpaceDimY] ];
      habitatSpace = [habitatSpace createEnd];
@@ -660,8 +660,8 @@ Boston, MA 02111-1307, USA.
 	 [habitatSpace setHabFracFlowChange: habFracFlowChangeForMovement];
 
      habitatSpace = [habitatSpace createEnd];
-  fprintf(stdout, "HabitatManager >>>> afterCreateEnd \n");
-  fflush(0);
+     //fprintf(stdout, "HabitatManager >>>> afterCreateEnd \n");
+     //fflush(0);
 
      
      //
@@ -715,8 +715,8 @@ Boston, MA 02111-1307, USA.
    id aReach = nil;
    id aJReach = nil;
 
-   fprintf(stdout, "HabitatManager >>>> buildReachJunctions >>>> BEGIN\n");
-   fflush(0);
+   //fprintf(stdout, "HabitatManager >>>> buildReachJunctions >>>> BEGIN\n");
+   //fflush(0);
 
 
    [reachNdx setLoc: Start];
@@ -771,8 +771,8 @@ Boston, MA 02111-1307, USA.
 
    [reachNdx drop];
 
-   fprintf(stdout, "HabitatManager >>>> buildReachJunctions >>>> END\n");
-   fflush(0);
+   //fprintf(stdout, "HabitatManager >>>> buildReachJunctions >>>> END\n");
+   //fflush(0);
 
    return self;
 }

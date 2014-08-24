@@ -138,9 +138,8 @@ Boston, MA 02111-1307, USA.
   //
   timeZoneOffset = mktime(gmtimeStruct);
 
-  fprintf(stdout, "TimeManager >>>> initState >>>> timeZoneOffset = %ld\n", (long) timeZoneOffset);
-  fflush(0);
-
+  //fprintf(stdout, "TimeManager >>>> initState >>>> timeZoneOffset = %ld\n", (long) timeZoneOffset);
+  //fflush(0);
 
   return self;
 
