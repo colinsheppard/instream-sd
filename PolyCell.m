@@ -684,8 +684,8 @@ Boston, MA 02111-1307, USA.
       // No need to consider this point if we already know it's from a neighboring cell
       otherPolyCell = [tempPoint getPolyCell];
       if([listOfAdjacentCells contains: otherPolyCell]){
-	kd_res_next(kdSet);
-	continue;
+        kd_res_next(kdSet);
+        continue;
       }
 
       tX = [tempPoint getXCoordinate];
@@ -700,22 +700,22 @@ Boston, MA 02111-1307, USA.
       sqDistJtoTemp = dx*dx + dy*dy;
 
       if(abs(sqDistItoTemp + sqDistJtoTemp - sqEdgeLength) < 1.0){
-	// Found a neighbor
+        // Found a neighbor
         [listOfAdjacentCells addLast: otherPolyCell];
 
-	// I am a neighbor to my neighbor -- this is important to avoid missing the case when one edge is a superset of the
-	// smaller edge (in which case no point on the larger egde lies on the segment of the smaller edge).  See illustration
-	// below where AB is on polygon C and XY on polygon Z.  Without the following we would know Z is a neighbor to C but
-	// not vice versa.
-	//
-	//	|   Z	|
-	//	|	|
-	// A----X-------Y-----B
-	// |		      |
-	// |	    C	      |
-	//
-	otherAdjacentCellList = [otherPolyCell getListOfAdjacentCells];
-	if(![otherAdjacentCellList contains: self])[otherAdjacentCellList addLast: self];
+        // I am a neighbor to my neighbor -- this is important to avoid missing the case when one edge is a superset of the
+        // smaller edge (in which case no point on the larger egde lies on the segment of the smaller edge).  See illustration
+        // below where AB is on polygon C and XY on polygon Z.  Without the following we would know Z is a neighbor to C but
+        // not vice versa.
+        //
+        //	|   Z	|
+        //	|	|
+        // A----X-------Y-----B
+        // |		      |
+        // |	    C	      |
+        //
+        otherAdjacentCellList = [otherPolyCell getListOfAdjacentCells];
+        if(![otherAdjacentCellList contains: self])[otherAdjacentCellList addLast: self];
       }
       //fprintf(stdout,"HabitatSpace >>> getNeighborsWithin >>> KD found PolyCell with coords x = %f, y = %f \n", [tempCell getPolyCenterX], [tempCell getPolyCenterY]);
       //fflush(0);

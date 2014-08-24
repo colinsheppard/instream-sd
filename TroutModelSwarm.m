@@ -480,13 +480,19 @@ char **speciesStocking;
   fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after createInitialFish \n");
   fflush(0);
   [QSort sortObjectsIn:  liveFish];
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after sort\n");
+  fflush(0);
   [QSort reverseOrderOf: liveFish];
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after reverse\n");
+  fflush(0);
 
   [self createReproLogistics];
   fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after createReproLogistics \n");
   fflush(0);
 
   reddBinomialDist = [BinomialDist create: modelZone setGenerator: randGen];
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after binomial create\n");
+  fflush(0);
 
   //
   // the following was added here 3/20/2000  
@@ -502,6 +508,8 @@ char **speciesStocking;
 #ifdef INIT_FISH_REPORT
   [self printInitialFishReport];
 #endif
+  fprintf(stdout, "TroutModelSwarm >>>> buildObjects >>>> after printInitFishReport\n");
+  fflush(0);
 
   //
   // Initialize mortality counts
@@ -1107,12 +1115,18 @@ char **speciesStocking;
                                                    Species: initialFishRecord->mySpecies 
                                                        Age: age
                                                     Length: length ];
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> -1 \n ");
+	  fflush(0);
 
-		  // Calculate max swim speed, which is needed below but depends on temperature, which it gets from cell
+	  // Calculate max swim speed, which is needed below but depends on temperature, which it gets from cell
           [newFish setMaxSwimSpeed: [newFish calcMaxSwimSpeedAt: [polyCellList getFirst]]];
-		  [liveFish addLast: newFish];
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> 0 \n ");
+	  fflush(0);
+	  [liveFish addLast: newFish];
           
 	   //   fishParams = [newFish getFishParams];  Not used
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> 1 \n");
+	  fflush(0);
 
           //
           // need to draw for random position
@@ -1142,6 +1156,8 @@ char **speciesStocking;
                  continue;
                }
           }
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> 2 ");
+	  fflush(0);
 
 	     if(counter >= MAX_COUNT)
              {
@@ -1172,6 +1188,8 @@ char **speciesStocking;
 
 			 } //for MAX_COUNT
            }
+	  fprintf(stdout,"TroutModelSwarm >>>> createInitialFish >>>> 3 ");
+	  fflush(0);
 
 	     if(counter >= MAX_COUNT)
              {
@@ -2705,19 +2723,24 @@ char **speciesStocking;
   id <InterpolationTableSD> aSpawnVelocityInterpolator = nil;
   LogisticFunc* aCaptureLogistic = nil;
 
-  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
-  //fflush(0);
+  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> BEGIN\n");
+  fflush(0);
 
   //
   // The newFish color is currently being set in the observer swarm
   //
+  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> fishParams >> fishSpecies %s species index %d arry len %d \n",[species getName], speciesNdx, numberOfSpecies);
+  fflush(0);
 
   newFish = [MyTroutClass[speciesNdx] createBegin: modelZone];
 
+  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> fishParams >> fishSpecies %s  2 \n",[species getName]);
+  fflush(0);
+  
   [newFish setFishParams: [fishParamsMap at: species]];
 
-  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> fishParams >> fishSpecies %s \n",[[fishParams getFishSpecies] getName]);
-  //fflush(0);
+  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> fishParams >> fishSpecies %s  3\n",[species getName]);
+  fflush(0);
 
   //
   // set properties of the new Trout
@@ -2754,8 +2777,8 @@ char **speciesStocking;
   [newFish updateNumHoursSinceLastStep: (void *) &numHoursSinceLastStep];
 
   if(fishColorMap != nil){
-	  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
-	  //fflush(0);
+    fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> before setFishColor %s color %d \n",[[newFish getSpecies] getName], *((long *)[fishColorMap at: [newFish getSpecies]]));
+    fflush(0);
 	  [newFish setFishColor: (Color) *((long *) [fishColorMap at: [newFish getSpecies]])];
   }
 
@@ -2780,8 +2803,8 @@ char **speciesStocking;
 
   newFish = [newFish createEnd];
 
-  //fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
-  //fflush(0);
+  fprintf(stdout, "TroutModelSwarm >>>> createNewFishWithSpeciesIndex >>>> END\n");
+  fflush(0);
         
   return newFish;
 }

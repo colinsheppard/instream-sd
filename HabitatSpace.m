@@ -537,6 +537,7 @@ return self;
     while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){
       [shuffledPolyPointList addLast: point];
     }
+    [polyPointListNdx drop];
   }
   listRandomizer = [UniformUnsignedDist create: scratchZone
                                   setGenerator: randGen
@@ -545,12 +546,20 @@ return self;
   listShuffler = [ListShuffler      create: scratchZone
                           setUniformRandom: listRandomizer];
   [listShuffler shuffleWholeList: shuffledPolyCellList];
+  [listShuffler drop];
+  [listRandomizer drop];
+  listRandomizer = [UniformUnsignedDist create: scratchZone
+                                  setGenerator: randGen
+                                setUnsignedMin: (unsigned) 0 
+                                        setMax: (unsigned) 1];
+  listShuffler = [ListShuffler      create: scratchZone
+                          setUniformRandom: listRandomizer];
   [listShuffler shuffleWholeList: shuffledPolyPointList];
   [listShuffler drop];
   [listRandomizer drop];
 
-  //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into tree...\n ");
-  //fflush(0);
+  fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into centroidKDTree...\n ");
+  fflush(0);
 
   centroidKDTree = kd_create(2);
   aPolyCellListNdx = [shuffledPolyCellList listBegin: scratchZone];
@@ -568,6 +577,9 @@ return self;
   [aPolyCellListNdx drop];
   [shuffledPolyCellList drop];
 
+  fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into vertexKDTree...\n ");
+  fflush(0);
+  /*
   // Finally, build a second KD Tree of the vertices of all polygons
   vertexKDTree = kd_create(2);
   polyPointListNdx = [shuffledPolyPointList listBegin: scratchZone];
@@ -582,8 +594,9 @@ return self;
       exit(1);
     }
   }
-  [polyPointListNdx drop];
-  [shuffledPolyPointList drop];
+  */
+  //[polyPointListNdx drop];
+  //[shuffledPolyPointList drop];
 
   //gettimeofday(&endTV,NULL);
   //fprintf(stdout, "HabitatSpace >>>> buildKDTrees >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
@@ -1012,14 +1025,14 @@ return self;
     [self read2DGeometryFile];
     //fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
     //fflush(0);
-    [self buildKDTrees];
-    //fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
-    //fflush(0);
-    [self createPolyAdjacentCells];
-    //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
-    //fflush(0);
     [self calcPolyCellCentroids];
     //fprintf(stdout, "HabitatSpace >>>> afterCalcCentroids \n");
+    //fflush(0);
+    [self buildKDTrees];
+    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    fflush(0);
+    //[self createPolyAdjacentCells];
+    //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
     //fflush(0);
     [self createPolyInterpolationTables];
     [self setCellShadeColorMax];
