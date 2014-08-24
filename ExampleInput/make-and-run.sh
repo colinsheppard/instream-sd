@@ -2,7 +2,7 @@
 set -e
 
 cd ..
-#make clean
+make clean
 make
 cd ExampleInput/
 ../instream6-0.exe -b
