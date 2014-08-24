@@ -627,7 +627,75 @@ Boston, MA 02111-1307, USA.
 // createPolyAdjacentCellsFrom
 //
 ////////////////////////////////////////////////////////////////////////
-- createPolyAdjacentCellsFrom: (void *) vertexKDTree {
+- createPolyAdjacentCellsFrom: (id <ListIndex>) habSpacePolyCellListNdx
+{
+   id <ListIndex> ndx = habSpacePolyCellListNdx;
+   PolyCell* otherPolyCell = nil;
+   id <ListIndex> ppNdx = nil;
+
+   //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> BEGIN\n");
+   //fflush(0);
+
+   listOfAdjacentCells = [List create: cellZone];
+
+   [ndx setLoc: Start];
+
+   ppNdx  = [polyPointList listBegin: scratchZone];
+
+   while(([ndx getLoc] != End) && ((otherPolyCell = [ndx next]) != nil))
+   {
+       id <List> otherPolyPointList = nil;
+       id <ListIndex> oppNdx = nil;
+       PolyPoint* polyPoint = nil;
+       PolyPoint* otherPolyPoint = nil;
+
+       if(otherPolyCell == self)
+       {
+          continue;
+       }
+
+       if((otherPolyPointList = [otherPolyCell getPolyPointList]) == nil)
+       {
+           fprintf(stderr, "ERROR: PolyCell >>> createPolyAdjacentCellsFrom >>>> nil polyPointList\n");
+           fflush(0);
+           exit(1);
+       }
+ 
+       [ppNdx setLoc: Start];
+       while(([ppNdx getLoc] != End) && ((polyPoint = [ppNdx next]) != nil))
+       {
+           oppNdx = [otherPolyPointList listBegin: scratchZone];
+           while(([oppNdx getLoc] != End) && ((otherPolyPoint = [oppNdx next]) != nil))
+           {
+                if(([polyPoint getIntX] == [otherPolyPoint getIntX]) && ([polyPoint getIntY] == [otherPolyPoint getIntY]))
+                {
+                     if([listOfAdjacentCells contains: otherPolyCell])
+                     {
+                         continue;
+                     }
+
+                     [listOfAdjacentCells addLast: otherPolyCell];
+                }
+           } //while
+           [oppNdx drop];
+           oppNdx = nil;
+       }
+   }
+   [ppNdx drop];
+   ppNdx = nil;
+
+   //
+   // Do not drop ndx, it belongs to HabitatSpace!!
+   //
+
+   //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> END\n");
+   //fflush(0);
+
+   return self;
+
+}
+/*
+- createPolyAdjacentCellsFromNEW: (void *) vertexKDTree {
   void *kdSet;
   int i,j,numberOfPPoints = 0;
   double iX,iY,jX,jY,tX,tY,midPointX,midPointY,sqEdgeLength,dx,dy,sqDistItoTemp,sqDistJtoTemp;
@@ -729,6 +797,7 @@ Boston, MA 02111-1307, USA.
 
   return self;
 }
+*/
 
 
 /////////////////////////////////////

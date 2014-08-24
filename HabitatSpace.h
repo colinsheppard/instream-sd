@@ -336,7 +336,8 @@ long int maxYCoordinate;
 - setReachSymbol: (id <Symbol>) aSymbol;
 - (id <Symbol>) getReachSymbol;
 
-- buildKDTrees;
+- buildCentroidKDTree;
+- buildVertexKDTree;
 
 // for instream-sd
 - (BOOL) shouldFishMoveAt: (time_t) theCurrentTime;

@@ -507,17 +507,15 @@ return self;
 
 /////////////////////////////////////////////
 //
-// buildKDTrees
+// buildVertexKDTree
 //
 /////////////////////////////////////////////
-- buildKDTrees {
+- buildVertexKDTree{
   id cell = nil;
   id point = nil;
   double x=0.0, y=0.0, z=0.0;
   id <UniformUnsignedDist> listRandomizer;
   id <ListShuffler> listShuffler;
-  id <List> shuffledPolyCellList;
-  id <ListIndex> aPolyCellListNdx;
   id <List> shuffledPolyPointList;
   id <List> polyPointList = nil;
   id <ListIndex> polyPointListNdx;
@@ -527,11 +525,9 @@ return self;
 
   // KD Trees should be balanced, to acheive this, we need to add nodes to the tree in a random order, 
   // so we create a shuffled list
-  shuffledPolyCellList = [List create: scratchZone];
   shuffledPolyPointList = [List create: scratchZone];
   [polyCellListNdx setLoc: Start];
   while(([polyCellListNdx getLoc] != End) && ((cell = [polyCellListNdx next]) != nil)){
-    [shuffledPolyCellList addLast: cell];
     polyPointList = [cell getPolyPointList];
     polyPointListNdx = [polyPointList listBegin: scratchZone];
     while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){
@@ -545,20 +541,120 @@ return self;
                                         setMax: (unsigned) 1];
   listShuffler = [ListShuffler      create: scratchZone
                           setUniformRandom: listRandomizer];
-  [listShuffler shuffleWholeList: shuffledPolyCellList];
+  [listShuffler shuffleWholeList: shuffledPolyPointList];
   [listShuffler drop];
   [listRandomizer drop];
+
+  fprintf(stdout,"HabitatSpace >>> buildVertexKDTree >>> Inserting PolyPoints into vertexKDTree...\n ");
+  fflush(0);
+  
+  // Finally, build a second KD Tree of the vertices of all polygons
+  vertexKDTree = kd_create(2);
+  polyPointListNdx = [shuffledPolyPointList listBegin: scratchZone];
+  while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){ 
+    x = [point getXCoordinate];
+    y = [point getYCoordinate];
+    //fprintf(stdout,"HabitatSpace >>> buildVertexKDTree >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
+    //fflush(0);
+    if(kd_insert3(vertexKDTree, x, y, z, point) != 0){
+      fprintf(stderr,"HabitatSpace >>> buildVertexKDTree >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
+      fflush(0);
+      exit(1);
+    }
+  }
+  [polyPointListNdx drop];
+  [shuffledPolyPointList drop];
+
+  //gettimeofday(&endTV,NULL);
+  //fprintf(stdout, "HabitatSpace >>>> buildVertexKDTree >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
+  //fflush(0);
+  return self;
+}
+/////////////////////////////////////////////
+//
+// buildCentroidKDTree
+//
+/////////////////////////////////////////////
+- buildCentroidKDTree{
+id cell = nil;
+  double x=0.0, y=0.0, z=0.0;
+  id <UniformUnsignedDist> listRandomizer;
+  id <ListShuffler> listShuffler;
+  id <List> shuffledPolyCellList;
+  id <ListIndex> aPolyCellListNdx;
+
+  //struct timeval begTV, endTV;
+  //gettimeofday(&begTV,NULL);
+
+  // KD Trees should be balanced, to acheive this, we need to add nodes to the tree in a random order, 
+  // so we create a shuffled list
+  shuffledPolyCellList = [List create: scratchZone];
+  [polyCellListNdx setLoc: Start];
+  while(([polyCellListNdx getLoc] != End) && ((cell = [polyCellListNdx next]) != nil)){
+    [shuffledPolyCellList addLast: cell];
+  }
   listRandomizer = [UniformUnsignedDist create: scratchZone
                                   setGenerator: randGen
                                 setUnsignedMin: (unsigned) 0 
                                         setMax: (unsigned) 1];
   listShuffler = [ListShuffler      create: scratchZone
                           setUniformRandom: listRandomizer];
-  [listShuffler shuffleWholeList: shuffledPolyPointList];
+  [listShuffler shuffleWholeList: shuffledPolyCellList];
   [listShuffler drop];
   [listRandomizer drop];
 
-  fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into centroidKDTree...\n ");
+  //fprintf(stdout,"HabitatSpace >>> buildKDTree >>> Inserting PolyCells into tree...\n ");
+  //fflush(0);
+
+  centroidKDTree = kd_create(2);
+  aPolyCellListNdx = [shuffledPolyCellList listBegin: scratchZone];
+  while(([aPolyCellListNdx getLoc] != End) && ((cell = [aPolyCellListNdx next]) != nil)){ 
+    x = [cell getPolyCenterX];
+    y = [cell getPolyCenterY];
+    //fprintf(stdout,"HabitatSpace >>> buildKDTree >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
+    //fflush(0);
+    if(kd_insert3(centroidKDTree, x, y, z, cell) != 0){
+      fprintf(stderr,"HabitatSpace >>> buildKDTree >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
+      fflush(0);
+      exit(1);
+    }
+  }
+  [aPolyCellListNdx drop];
+  [shuffledPolyCellList drop];
+  //gettimeofday(&endTV,NULL);
+  //fprintf(stdout, "HabitatSpace >>>> buildKDTree >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
+  //fflush(0);
+  return self;
+}
+    /*
+  id cell = nil;
+  double x=0.0, y=0.0, z=0.0;
+  id <UniformUnsignedDist> listRandomizer;
+  id <ListShuffler> listShuffler;
+  id <List> shuffledPolyCellList;
+  id <ListIndex> aPolyCellListNdx;
+
+  //struct timeval begTV, endTV;
+  //gettimeofday(&begTV,NULL);
+
+  // KD Trees should be balanced, to acheive this, we need to add nodes to the tree in a random order, 
+  // so we create a shuffled list
+  shuffledPolyCellList = [List create: scratchZone];
+  [polyCellListNdx setLoc: Start];
+  while(([polyCellListNdx getLoc] != End) && ((cell = [polyCellListNdx next]) != nil)){
+    [shuffledPolyCellList addLast: cell];
+  }
+  listRandomizer = [UniformUnsignedDist create: scratchZone
+                                  setGenerator: randGen
+                                setUnsignedMin: (unsigned) 0 
+                                        setMax: (unsigned) 1];
+  listShuffler = [ListShuffler      create: scratchZone
+                          setUniformRandom: listRandomizer];
+  [listShuffler shuffleWholeList: shuffledPolyCellList];
+  [listShuffler drop];
+  [listRandomizer drop];
+
+  fprintf(stdout,"HabitatSpace >>> buildCentroidKDTree >>> Inserting PolyCells into centroidKDTree...\n ");
   fflush(0);
 
   centroidKDTree = kd_create(2);
@@ -566,10 +662,10 @@ return self;
   while(([aPolyCellListNdx getLoc] != End) && ((cell = [aPolyCellListNdx next]) != nil)){ 
     x = [cell getPolyCenterX];
     y = [cell getPolyCenterY];
-    //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
+    //fprintf(stdout,"HabitatSpace >>> buildCentroidKDTree >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
     //fflush(0);
     if(kd_insert3(centroidKDTree, x, y, z, cell) != 0){
-      fprintf(stderr,"HabitatSpace >>> buildKDTrees >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
+      fprintf(stderr,"HabitatSpace >>> buildCentroidKDTree >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
       fflush(0);
       exit(1);
     }
@@ -577,32 +673,12 @@ return self;
   [aPolyCellListNdx drop];
   [shuffledPolyCellList drop];
 
-  fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCells into vertexKDTree...\n ");
-  fflush(0);
-  /*
-  // Finally, build a second KD Tree of the vertices of all polygons
-  vertexKDTree = kd_create(2);
-  polyPointListNdx = [shuffledPolyPointList listBegin: scratchZone];
-  while(([polyPointListNdx getLoc] != End) && ((point = [polyPointListNdx next]) != nil)){ 
-    x = [point getXCoordinate];
-    y = [point getYCoordinate];
-    //fprintf(stdout,"HabitatSpace >>> buildKDTrees >>> Inserting PolyCell into KDTree coords x = %f, y = %f \n", x,y);
-    //fflush(0);
-    if(kd_insert3(vertexKDTree, x, y, z, point) != 0){
-      fprintf(stderr,"HabitatSpace >>> buildKDTrees >>> Error attempting kd_insert3 with values x = %f, y = %f, z = %f \n", x, y, z);
-      fflush(0);
-      exit(1);
-    }
-  }
-  */
-  //[polyPointListNdx drop];
-  //[shuffledPolyPointList drop];
-
   //gettimeofday(&endTV,NULL);
   //fprintf(stdout, "HabitatSpace >>>> buildKDTrees >>>> Time (micro s): %ld \n",(endTV.tv_usec-begTV.tv_usec));
   //fflush(0);
   return self;
 }
+*/
 
 
 ////////////////////////////////////////////
@@ -1023,21 +1099,25 @@ return self;
     polyCellList = [List create: habitatZone];
    
     [self read2DGeometryFile];
-    //fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
-    //fflush(0);
-    [self calcPolyCellCentroids];
-    //fprintf(stdout, "HabitatSpace >>>> afterCalcCentroids \n");
-    //fflush(0);
-    [self buildKDTrees];
-    fprintf(stdout, "HabitatSpace >>>> afterBuildKDTree \n");
+    fprintf(stdout, "HabitatSpace >>>> afterRead2D \n");
     fflush(0);
-    //[self createPolyAdjacentCells];
-    //fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
+    //[self buildVertexKDTree];
+    //fprintf(stdout, "HabitatSpace >>>> buildVertexKDTree \n");
     //fflush(0);
+    [self createPolyAdjacentCells];
+    fprintf(stdout, "HabitatSpace >>>> afterCreatePolyAdj \n");
+    fflush(0);
+
+    [self calcPolyCellCentroids];
+    fprintf(stdout, "HabitatSpace >>>> afterCalcCentroids \n");
+    fflush(0);
     [self createPolyInterpolationTables];
     [self setCellShadeColorMax];
     [self readPolyCellDataFile];
     [self calcPolyCellsDistFromRE];
+    [self buildCentroidKDTree];
+    fprintf(stdout, "HabitatSpace >>>> buildCentroidKDTree \n");
+    fflush(0);
 
     if([[self getModel] getWriteCellCentroidReport]){
       [self outputCellCentroidRpt];
@@ -1766,11 +1846,16 @@ return self;
 {
   fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> BEGIN\n");
   fflush(0);
+   
+    id <ListIndex> ndx = [polyCellList listBegin: scratchZone];
 
-    [polyCellList forEach: M(createPolyAdjacentCellsFrom:) :vertexKDTree];
+    [polyCellList forEach: M(createPolyAdjacentCellsFrom:) :ndx];
+
+
+    //[polyCellList forEach: M(createPolyAdjacentCellsFrom:) :vertexKDTree];
 
     // We no longer need the vertex tree so free it
-    kd_free(vertexKDTree);
+    //kd_free(vertexKDTree);
 
     fprintf(stdout, "HabitatSpace >>>> createPolyAdjacentCells >>>> END\n");
     fflush(0);
