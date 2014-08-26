@@ -630,12 +630,11 @@ Boston, MA 02111-1307, USA.
 - createPolyAdjacentCellsFrom: (void *) vertexKDTree {
   void *kdSet;
   int i,j,numberOfPPoints = 0;
-  double iX,iY,jX,jY,tX,tY,midPointX,midPointY,sqEdgeLength,dx,dy,sqDistItoTemp,sqDistJtoTemp;
+  double iX,iY,jX,jY,tX,tY,midPointX,midPointY,edgeLength,dx,dy,distItoTemp,distJtoTemp;
   PolyCell* otherPolyCell = nil;
   PolyPoint* polyPointI = nil;
   PolyPoint* polyPointJ = nil;
   PolyPoint* tempPoint = nil;
-  id<List> otherAdjacentCellList = nil;
 
   //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> BEGIN\n");
   //fflush(0);
@@ -644,9 +643,6 @@ Boston, MA 02111-1307, USA.
 
   numberOfPPoints = [polyPointList getCount];
 
-  //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> nPts = %d \n",numberOfPPoints);
-  //fflush(0);
-   
   // Cycle through each edge of the polygon
   for(i = 0; i < numberOfPPoints; i++){
     j = (i + 1) % numberOfPPoints;
@@ -664,18 +660,13 @@ Boston, MA 02111-1307, USA.
 
     // Find the midpoint and length
     midPointX = (iX + jX) / 2.0;
-    midPointY = (jY + jY) / 2.0;
+    midPointY = (iY + jY) / 2.0;
     dx = iX - jX;
     dy = iY - jY;
-    sqEdgeLength = dx*dx + dy*dy;
-
-    //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> midpoitn x,y = %f,%f \n",midPointX,midPointY);
-    //fflush(0);
+    edgeLength = sqrt(dx*dx + dy*dy);
 
     // Use the kdtree to pull the set of points within 0.5L of the midpoint
-    kdSet = kd_nearest_range3(vertexKDTree, midPointX, midPointY, 0.0, sqrt(sqEdgeLength) / 2.0 + 1.0); // the 1.0 is the tolerance, 1cm 
-    //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> Found %d points within %f of midpoint x,y = %f,%f \n",kd_res_size(kdSet),sqrt(sqEdgeLength) / 2.0 + 1.0,midPointX,midPointY);
-    //fflush(0);
+    kdSet = kd_nearest_range3(vertexKDTree, midPointX, midPointY, 0.0, edgeLength / 2.0 + 1.0); // the 1.0 is the tolerance, 1cm 
 
     // Now iterate through these points and find any that are on the segment between I and J
     while(kd_res_end(kdSet)==0){
@@ -686,42 +677,39 @@ Boston, MA 02111-1307, USA.
 
       // No need to consider this point if we already know it's from a neighboring cell
       otherPolyCell = [tempPoint getPolyCell];
+
       if([listOfAdjacentCells contains: otherPolyCell]){
-        kd_res_next(kdSet);
-        continue;
-      }
-
-      tX = [tempPoint getXCoordinate];
-      tY = [tempPoint getYCoordinate];
-
-      // Note we save some computation time by avoiding sqrt here, so instead we'll compare the square distances
-      dx = iX - tX;
-      dy = iY - tY;
-      sqDistItoTemp = dx*dx + dy*dy;
-      dx = jX - tX;
-      dy = jY - tY;
-      sqDistJtoTemp = dx*dx + dy*dy;
-
-      if(abs(sqDistItoTemp + sqDistJtoTemp - sqEdgeLength) < 1.0){
-        // Found a neighbor
-        [listOfAdjacentCells addLast: otherPolyCell];
-
+          // do nothing
+      }else if([[otherPolyCell getListOfAdjacentCells] contains: self]){
         // I am a neighbor to my neighbor -- this is important to avoid missing the case when one edge is a superset of the
         // smaller edge (in which case no point on the larger egde lies on the segment of the smaller edge).  See illustration
         // below where AB is on polygon C and XY on polygon Z.  Without the following we would know Z is a neighbor to C but
         // not vice versa.
         //
         //	|   Z	|
-        //	|	|
+        //	|	    |
         // A----X-------Y-----B
-        // |		      |
+        // |		          |
         // |	    C	      |
         //
-        otherAdjacentCellList = [otherPolyCell getListOfAdjacentCells];
-        if(![otherAdjacentCellList contains: self])[otherAdjacentCellList addLast: self];
+        [listOfAdjacentCells addLast: otherPolyCell];
+      }else{
+
+          tX = [tempPoint getXCoordinate];
+          tY = [tempPoint getYCoordinate];
+
+          dx = iX - tX;
+          dy = iY - tY;
+          distItoTemp = sqrt(dx*dx + dy*dy);
+          dx = jX - tX;
+          dy = jY - tY;
+          distJtoTemp = sqrt(dx*dx + dy*dy);
+
+          if(abs(distItoTemp + distJtoTemp - edgeLength) < 1.0 && otherPolyCell != self){
+            // Found a neighbor
+            [listOfAdjacentCells addLast: otherPolyCell];
+          }
       }
-      //fprintf(stdout,"HabitatSpace >>> getNeighborsWithin >>> KD found PolyCell with coords x = %f, y = %f \n", [tempCell getPolyCenterX], [tempCell getPolyCenterY]);
-      //fflush(0);
       kd_res_next(kdSet);
     }
     kd_res_free(kdSet);
@@ -744,7 +732,6 @@ Boston, MA 02111-1307, USA.
 {
     return listOfAdjacentCells;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
