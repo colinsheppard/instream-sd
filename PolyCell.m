@@ -48,6 +48,7 @@ Boston, MA 02111-1307, USA.
   polyCell->numPolyCoords = 0;
   polyCell->numCornerCoords = 0;
 
+  polyCell->listOfAdjacentCells = [List create: aZone];
 
   polyCell->forSurePolyPoint = nil;
   polyCell->polyCellError = NO;
@@ -639,8 +640,6 @@ Boston, MA 02111-1307, USA.
   //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> BEGIN\n");
   //fflush(0);
 
-  listOfAdjacentCells = [List create: cellZone];
-
   numberOfPPoints = [polyPointList getCount];
 
   // Cycle through each edge of the polygon
@@ -720,8 +719,6 @@ Boston, MA 02111-1307, USA.
 
   return self;
 }
-
-
 
 /////////////////////////////////////
 //
