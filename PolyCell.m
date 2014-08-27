@@ -633,6 +633,7 @@ Boston, MA 02111-1307, USA.
   int i,j,numberOfPPoints = 0;
   double iX,iY,jX,jY,tX,tY,midPointX,midPointY,edgeLength,dx,dy,distItoTemp,distJtoTemp;
   PolyCell* otherPolyCell = nil;
+  //PolyCell* tempCell = nil;
   PolyPoint* polyPointI = nil;
   PolyPoint* polyPointJ = nil;
   PolyPoint* tempPoint = nil;
@@ -677,22 +678,40 @@ Boston, MA 02111-1307, USA.
       // No need to consider this point if we already know it's from a neighboring cell
       otherPolyCell = [tempPoint getPolyCell];
 
+      //BOOL printOutput = ([self getPolyCellNumber] == 1082 && [otherPolyCell getPolyCellNumber] == 1101) || ([self getPolyCellNumber] == 1101 && [otherPolyCell getPolyCellNumber] == 1082);
+      //if(printOutput){
+        //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> self = %d, other = %d \n",[self getPolyCellNumber],[otherPolyCell getPolyCellNumber]);
+        //fflush(0);
+        //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> self list of adjacent: ");
+        //id <ListIndex> ndx = [listOfAdjacentCells listBegin: scratchZone];
+        //while(([ndx getLoc] != End) && ((tempCell = [ndx next]) != nil)){
+          //fprintf(stdout, "%d, ",[tempCell getPolyCellNumber]);
+        //}
+        //fprintf(stdout, "\n");
+        //fflush(0);
+        //[ndx drop];
+        //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> other list of adjacent: ");
+        //ndx = [[otherPolyCell getListOfAdjacentCells] listBegin: scratchZone];
+        //while(([ndx getLoc] != End) && ((tempCell = [ndx next]) != nil)){
+          //fprintf(stdout, "%d, ",[tempCell getPolyCellNumber]);
+        //}
+        //fprintf(stdout, "\n");
+        //fflush(0);
+        //[ndx drop];
+      //}
+
       if([listOfAdjacentCells contains: otherPolyCell]){
-          // do nothing
-      }else if([[otherPolyCell getListOfAdjacentCells] contains: self]){
-        // I am a neighbor to my neighbor -- this is important to avoid missing the case when one edge is a superset of the
-        // smaller edge (in which case no point on the larger egde lies on the segment of the smaller edge).  See illustration
-        // below where AB is on polygon C and XY on polygon Z.  Without the following we would know Z is a neighbor to C but
-        // not vice versa.
-        //
-        //	|   Z	|
-        //	|	    |
-        // A----X-------Y-----B
-        // |		          |
-        // |	    C	      |
-        //
-        [listOfAdjacentCells addLast: otherPolyCell];
+        // do nothing
+        
+        //if(printOutput){
+          //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> do nothing \n");
+          //fflush(0);
+        //}
       }else{
+        //if(printOutput){
+          //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> test neighbor\n");
+          //fflush(0);
+        //}
 
           tX = [tempPoint getXCoordinate];
           tY = [tempPoint getYCoordinate];
@@ -707,6 +726,31 @@ Boston, MA 02111-1307, USA.
           if(abs(distItoTemp + distJtoTemp - edgeLength) < 1.0 && otherPolyCell != self){
             // Found a neighbor
             [listOfAdjacentCells addLast: otherPolyCell];
+
+            //if(printOutput){
+              //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> found neighbor!\n");
+              //fflush(0);
+            //}
+
+            if(![[otherPolyCell getListOfAdjacentCells] contains: self]){
+              // I am a neighbor to my neighbor -- this is important to avoid missing the case when one edge is a superset of the
+              // smaller edge (in which case no point on the larger egde lies on the segment of the smaller edge).  See illustration
+              // below where AB is on polygon C and XY on polygon Z.  Without the following we would know Z is a neighbor to C but
+              // not vice versa.
+              //
+              //	|   Z	|
+              //	|	    |
+              // A----X-------Y-----B
+              // |		          |
+              // |	    C	      |
+              //
+              [[otherPolyCell getListOfAdjacentCells] addLast: self];
+
+              //if(printOutput){
+                //fprintf(stdout, "PolyCell >>>> createPolyAdjacentCells >>>> neighbor to my neighbor\n");
+                //fflush(0);
+              //}
+            }
           }
       }
       kd_res_next(kdSet);
