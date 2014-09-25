@@ -127,7 +127,6 @@ double starvPb;
 
 double depthLengthRatio;
 
-
 //
 // TIME HORIZON
 //

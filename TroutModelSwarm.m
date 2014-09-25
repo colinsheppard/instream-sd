@@ -83,6 +83,7 @@ char **speciesStocking;
   troutModelSwarm->fishOutputFile = (char *) nil;
 
   troutModelSwarm->fileOutputFrequency = 1;
+  troutModelSwarm->individualFishFile = "Individual_Fish_Out.csv";
 
   // variables used for tracking LFT data
   troutModelSwarm->resultsAgeThreshold = 1;
@@ -463,6 +464,9 @@ char **speciesStocking;
       [habitatManager buildHabSpaceCellFishInfoReporter];
   }
 
+  if(writeIndividualFishReport == YES){
+    [self openIndividualFishReportFilePtr];
+  }
 
   if(theColormaps != nil) 
   {
@@ -3217,6 +3221,87 @@ char **speciesStocking;
 #endif
 
 
+/////////////////////////////////////////////////
+//
+// openIndividualFishReportFilePtr
+//
+//////////////////////////////////////////////////
+- openIndividualFishReportFilePtr {
+  if(individualFishFilePtr == NULL){
+     if ((appendFiles == NO) && (scenario == 1) && (replicate == 1)){
+        if((individualFishFilePtr = fopen(individualFishFile,"w")) == NULL ) {
+            fprintf(stderr, "ERROR: TroutModelSwarm >>>> openIndividualFishReportFilePtr >>>> Cannot open %s for writing\n",individualFishFile);
+            fflush(0);
+            exit(1);
+        }
+        fprintf(individualFishFilePtr,"\n\n");
+        fprintf(individualFishFilePtr,"SYSTEM TIME:  %s\n", [timeManager getSystemDateAndTime]);
+        fprintf(individualFishFilePtr,"Scenario,Replicate,Model Date,Hour,Fish ID,Reach,Cell #,Species,Age,Length,Weight,Condition\n");
+     }else if((scenario == 1) && (replicate == 1) && (appendFiles == YES)){
+        if((individualFishFilePtr = fopen(individualFishFile,"a")) == NULL){
+            fprintf(stderr, "ERROR: TroutModelSwarm >>>> openIndividualFishReportFilePtr >>>> Cannot open %s for writing\n",individualFishFile);
+            fflush(0);
+            exit(1);
+        }
+        fprintf(individualFishFilePtr,"\n\n");
+        fprintf(individualFishFilePtr,"SYSTEM TIME:  %s\n", [timeManager getSystemDateAndTime]);
+        fprintf(individualFishFilePtr,"Scenario,Replicate,Model Date,Hour,Fish ID,Reach,Cell #,Species,Age,Length,Weight,Condition\n");
+     }else{ // Not the first replicate or scenario, so no header 
+         if((individualFishFilePtr = fopen(individualFishFile,"a")) == NULL){
+            fprintf(stderr, "ERROR: TroutModelSwarm >>>> openIndividualFishReportFilePtr >>>> Cannot open %s for appending\n",individualFishFile);
+            fflush(0);
+            exit(1);
+         }
+     }
+  }
+  if(individualFishFilePtr == NULL){
+     fprintf(stderr, "ERROR: TroutModelSwarm >>>> openIndividualFishReportFilePtr >>>> File %s is not open\n",individualFishFile);
+     fflush(0);
+     exit(1);
+  }
+  return self;
+}
+//////////////////////////////////////////////////////////
+////
+//// printIndividualFishReport
+////
+///////////////////////////////////////////////////////////
+- printIndividualFishReport { 
+  id <ListIndex> fishListNdx;
+  id aFish;
+  int theHour = [timeManager getHourWithTimeT: modelTime];
+
+  if((individualFishFilePtr = fopen(individualFishFile,"a")) != NULL) {
+    if([liveFish getCount] != 0) {
+      fishListNdx = [liveFish listBegin: modelZone];
+
+      while(([fishListNdx getLoc] != End) && ((aFish = [fishListNdx next]) != nil)){
+	fprintf(individualFishFilePtr,"%d,%d,%s,%d,%d,%s,%d,%s,%d,%f,%f,%f\n",
+	    scenario,
+	    replicate,
+	    modelDate,
+		theHour,
+	    [aFish getFishID],
+	    [[aFish getReachSymbol] getName],
+	    [[aFish getCell] getPolyCellNumber], 
+	    [[aFish getSpecies] getName],
+	    [aFish getAge],
+	    [aFish getFishLength],
+	    [aFish getFishWeight],
+	    [aFish getFishCondition]);
+      }
+      [fishListNdx drop];
+    }
+  } else {
+    fprintf(stderr, "ERROR: TroutModelSwarm >>>> printIndividualFishReport >>>> Couldn't open output file\n");
+    fflush(0);
+    exit(1);
+  }
+  fclose(individualFishFilePtr);
+  return self;
+}
+
+
 //////////////////////////////////////////////////////////
 //
 // printReddSurvReport
@@ -3821,6 +3906,10 @@ char **speciesStocking;
    // Added the following during memory leak debug
    //
    [deadFish deleteAll];
+
+   if(writeIndividualFishReport == YES){
+      [self printIndividualFishReport];
+   }
 
    //[moveFishReporter updateByReplacement];
    //[moveFishReporter output];

@@ -159,6 +159,7 @@ typedef struct FishStockType FishStockStruct;
   FILE* reddRptFilePtr;
   FILE* reddSummaryFilePtr;
   FILE * lftOutputFilePtr;
+  FILE * individualFishFilePtr;
 
 
 //Mortality counts
@@ -180,6 +181,7 @@ char*  fishOutputFile;
 char*  fishMortalityFile;
 char*  reddOutputFile;
 char*  reddMortalityFile;
+const char*  individualFishFile;
 char*  popInitDate;
 int    fileOutputFrequency;
 double fracFlowChangeForMovement;
@@ -385,6 +387,8 @@ double checkParam;
 - updateLFTOutput;
 - writeLFTOutput;
 
+- (BOOL) getWriteIndividualFishReport;
+
 //
 // REPRO LOGISTIC
 //
@@ -512,6 +516,9 @@ double checkParam;
 - (FILE *) getReddSummaryFilePtr;
 
 - printReddSurvReport;
+
+- openIndividualFishReportFilePtr;
+- printIndividualFishReport;
 
 
 - dropFishMortObjs;
