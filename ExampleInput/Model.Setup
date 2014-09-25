@@ -32,7 +32,6 @@ writeReddMortReport				0
 writeMoveReport					0
 writeCellCentroidReport			0
 writeReadyToSpawnReport			0
-writeIndividualFishReport		1
-
+writeIndividualFishReport		0
 @end
 
