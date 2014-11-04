@@ -3596,7 +3596,7 @@ char **speciesStocking;
 
   if(reddSummaryFilePtr == NULL) 
   {
-     if(appendFiles == NO) 
+     if((appendFiles == NO)  && (scenario == 1) && (replicate == 1))
      {
         if((reddSummaryFilePtr = fopen(reddOutputFile,"w")) == NULL)
         {
