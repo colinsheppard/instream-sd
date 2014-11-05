@@ -42,11 +42,12 @@ Boston, MA 02111-1307, USA.
    [scourFunc setInputMethod: anInputMethod];
    [scourFunc createInputMethodMessageProbeFor: anInputMethod];
 
+   scourFunc->habShearParamA = (double) LARGEINT;
+   scourFunc->habShearParamB = (double) LARGEINT;
 
    return scourFunc;
 
 }
-
 
 - createEnd
 {
@@ -60,13 +61,12 @@ Boston, MA 02111-1307, USA.
 {
    //double inputValue = -1;
   
-  // int speciesNdx;
+   int speciesNdx;
 
-   double scourParam=0;
-   double shearStress=0;
+   double scourParam=0.0;
+   double shearStress=0.0;
+   double scourSurvival=0.0;
  
-   double mortReddShearParamA=0;
-   double mortReddShearParamB=0;
    double mortReddScourDepth=0;
 
    double yesterdaysMaxFlow;
@@ -75,37 +75,71 @@ Boston, MA 02111-1307, USA.
 
    id aRedd = anObj;
    id cell = nil;
-
-   //fprintf(stdout, "ReddScourFunc >>>> updateWith >>>> BEGIN\n");
-   //fflush(0);
-
+   FishParams* fishParams;
 
    if(inputMethod == (SEL) nil)
    {
-      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod];
+      fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> updateWith >>>> anObj >>>> inputMethod = %p\n", inputMethod);
+      fflush(0);
+      exit(1);
    }
   
    if(![anObj respondsTo: inputMethod])
    {
-      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n"];
+      fprintf(stderr, "ERROR: ReddSuperimpFunc >>>> updateWith >>>> anObj does not respond to inputMethod\n");
+      fflush(0);
+      exit(1);
    }
 
-   /*
-   if(messageProbe == nil)
-   {
-      [InternalError raiseEvent: "ERROR: ReddScourFunc >>>> updateWith: >>>> messageProbe is nil\n"];
-   } 
-   */
 
    funcValue = 1.0;
 
-   //inputValue = [messageProbe doubleDynamicCallOn: anObj];
 
    cell = [aRedd getCell];
 
-   //speciesNdx = [aRedd getSpeciesNdx];
-   fishParams = [aRedd getFishParams];
+   if(cell == nil)
+   {
+       fprintf(stderr, "ReddScourFunc >>>> updateWith >>>> cell id nil\n");
+       fflush(0);
+       exit(1);
+   }
 
+   if(uniformDoubleDist == nil)
+   {
+      id aRandGen = [cell getRandGen];
+
+      if(aRandGen == nil)
+      {
+         fprintf(stderr, "ERROR: ReddScourFunc >>>> updateWith >>>> the random generator is nil\n");
+         fflush(0);
+         exit(1);
+      }
+     
+      //
+      //Create the uniform distribution
+      //
+      uniformDoubleDist = [UniformDoubleDist create: [self getZone]
+                                 setGenerator: aRandGen
+                                 setDoubleMin: 0.0
+                                       setMax: 1.0];
+   }
+
+ 
+   //
+   // Get the following parameters once.
+   // Assumption: They don't change within a reach during a model run
+   //
+   if(habShearParamA >= (double) LARGEINT)
+   {
+       habShearParamA = [cell getHabShearParamA];
+   }
+   if(habShearParamB >= (double) LARGEINT)
+   {
+       habShearParamB = [cell getHabShearParamB];
+   }
+  
+   fishParams = [aRedd getFishParams];
+   speciesNdx = [aRedd getSpeciesNdx];
 
    yesterdaysMaxFlow = [cell getPrevDailyMaxFlow];
    todaysMaxFlow = [cell getDailyMaxFlow];
@@ -113,28 +147,52 @@ Boston, MA 02111-1307, USA.
 
    if( (yesterdaysMaxFlow < todaysMaxFlow) && (todaysMaxFlow > tomorrowsMaxFlow) ) 
    {
-
-       mortReddShearParamA = [cell getHabShearParamA];
-       mortReddShearParamB = [cell getHabShearParamB];
        mortReddScourDepth = fishParams->mortReddScourDepth;
 
-       shearStress = mortReddShearParamA*pow(todaysMaxFlow, mortReddShearParamB);
+       shearStress = habShearParamA*pow(todaysMaxFlow, habShearParamB);
 
        scourParam = 3.33*exp(-1.52*shearStress/0.045);
- 
-       funcValue = 1.0 - exp(-scourParam * mortReddScourDepth);
 
-   }
+       if(isnan(scourParam) || isinf(scourParam))
+       {
+            fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> scourParam is nan or inf\n");
+            fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> shearStress = %f\n", shearStress);
+            fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> todaysMaxFlow = %f\n", todaysMaxFlow);
+            fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> habShearParamA = %f\n", habShearParamA);
+            fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> habShearParamB = %f\n", habShearParamB);
+            fflush(0);
+            exit(1);
+       }
+
+       if((scourParam * mortReddScourDepth) > 100.0)
+       {
+           funcValue = 1.0;
+       }
+       else
+       {
+           scourSurvival = 1.0 - exp(-scourParam * mortReddScourDepth);
+
+           if(isnan(scourSurvival) || isinf(scourSurvival))
+           {
+                fprintf(stderr, "ERROR: ReddScourFunc >>>> scourParam >>>> updateWith >>>> scourSurvival is nan or inf\n");
+                fflush(0);
+                exit(1);
+           }
+            
+           if([uniformDoubleDist getDoubleSample] > scourSurvival)
+           {
+              funcValue = 0.0;
+           }
+       }
+
+   } // if (flow peaked)
 
    if((funcValue < 0.0) || (funcValue > 1.0))
    {
-       fprintf(stderr, "ERROR: ReddScourFunc >>>> funcValue is not between 0 an 1\n");
-       fflush(0);
-       exit(1);
+      fprintf(stderr,"ERROR: ReddScourFunc >>>> funcValue is not between 0 an 1\n");
+      fflush(0);
+      exit(1);
    }
-
-   //fprintf(stdout, "ReddScourFunc >>>> updateWith >>>> END\n");
-   //fflush(0);
 
    return self;
 }

@@ -26,14 +26,18 @@ Boston, MA 02111-1307, USA.
 */
 
 
+#import <random.h>
 
 #import "Func.h"
 #import "FishParams.h"
 
+
 @interface ReddScourFunc : Func
 {
-   FishParams* fishParams;
+   double habShearParamA;
+   double habShearParamB;
 
+   id <UniformDoubleDist> uniformDoubleDist;
 }
 
 +    createBegin: aZone
@@ -43,6 +47,5 @@ Boston, MA 02111-1307, USA.
 
 - updateWith: anObj;
 
-- (void) drop;
 
 @end
