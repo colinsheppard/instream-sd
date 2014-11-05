@@ -166,22 +166,6 @@ char **speciesStocking;
   [self createFishParameters];
   [self findMinSpeciesPiscLength];
 
-  //
-  // To create additional age classes, add more symbols to this list.
-  // Then modify the code in getAgeSymbolForAge 
-  // that assigns symbols to fish.
-  // 
-  ageSymbolList = [List create: modelZone];
-
-  Age0     = [Symbol create: modelZone setName: "Age0"];
-  [ageSymbolList addLast: Age0];
-  Age1     = [Symbol create: modelZone setName: "Age1"];
-  [ageSymbolList addLast: Age1];
-  Age2     = [Symbol create: modelZone setName: "Age2"];
-  [ageSymbolList addLast: Age2];
-  Age3Plus = [Symbol create: modelZone setName: "Age3Plus"];
-  [ageSymbolList addLast: Age3Plus];
-
   reachSymbolList = [List create: modelZone];
 
   fishCounter = 0;
