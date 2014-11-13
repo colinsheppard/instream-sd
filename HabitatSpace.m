@@ -54,6 +54,7 @@ Boston, MA 02111-1307, USA.
 
   obj->flowChangeForMove = NO;
   obj->flowAtLastMove = -LARGEINT;
+  obj->driftAtLastMove = -LARGEINT;
   obj->prevTime = 0;
   obj->numberOfDaylightHours = 0;
   obj->numberOfNightHours = 0;
@@ -150,7 +151,7 @@ Boston, MA 02111-1307, USA.
 		   habAnglePressOct < 0 || habAnglePressNov < 0 || habAnglePressDec < 0){
       ERROR = YES;
    }
-   if (habAngleNightFactor < 0 || habDriftRegenDist < 0 || habFracFlowChangeForMovement	< 0 || habFracFlowChangeForMovement > 1 || habLatitude < 0 || habLatitude > 90 || habPreyEnergyDensity < 0 ||  habSearchProd  < 0 || habTwilightLength  < 0){
+   if (habAngleNightFactor < 0 || habDriftRegenDist < 0 || habFracFlowChangeForMovement	< 0 || habFracFlowChangeForMovement > 1 || habFracDriftChangeForMovement < 0 || habFracDriftChangeForMovement > 1 || habLatitude < 0 || habLatitude > 90 || habPreyEnergyDensity < 0 ||  habSearchProd  < 0 || habTwilightLength  < 0){
       ERROR = YES;
    }
 
@@ -453,6 +454,18 @@ return self;
 - setHabFracFlowChange: (double) aFraction
 {
    habFracFlowChangeForMovement = aFraction;
+   return self;
+}
+
+
+////////////////////////////////////////////////
+//
+// setHabFracDriftChange
+//
+////////////////////////////////////////////////
+- setHabFracDriftChange: (double) aFraction
+{
+   habFracDriftChangeForMovement = aFraction;
    return self;
 }
 
@@ -2686,6 +2699,27 @@ return self;
 
 }
 
+///////////////////////////////////////
+//
+// getDriftChangeForMove
+// SFR 13 Nov 2014
+///////////////////////////////////////
+- (BOOL) getDriftChangeForMove
+{
+  if((habDriftConc > (driftAtLastMove * (1.0 + habFracDriftChangeForMovement)))
+     || (habDriftConc < (driftAtLastMove * (1.0 - habFracDriftChangeForMovement))))
+  {
+      driftChangeForMove = YES;
+  }
+  else
+  {
+      driftChangeForMove = NO;
+  }
+
+  return driftChangeForMove;
+
+}
+
 ///////////////////////////////////////////////////////////
 //
 // getChangeInDailyFlow
@@ -2712,6 +2746,7 @@ return self;
 - (BOOL) shouldFishMoveAt: (time_t) theCurrentTime
 {
    BOOL flowMove = NO;
+   BOOL driftMove = NO;
    BOOL simStartMove = NO;
 
    dayNightPhaseSwitch = FALSE;
@@ -2814,11 +2849,17 @@ return self;
     flowMove = [self getFlowChangeForMove];
 
     //
+    // Or a change in drift concentration
+    //  
+    driftMove = [self getDriftChangeForMove];
+
+    //
     // Return YES if anything triggered movement
     //
-    if (dayNightPhaseSwitch || flowMove || simStartMove)
+    if (dayNightPhaseSwitch || flowMove || driftMove || simStartMove)
     {
        flowAtLastMove = currentHourlyFlow; 
+	   driftAtLastMove = habDriftConc;
     }
 
    //fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> END\n");

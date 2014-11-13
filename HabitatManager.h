@@ -79,6 +79,7 @@ char polyRasterColorVariable[35];
 double shadeColorMax;
 
 double habFracFlowChangeForMovement;
+double habFracDriftChangeForMovement;
 
 }
 
@@ -96,6 +97,7 @@ double habFracFlowChangeForMovement;
         andEndTime: (time_t) aDataEndTime;
 		
 - setFracFlowChangeForMovement: (double) aFraction;
+- setFracDriftChangeForMovement: (double) aFraction;
 
 - setSiteLatitude: (double) aLatitude;
 

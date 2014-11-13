@@ -20,6 +20,7 @@ appendFiles						0
 fileOutputFrequency				5
 
 fracFlowChangeForMovement	 	0.1
+fracDriftChangeForMovement	 	0.2
 siteLatitude					41
 
 shuffleYears                 	0

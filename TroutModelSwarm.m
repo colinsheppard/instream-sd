@@ -321,6 +321,8 @@ char **speciesStocking;
 
   [habitatManager setFracFlowChangeForMovement: (double) fracFlowChangeForMovement];
 
+  [habitatManager setFracDriftChangeForMovement: (double) fracDriftChangeForMovement];
+
   //
   // Moved from instantiateObjects 
   //

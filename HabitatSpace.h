@@ -193,7 +193,9 @@ long int maxYCoordinate;
   // Variables for instream-sd
   time_t prevTime; //use in getHabitatStateForMoveWith: 
   double flowAtLastMove;
+  double driftAtLastMove;
   BOOL flowChangeForMove;
+  BOOL driftChangeForMove;
   double numberOfDaylightHours;
   double numberOfNightHours;
   int currentHour;
@@ -204,6 +206,7 @@ long int maxYCoordinate;
   BOOL dayNightPhaseSwitch;
   double currentHourlyFlow;
   double habFracFlowChangeForMovement;  // Now set by model swarm instead of hab parameter
+  double habFracDriftChangeForMovement;
   double changeInDailyFlow;
   double dailyMeanFlow;
   double prevDailyMeanFlow;
@@ -332,6 +335,7 @@ long int maxYCoordinate;
 - (char *) getInstanceName;
 
 - setHabFracFlowChange: (double) aFraction;
+- setHabFracDriftChange: (double) aFraction;
 
 - setReachSymbol: (id <Symbol>) aSymbol;
 - (id <Symbol>) getReachSymbol;

@@ -185,6 +185,7 @@ const char*  individualFishFile;
 char*  popInitDate;
 int    fileOutputFrequency;
 double fracFlowChangeForMovement;
+double fracDriftChangeForMovement;
 char* tagFishColor;
 
 // Set by Limiting Factors Tool 
