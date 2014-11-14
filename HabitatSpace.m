@@ -2716,6 +2716,8 @@ return self;
       driftChangeForMove = NO;
   }
 
+  //fprintf(stderr, "getDriftChangeForMove: habDriftConc = %g driftAtLastMove = %g  >>>> Result = %d\n", habDriftConc, driftAtLastMove, (int) driftChangeForMove);
+
   return driftChangeForMove;
 
 }
@@ -2865,7 +2867,7 @@ return self;
    //fprintf(stderr, "HABITATSPACE >>>> shouldFishMoveAt >>>> END\n");
    //fflush(0);
 
-    return (dayNightPhaseSwitch || flowMove || simStartMove);
+    return (dayNightPhaseSwitch || flowMove || driftMove || simStartMove);
 }
 
 /////////////////////////////////////////////////////////////////////////
