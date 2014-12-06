@@ -945,7 +945,7 @@ return self;
 ///////////////////////////////////////////////////////
 - createReddSummaryStr 
 {
-  char* formatString = "%-12d%-12d%-12p%-12s%-12d%-12s%-21d%-12s%-12d%-12d%-12d%-12d%-12d%-12d\n";
+  char* formatString = "%d,%d,%p,%s,%d,%s,%d,%s,%d,%d,%d,%d,%d,%d\n";
 
   char reddCreateDate[12];
   char emptyDate[12];
