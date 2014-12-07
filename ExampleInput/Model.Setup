@@ -14,7 +14,7 @@ runEndDate						9/30/1999
 fishOutputFile					LiveFishOut.csv
 fishMortalityFile				DeadFishOut.csv
 reddMortalityFile				DeadRedds.Out
-reddOutputFile					Redds.Out
+reddOutputFile					Redds.csv
 popInitDate						10/1/1995
 appendFiles						0
 fileOutputFrequency				5

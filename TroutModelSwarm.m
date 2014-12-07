@@ -3586,7 +3586,7 @@ char **speciesStocking;
         }
         fprintf(reddSummaryFilePtr,"\n");
         fprintf(reddSummaryFilePtr,"SYSTEM TIME:  %s\n", [timeManager getSystemDateAndTime]);
-        fprintf(reddSummaryFilePtr,"%s", "Scenario,Replicate,ReddID,Species,CellNo,CreateDate,InitialNumberOfEggs,EmptyDate,Dewatering,Scouring,LowTemp,HiTemp,Superimp,FryEmerged"); 
+        fprintf(reddSummaryFilePtr,"%s", "Scenario,Replicate,ReddID,Species,CellNo,CreateDate,InitialNumberOfEggs,EmptyDate,Dewatering,Scouring,LowTemp,HiTemp,Superimp,FryEmerged\n"); 
      }else if((scenario == 1) && (replicate == 1) && (appendFiles == YES)){
         if((reddSummaryFilePtr = fopen(reddOutputFile,"w")) == NULL){
              fprintf(stderr, "ERROR: TroutModelSwarm >>>>> openReddSummaryFilePtr >>>> Cannot open %s for writing\n",reddOutputFile);
