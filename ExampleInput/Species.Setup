@@ -3,13 +3,13 @@ Species.Setup file, Default project for inSTREAM 6.0.
 Provide: Species name, parameter file, initial population file, display color, stocking
 
 Rainbow
-DefaultRainbowTrout.Params
+ExampleRainbowTrout.Params
 RainbowInitPops.Data
 cyan
 RainbowStocking.Data
 
 Brown
-DefaultBrownTrout.Params
+ExampleBrownTrout.Params
 BrownInitPops.Data
 firebrick
 NoStocking

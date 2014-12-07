@@ -71,7 +71,7 @@ fishSpawnMaxTemp	13
 fishSpawnMinAge	1
 fishSpawnMinCond	0.95
 fishSpawnMinLength	25
-fishSpawnMinTemp	8
+fishSpawnMinTemp	6
 fishSpawnProb	0.04
 fishSpawnStartDate	4/1
 fishSpawnVSuitS1	0
