@@ -92,6 +92,7 @@ Boston, MA 02111-1307, USA.
 
   newTrout->toggledFishForHabSurvUpdate = nil;
   newTrout->imImmortal = NO;
+  newTrout->spawner = NO;
 
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
@@ -994,10 +995,9 @@ Boston, MA 02111-1307, USA.
   id <ListIndex> fishLstNdx;
   id anotherTrout = nil;
 
-  //fprintf(stdout, "Trout >>>> Spawn >>>> BEGIN\n");
+  //fprintf(stdout, "Trout,Spawn,%d,Begin\n", fishID);
   //fflush(0);
   
-
   //
   // If we're dead we can't spawn
   //
@@ -1005,33 +1005,20 @@ Boston, MA 02111-1307, USA.
   {
      return self;
   }
+  
+  // First, check cells for suitability at current flow (not yet done this time step)
+  [self checkSpawnCells];
 
-  if ([self readyToSpawn] == NO)
+  if (spawner)
   {
-     //#ifdef READY_TO_SPAWN_RPT
-	 if ([model getWriteReadyToSpawnReport])
-	 {
-       [self printReadyToSpawnRpt: NO];
-     }
-	 //#endif
-
-     return self;
-  }
-
-
-  //#ifdef READY_TO_SPAWN_RPT
-	 if ([model getWriteReadyToSpawnReport])
-	 {
-       [self printReadyToSpawnRpt: YES];
-     }
-  //#endif
+   //fprintf(stdout, "Trout,Spawn,%d,OldSpawner,Cells:,%d\n", fishID, [potentialSpawnCellList getCount]);
+   //fflush(0);
 
   if((spawnCell = [self findCellForNewRedd]) == nil) 
   {
-      fprintf(stderr, "WARNING: Trout >>>> No spawning gravel found, making Redd without moving");
-      fflush(0);
-
-      spawnCell = fishCell;
+    fprintf(stderr, "ERROR: Trout >>>> spawn >>>> No suitable cell found when creating redd");
+    fflush(0);
+    exit(1);
   }
 
   //fprintf(stdout, "Trout >>>> Spawn >>>> before add fish\n");
@@ -1052,6 +1039,7 @@ Boston, MA 02111-1307, USA.
 
   timeLastSpawned = [self getCurrentTimeT];
   spawnedThisSeason = YES;
+  spawner = NO;
 
   //
   // Now, find male spawner.
@@ -1075,13 +1063,53 @@ Boston, MA 02111-1307, USA.
            break;
        }
   }
-  [fishLstNdx drop];
 
-  //fprintf(stdout, "Trout >>>> Spawn >>>> END\n");
+  [fishLstNdx drop];
+  [potentialSpawnCellList removeAll];
+
+  //fprintf(stdout, "Trout,Spawn,%d,EndAfterSpawning\n", fishID);
   //fflush(0);
+  return self;
+
+  } // if spawner
+
+  // Do this if not yet ready to spawn
+  if ([self readyToSpawn] == NO)
+  {
+     //#ifdef READY_TO_SPAWN_RPT
+	 if ([model getWriteReadyToSpawnReport])
+	 {
+       [self printReadyToSpawnRpt: NO];
+     }
+	 //#endif
+
+    //fprintf(stdout, "Trout,Spawn,%d,EndNotSpawning\n",fishID);
+    //fflush(0);
+    return self;
+  } // if not ready to spawn
+
+  // Now, we become a spawner and check cells for a day
+  spawner = YES;
+  potentialSpawnCellList = [List create: troutZone];
+
+  [fishCell getNeighborsWithin: (maxMoveDistance * 2)
+                      withList: potentialSpawnCellList];
+
+  [potentialSpawnCellList addFirst: fishCell];
+  // Suitability of these cells will be checked in - checkSpawnCells
+
+   //fprintf(stdout, "Trout,Spawn,%d,NewSpawner,Cells:,%d\n", fishID, [potentialSpawnCellList getCount]);
+   //fflush(0);
+
+   //#ifdef READY_TO_SPAWN_RPT
+	 if ([model getWriteReadyToSpawnReport])
+	 {
+       [self printReadyToSpawnRpt: YES];
+     }
+  //#endif
 
   return self;
-}
+} // - spawn
 
 
 
@@ -1327,7 +1355,6 @@ Boston, MA 02111-1307, USA.
 ////////////////////////////////////////////
 - (FishCell *) findCellForNewRedd 
 {
-  id <List> potentialCells = [List create: troutZone];
   id <ListIndex> cellNdx = nil;
   FishCell* bestCell = (FishCell *) nil;
   FishCell* nextCell = (FishCell *) nil;
@@ -1337,16 +1364,11 @@ Boston, MA 02111-1307, USA.
   //fprintf(stdout, "Trout >>>> findCellForNewRedd >>>> BEGIN\n");
   //fflush(0);
 
-  [fishCell getNeighborsWithin: maxMoveDistance
-                      withList: potentialCells];
-
-  [potentialCells addFirst: fishCell];
-
  #ifdef SPAWN_CELL_RPT
-    [self printSpawnCellRpt: potentialCells];
+    [self printSpawnCellRpt: potentialSpawnCellList];
  #endif
 
-  cellNdx = [potentialCells listBegin: scratchZone];
+  cellNdx = [potentialSpawnCellList listBegin: scratchZone];
 
   while(([cellNdx getLoc] != End) && ((nextCell = [cellNdx next]) != nil))
   {
@@ -1361,12 +1383,10 @@ Boston, MA 02111-1307, USA.
 
   [cellNdx drop];
 
-  if([potentialCells getCount] > 0)
-  {
-     [potentialCells removeAll];
-  }
+  //fprintf(stdout, "Trout,findCellForNewRedd,%d,bestCell quality:,%f\n", fishID, bestSpawnQuality);
+  fflush(0);
 
-  [potentialCells drop];
+  // potentialSpawnCellList is cleaned up in -spawn
 
   //fprintf(stdout, "Trout >>>> findCellForNewRedd >>>> END\n");
   //fflush(0);
@@ -1443,6 +1463,69 @@ Boston, MA 02111-1307, USA.
    //fflush(0);
 
    return spawnQuality;
+}
+
+////////////////////////////////////////////////////////////////////
+//
+// checkSpawnCells
+// added 12/16/2014 for new spawning habitat method
+////////////////////////////////////////////////////////////////////
+- checkSpawnCells 
+{
+  //fprintf(stdout, "Trout,CheckSpawnCells,%d,Begin\n", fishID);
+  //fflush(0);
+
+  if (spawner == NO) 
+  {
+    //fprintf(stdout, "Trout,CheckSpawnCells,%d,End-NotSpawner\n", fishID);
+    //fflush(0);
+    return self;
+  }
+  if ([potentialSpawnCellList getCount] == 0)
+  {
+	spawner = NO;
+	return self;
+  }
+
+  id <List> badCellList;
+  id <ListIndex> cellNdx = nil;
+  FishCell* nextCell = (FishCell *) nil;
+  
+  //fprintf(stdout, "Trout,CheckSpawnCells,%d,Spawner-Begin,Cells:,%d\n", fishID, [potentialSpawnCellList getCount]);
+  //fflush(0);
+
+  badCellList = [List create: troutZone];
+
+  cellNdx = [potentialSpawnCellList listBegin: scratchZone];
+
+  // Identify all the unsuitable cells on the potential spawn cell list
+  while(([cellNdx getLoc] != End) && ((nextCell = [cellNdx next]) != nil))
+  {
+    if ([self getSpawnDepthSuitFor: [nextCell getPolyCellDepth]] < 0.1 
+	 || [self getSpawnVelSuitFor: [nextCell getPolyCellVelocity]] < 0.1
+	 || [nextCell getCellFracSpawn] <= 0.0)
+	[badCellList addFirst: nextCell]; 
+  }
+
+  // Now remove them from the spawn cell list
+  if ([badCellList getCount] > 0)
+  {
+    cellNdx = [badCellList listBegin: scratchZone];
+    while(([cellNdx getLoc] != End) && ((nextCell = [cellNdx next]) != nil))
+	{
+    [potentialSpawnCellList remove: nextCell];
+	}
+  }
+
+  [cellNdx drop];
+  [badCellList removeAll];
+  [badCellList drop];
+  badCellList = nil; 
+
+  //fprintf(stdout, "Trout,CheckSpawnCells,%d,Spawner-End,Cells:,%d\n", fishID, [potentialSpawnCellList getCount]);
+  //fflush(0);
+
+   return self; 
 }
 
 ///////////////////////////////////////////////////////////////
@@ -1805,6 +1888,7 @@ Boston, MA 02111-1307, USA.
   {
      [destNdx drop];
   }
+
 
   //fprintf(stdout, "Trout >>>> moveToMaximizeExpectedMaturity >>>> END\n");
   //fflush(0);
@@ -4374,6 +4458,11 @@ return self;
 
      [destCellList drop];
      destCellList = nil; 
+
+	 if(potentialSpawnCellList != nil) 
+     {
+      [potentialSpawnCellList drop];
+     }
 
      if(causeOfDeath != nil)
      {

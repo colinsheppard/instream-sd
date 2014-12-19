@@ -1983,6 +1983,9 @@ char **speciesStocking;
      [self toggleFishForHabSurvUpdate];
      [liveFish forEach: M(move)];
 
+	 // Added 16 Dec 2014 for new spawning habitat method
+	 [liveFish forEach: M(checkSpawnCells)];
+
 	 //Optional outputs -- Need to be after habitatManager update:
 		if(writeCellFishReport == YES){
 			[habitatManager outputCellFishInfoReport];

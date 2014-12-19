@@ -61,6 +61,7 @@ Boston, MA 02111-1307, USA.
   FishParams* fishParams;
 
   id <List> destCellList;
+  id <List> potentialSpawnCellList;
 
   //
   // Generic Trout properties.
@@ -88,6 +89,7 @@ Boston, MA 02111-1307, USA.
 
   int dateLastSpawned; 
   int yearLastSpawned;
+  BOOL spawner;
 
   FishCell* fishCell;
   Color myColor;
@@ -403,7 +405,7 @@ id toggledFishForHabSurvUpdate;
                   andSurvivalNight: (double) aSurvivalNight
                           withCell: (FishCell *) aCell;
                   
-                   
+- checkSpawnCells;
 
 
 - (time_t) getCurrentTimeT;
