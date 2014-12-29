@@ -3,7 +3,7 @@ SWARMHOME=/usr/local/etc
 endif
 
 
-APPLICATION=instream6-0
+APPLICATION=instream6-1
 OBJECTS=GraphDataObject.o \
 	FishParams.o \
 	SearchElement.o ScenarioIterator.o  ExperSwarm.o \

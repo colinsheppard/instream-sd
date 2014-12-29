@@ -486,8 +486,12 @@ Boston, MA 02111-1307, USA.
       ageSymbol = [(id <Model>) model getAgeSymbolForAge: age];
     }
     
-    timeTAtEndOfSpawning = [timeManager getTimeTForNextMMDD: (char *) (fishParams->fishSpawnEndDate)
-                                             givenThisTimeT: currentTime];
+    if([timeManager isThisTime: (currentTime - 86400) onThisDay: fishParams->fishSpawnEndDate] == YES) 
+       {
+            spawnedThisSeason = NO;
+            //fprintf(stdout, "Trout >>>> dailyUpdateWithBirthday >>>> set spawnedThisSeason to NO\n");
+            //fflush(0);
+       }
 
     return self;
 }
@@ -988,7 +992,6 @@ Boston, MA 02111-1307, USA.
   //       calculate numberOfEggs
   //       set spawnerLength
   // update lastSpawnDate to today
-  // incur 1-day increase in mortality risk due to spawning
 
   id spawnCell;
   id <List> fishList;
@@ -1202,16 +1205,9 @@ Boston, MA 02111-1307, USA.
        }
 
        //
-       // spawnedThis season is initialized to NO
-       // in createEnd
+       // Reset of spawnedThis season moved to dailyUpdateWithBirthday
+       // SFR 12/29/2014
        //
-       // reset at start of each spawn season
-       //
-       if([timeManager isThisTime: currentTime onThisDay: fSED] == YES) 
-       {
-            spawnedThisSeason = NO;
-       }
-
 
        //
        // TEMPERATURE
