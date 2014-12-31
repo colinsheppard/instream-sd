@@ -58,12 +58,16 @@ Boston, MA 02111-1307, USA.
 {
   Trout * newTrout;
 
-  //fprintf(stdout, "Trout >>>> createBegin >>>> BEGIN\n");
-  //fflush(0);
+  fprintf(stdout, "Trout >>>> createBegin >>>> BEGIN %p \n",aZone);
+  fflush(0);
 
   newTrout = [super createBegin: aZone];
+  fprintf(stdout, "Trout >>>> createBegin >>>> after super\n");
+  fflush(0);
 
   newTrout->troutZone = [Zone create: aZone];
+  fprintf(stdout, "Trout >>>> createBegin >>>> after troutZone\n");
+  fflush(0);
   newTrout->causeOfDeath = nil;
 
   //
@@ -97,8 +101,8 @@ Boston, MA 02111-1307, USA.
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
     //fflush(0);
-  //fprintf(stdout, "Trout >>>> createBegin >>>> END\n");
-  //fflush(0);
+  fprintf(stdout, "Trout >>>> createBegin >>>> END\n");
+  fflush(0);
 
   return newTrout;
 }
@@ -109,34 +113,24 @@ Boston, MA 02111-1307, USA.
 // createEnd
 //
 //////////////////////////////////////////////////////////////////
-- createEnd 
-{
+- createEnd {
+  //fprintf(stdout, "Trout >>>> createEnd >>>> BEGIN\n");
+  //fflush(0);
+
   [super createEnd];
 
-  if (fishParams == nil)
-  {
+  if (fishParams == nil){
       fprintf(stderr, "ERROR: Trout >>>> createEnd >>>> fishParams is nil\n");
       fflush(0);
       exit(1);
   }
-  if (troutRandGen == nil)
-  {
+  if (troutRandGen == nil){
       fprintf(stderr, "ERROR: Trout >>>> createEnd >>>> Fish %p doesn't have a troutRandGen.\n", self);
       fflush(0);
       exit(1);
+  }else{
+    uniformDist = [UniformDoubleDist create: troutZone setGenerator: troutRandGen setDoubleMin: 0.0 setMax: 1.0];
   }
-  else 
-  {
-    spawnDist = [UniformDoubleDist create: troutZone
-				   setGenerator: troutRandGen
-				   setDoubleMin: 0.0
-				   setMax: 1.0];
-
-    uniformDist = [UniformDoubleDist create: troutZone
-                               setGenerator: troutRandGen
-                               setDoubleMin: 0.0
-                                     setMax: 1.0];
-   }
 
 
    hourlyDriftConRate = 0.0;
@@ -147,6 +141,8 @@ Boston, MA 02111-1307, USA.
 
    destCellList = [List create: troutZone];
 
+   //fprintf(stdout, "Trout >>>> createEnd >>>> END\n");
+   //fflush(0);
    return self;
 }
 
@@ -1258,7 +1254,7 @@ Boston, MA 02111-1307, USA.
       //
       // FINALLY TEST AGAINST RANDOM DRAW
       //
-      if([spawnDist getDoubleSample] > fishParams->fishSpawnProb)
+      if([uniformDist getDoubleSample] > fishParams->fishSpawnProb)
       {
            return NO;
       }
@@ -4453,7 +4449,6 @@ return self;
 - (void) drop
 {
 
-     [spawnDist drop];
      [uniformDist drop];
 
      [destCellList drop];
