@@ -58,16 +58,11 @@ Boston, MA 02111-1307, USA.
 {
   Trout * newTrout;
 
-  fprintf(stdout, "Trout >>>> createBegin >>>> BEGIN %p \n",aZone);
-  fflush(0);
+  //fprintf(stdout, "Trout >>>> createBegin >>>> BEGIN %p \n",aZone);
+  //fflush(0);
 
   newTrout = [super createBegin: aZone];
-  fprintf(stdout, "Trout >>>> createBegin >>>> after super\n");
-  fflush(0);
-
   newTrout->troutZone = [Zone create: aZone];
-  fprintf(stdout, "Trout >>>> createBegin >>>> after troutZone\n");
-  fflush(0);
   newTrout->causeOfDeath = nil;
 
   //
@@ -101,8 +96,8 @@ Boston, MA 02111-1307, USA.
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout == %p\n", newTrout);
     //fprintf(stdout, "Trout >>>> createBegin >>>> newTrout->fishActivity == %d\n", newTrout->fishActivity);
     //fflush(0);
-  fprintf(stdout, "Trout >>>> createBegin >>>> END\n");
-  fflush(0);
+    //fprintf(stdout, "Trout >>>> createBegin >>>> END\n");
+    //fflush(0);
 
   return newTrout;
 }
