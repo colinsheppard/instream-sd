@@ -5,4 +5,4 @@ cd ..
 make clean
 make
 cd ExampleInput/
-../instream6-0.exe -b
+../instream6-1.exe -b

@@ -64,7 +64,7 @@ OBJECTS=GraphDataObject.o \
 	KDTree.o
 
 
-OTHERCLEAN= instream6-0.exe.core instream6-0.exe unhappiness.output
+OTHERCLEAN= instream6-1.exe.core instream6-1.exe unhappiness.output
 
 include $(SWARMHOME)/etc/swarm/Makefile.appl
 
