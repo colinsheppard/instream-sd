@@ -108,6 +108,7 @@ enum inputDataType {DAILY = 0, HOURLY = 1, OTHER = 2};
 - printDataToFileNamed: (char *) aFileName;
 
 - readInputRecords;
++ (void) unQuote: (char *) toScrub;
 
 
 - (void) drop;

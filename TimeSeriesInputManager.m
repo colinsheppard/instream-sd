@@ -835,6 +835,7 @@ Boston, MA 02111-1307, USA.
   fgets(header1,HCOMMENTLENGTH,inputFP);
 
   while(fgets(tempString, strArraySize, inputFP) != NULL){
+    if(strlen(tempString)<2)continue;
     date =  strtok(tempString,delimiters);
     [TimeSeriesInputManager unQuote: date];
     // IMPORTANT: You need to parse the rest of the data in tempString before converting the string date to a time_t b/c
@@ -896,6 +897,7 @@ Boston, MA 02111-1307, USA.
       inputRecord = (double **)[timeSeriesInputZone alloc: numRecords*sizeof(double *)];
     
       while(fgets(tempString, strArraySize, inputFP) != NULL){
+	if(strlen(tempString)<2)continue;
         date =  strtok(tempString,delimiters);
         [TimeSeriesInputManager unQuote: date];
         // IMPORTANT: You need to parse the rest of the data in tempString before converting the string date to a time_t b/c
