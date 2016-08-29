@@ -231,7 +231,7 @@ time_t runStartTime;
 time_t runEndTime;
 int numHoursSinceLastStep;
 BOOL isFirstStep;
-
+BOOL isFirstStepOfDay;  // Added to write output only once per day
 BOOL firstTime;
 
 BOOL appendFiles;

@@ -79,6 +79,7 @@ char **speciesStocking;
   troutModelSwarm->minSpeciesMinPiscLength = (double) LARGEINT; 
 
   troutModelSwarm->isFirstStep = TRUE;
+  troutModelSwarm->isFirstStepOfDay = TRUE;
 
   troutModelSwarm->fishOutputFile = (char *) nil;
 
@@ -1961,6 +1962,8 @@ char **speciesStocking;
 
      //
      // Breakout report update
+	 // Starting 8/29/2016, this is done only on first step of day
+	 // unless fileOutputFrequency is 1
      //
      if(isFirstStep == FALSE)
      {
@@ -1968,8 +1971,16 @@ char **speciesStocking;
       //fflush(0);
 	  if(([timeManager getNumberOfDaysBetween: runStartTime and: modelTime] % fileOutputFrequency) == 0)
 	   {
-        [self outputBreakoutReport];
+		   if((isFirstStepOfDay == TRUE) || (fileOutputFrequency == 1))
+		   {
+			[self outputBreakoutReport];
+			isFirstStepOfDay = FALSE;
+		   }
        }
+	  else
+	  {
+		  isFirstStepOfDay = TRUE;
+	  }
 	 }
 
       //fprintf(stdout,"TroutModelSwarm >>>> step >>>> before update hab manager\n");

@@ -4,3 +4,4 @@
 *.exe
 Tailrace/*.Out
 */*.rpt
+ExampleInput/Redds.csv
